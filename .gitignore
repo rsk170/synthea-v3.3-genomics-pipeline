@@ -17,6 +17,8 @@ lib/custom/*.jar
 
 **/*.log
 
+output_runs/
+
 # don't commit the autobuilt version file
 src/main/resources/version.txt
 

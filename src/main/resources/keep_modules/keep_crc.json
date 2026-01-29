@@ -1,0 +1,30 @@
+{
+  "name": "keep_colorectal_cancer",
+  "gmf_version": 2,
+  "priority": 1,
+  "remarks": ["Keep only colorectal cancer patients"],
+
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Keep",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              { "system": "SNOMED-CT", "code": "93761005",  "display": "Primary malignant neoplasm of colon (disorder)" },
+              { "system": "SNOMED-CT", "code": "109838007", "display": "Overlapping malignant neoplasm of colon (disorder)" },
+              { "system": "SNOMED-CT", "code": "363406005", "display": "Malignant neoplasm of colon (disorder)" },
+              { "system": "SNOMED-CT", "code": "94260004",  "display": "Metastatic malignant neoplasm to colon (disorder)" }
+            ]
+          }
+        },
+        { "transition": "Terminal" }
+      ]
+    },
+
+    "Keep": { "type": "Terminal" },
+    "Terminal": { "type": "Terminal" }
+  }
+}

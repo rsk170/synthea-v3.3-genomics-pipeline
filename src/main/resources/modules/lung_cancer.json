@@ -337,17 +337,76 @@
       ],
       "direct_transition": "Diagnosis Encounter III"
     },
-    "Diagnosis Encounter III": {
-      "type": "Encounter",
-      "encounter_class": "outpatient",
-      "reason": "Lung Cancer",
-      "codes": [
+    "Assign Lung Cancer Driver Variant": {
+      "type": "Simple",
+      "distributed_transition": [
         {
-          "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
+          "transition": "Set Driver EGFR",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Set Driver KRAS",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Set Driver ALK",
+          "distribution": 0.50
         }
-      ],
+      ]
+    },
+    "Set Driver EGFR": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_driver_variant",
+      "value": "EGFR",
+      "direct_transition": "Record EGFR Observation"
+    },
+    "Record EGFR Observation": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "69548-6", "display": "Genetic variant assessment" }],
+      "value_code": {
+        "system": "SNOMED-CT", 
+        "code": "444439006", 
+        "display": "Epidermal growth factor receptor gene mutation positive" 
+      },
+      "direct_transition": "Select Diagnostic Procedure"
+    },
+    "Set Driver KRAS": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_driver_variant",
+      "value": "KRAS",
+      "direct_transition": "Record KRAS Observation"
+    },
+   "Record KRAS Observation": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "69548-6", "display": "Genetic variant assessment" }],
+      "value_code": {
+        "system": "SNOMED-CT", 
+        "code": "416169004", 
+        "display": "KRAS gene mutation detected" 
+      },
+      "direct_transition": "Select Diagnostic Procedure"
+    },
+    "Set Driver ALK": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_driver_variant",
+      "value": "ALK",
+      "direct_transition": "Record ALK Observation"
+    },
+    "Record ALK Observation": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "69548-6", "display": "Genetic variant assessment" }],
+      "value_code": {
+        "system": "SNOMED-CT", 
+        "code": "716766009", 
+        "display": "Anaplastic lymphoma kinase gene rearrangement detected" 
+      },
+      "direct_transition": "Select Diagnostic Procedure"
+    },
+    "Select Diagnostic Procedure": {
+      "type": "Simple",
       "distributed_transition": [
         {
           "distribution": 0.25,
@@ -366,6 +425,19 @@
           "transition": "Bronchoscopy (Tube)"
         }
       ]
+    },
+    "Diagnosis Encounter III": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "reason": "Lung Cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "Assign Lung Cancer Driver Variant"
     },
     "Sputum Cytology (Phelgm)": {
       "type": "Procedure",

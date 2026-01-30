@@ -1,0 +1,38 @@
+{
+  "name": "keep_lung_cancer",
+  "gmf_version": 2,
+  "priority": 1,
+  "remarks": [ "Keep only lung cancer patients" ],
+
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Keep",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              { "system": "SNOMED-CT", "code": "254632001", "display": "Small cell carcinoma of lung" },
+              { "system": "SNOMED-CT", "code": "254637007", "display": "Non-small cell lung cancer" },
+              { "system": "SNOMED-CT", "code": "422968005", "display": "NSCLC TNM stage 3" },
+              { "system": "SNOMED-CT", "code": "423121009", "display": "NSCLC TNM stage 4" },
+              { "system": "SNOMED-CT", "code": "424132000", "display": "NSCLC TNM stage 1" },
+              { "system": "SNOMED-CT", "code": "425048006", "display": "NSCLC TNM stage 2" },
+              { "system": "SNOMED-CT", "code": "67811000119102", "display": "Primary SCLC stage 1" },
+              { "system": "SNOMED-CT", "code": "67821000119109", "display": "Primary SCLC stage 2" },
+              { "system": "SNOMED-CT", "code": "67831000119107", "display": "Primary SCLC stage 3" },
+              { "system": "SNOMED-CT", "code": "67841000119103", "display": "Primary SCLC stage 4" }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Keep":    { "type": "Terminal" },
+    "Terminal": { "type": "Terminal" }
+  }
+}

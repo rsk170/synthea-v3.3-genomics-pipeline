@@ -337,72 +337,17 @@
       ],
       "direct_transition": "Diagnosis Encounter III"
     },
-    "Assign Lung Cancer Driver Variant": {
-      "type": "Simple",
-      "distributed_transition": [
+    "Diagnosis Encounter III": {
+      "type": "Encounter",
+      "encounter_class": "outpatient",
+      "reason": "Lung Cancer",
+      "codes": [
         {
-          "transition": "Set Driver EGFR",
-          "distribution": 0.25
-        },
-        {
-          "transition": "Set Driver KRAS",
-          "distribution": 0.25
-        },
-        {
-          "transition": "Set Driver ALK",
-          "distribution": 0.50
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
         }
-      ]
-    },
-    "Set Driver EGFR": {
-      "type": "SetAttribute",
-      "attribute": "lung_cancer_driver_variant",
-      "value": "EGFR",
-      "direct_transition": "Record EGFR Observation"
-    },
-    "Record EGFR Observation": {
-      "type": "Observation",
-      "category": "laboratory",
-      "codes": [{ "system": "LOINC", "code": "69548-6", "display": "Genetic variant assessment" }],
-      "value_code": {
-        "system": "SNOMED-CT", 
-        "code": "444439006", 
-        "display": "Epidermal growth factor receptor gene mutation positive" 
-      },
-      "direct_transition": "Select Diagnostic Procedure"
-    },
-    "Set Driver KRAS": {
-      "type": "SetAttribute",
-      "attribute": "lung_cancer_driver_variant",
-      "value": "KRAS",
-      "direct_transition": "Record KRAS Observation"
-    },
-   "Record KRAS Observation": {
-      "type": "Observation",
-      "category": "laboratory",
-      "codes": [{ "system": "LOINC", "code": "69548-6", "display": "Genetic variant assessment" }],
-      "value_code": {
-        "system": "SNOMED-CT", 
-        "code": "416169004", 
-        "display": "KRAS gene mutation detected" 
-      },
-      "direct_transition": "Select Diagnostic Procedure"
-    },
-    "Set Driver ALK": {
-      "type": "SetAttribute",
-      "attribute": "lung_cancer_driver_variant",
-      "value": "ALK",
-      "direct_transition": "Record ALK Observation"
-    },
-    "Record ALK Observation": {
-      "type": "Observation",
-      "category": "laboratory",
-      "codes": [{ "system": "LOINC", "code": "69548-6", "display": "Genetic variant assessment" }],
-      "value_code": {
-        "system": "SNOMED-CT", 
-        "code": "716766009", 
-        "display": "Anaplastic lymphoma kinase gene rearrangement detected" 
-      },
+      ],
       "direct_transition": "Select Diagnostic Procedure"
     },
     "Select Diagnostic Procedure": {
@@ -425,19 +370,6 @@
           "transition": "Bronchoscopy (Tube)"
         }
       ]
-    },
-    "Diagnosis Encounter III": {
-      "type": "Encounter",
-      "encounter_class": "outpatient",
-      "reason": "Lung Cancer",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
-        }
-      ],
-      "direct_transition": "Assign Lung Cancer Driver Variant"
     },
     "Sputum Cytology (Phelgm)": {
       "type": "Procedure",
@@ -972,6 +904,208 @@
     },
     "NSCLC Treatment Path": {
       "type": "Simple",
+      "direct_transition": "Assign_Lung_Cancer_Driver_Variant"
+    },
+    "Assign_Lung_Cancer_Driver_Variant": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              { "condition_type": "Attribute", "attribute": "lung_cancer_driver_variant", "operator": "==", "value": "EGFR" },
+              { "condition_type": "Attribute", "attribute": "lung_cancer_driver_variant", "operator": "==", "value": "KRAS" },
+              { "condition_type": "Attribute", "attribute": "lung_cancer_driver_variant", "operator": "==", "value": "ALK" },
+              { "condition_type": "Attribute", "attribute": "lung_cancer_driver_variant", "operator": "==", "value": "ROS1" },
+              { "condition_type": "Attribute", "attribute": "lung_cancer_driver_variant", "operator": "==", "value": "BRAF" },
+              { "condition_type": "Attribute", "attribute": "lung_cancer_driver_variant", "operator": "==", "value": "MET" },
+              { "condition_type": "Attribute", "attribute": "lung_cancer_driver_variant", "operator": "==", "value": "WildType" }
+            ]
+          },
+          "transition": "NSCLC Treatment Encounter"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition": "Assign_Young_Rare_Variants"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "smoker",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Active Condition",
+                "codes": [{ "system": "SNOMED-CT", "code": "423121009", "display": "Non-small cell carcinoma of lung, TNM stage 4 (disorder)" }]
+              }
+            ]
+          },
+          "transition": "Assign_Smoker_Advanced_Variants"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Assign_Smoker_Standard_Variants"
+        },
+        {
+          "transition": "Assign_NonSmoker_Variants"
+        }
+      ]
+    },
+    "Assign_Young_Rare_Variants": {
+      "type": "Simple",
+      "distributed_transition": [
+        { "transition": "Set_Attribute_ALK", "distribution": 0.35 },
+        { "transition": "Set_Attribute_ROS1", "distribution": 0.25 },
+        { "transition": "Set_Attribute_EGFR", "distribution": 0.20 },
+        { "transition": "Set_Attribute_WildType", "distribution": 0.20 }
+      ]
+    },
+    "Assign_Smoker_Advanced_Variants": {
+      "type": "Simple",
+      "distributed_transition": [
+        { "transition": "Set_Attribute_KRAS", "distribution": 0.45 },
+        { "transition": "Set_Attribute_MET", "distribution": 0.10 },
+        { "transition": "Set_Attribute_BRAF", "distribution": 0.10 },
+        { "transition": "Set_Attribute_WildType", "distribution": 0.35 }
+      ]
+    },
+    "Assign_Smoker_Standard_Variants": {
+      "type": "Simple",
+      "distributed_transition": [
+        { "transition": "Set_Attribute_KRAS", "distribution": 0.30 },
+        { "transition": "Set_Attribute_EGFR", "distribution": 0.10 },
+        { "transition": "Set_Attribute_BRAF", "distribution": 0.05 },
+        { "transition": "Set_Attribute_WildType", "distribution": 0.55 }
+      ]
+    },
+    "Assign_NonSmoker_Variants": {
+      "type": "Simple",
+      "distributed_transition": [
+        { "transition": "Set_Attribute_EGFR", "distribution": 0.50 },
+        { "transition": "Set_Attribute_ALK", "distribution": 0.10 },
+        { "transition": "Set_Attribute_ROS1", "distribution": 0.05 },
+        { "transition": "Set_Attribute_WildType", "distribution": 0.35 }
+      ]
+    },
+    "Set_Attribute_EGFR": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_driver_variant",
+      "value": "EGFR",
+      "direct_transition": "Record_Driver_EGFR"
+    },
+    "Record_Driver_EGFR": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "21636-6", "display": "EGFR gene mutation analysis" }],
+      "value_code": {
+        "system": "SNOMED-CT", "code": "444439006", "display": "Epidermal growth factor receptor gene mutation positive"
+      },
+      "direct_transition": "NSCLC Treatment Encounter"
+    },
+
+    "Set_Attribute_KRAS": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_driver_variant",
+      "value": "KRAS",
+      "direct_transition": "Record_Driver_KRAS"
+    },
+    "Record_Driver_KRAS": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "81560-5", "display": "KRAS gene mutation analysis" }],
+      "value_code": {
+        "system": "SNOMED-CT", "code": "443628003", "display": "KRAS gene mutation positive"
+      },
+      "direct_transition": "NSCLC Treatment Encounter"
+    },
+
+    "Set_Attribute_ALK": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_driver_variant",
+      "value": "ALK",
+      "direct_transition": "Record_Driver_ALK"
+    },
+    "Record_Driver_ALK": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "81694-2", "display": "ALK gene rearrangement analysis" }],
+      "value_code": {
+        "system": "SNOMED-CT", "code": "703422007", "display": "ALK gene rearrangement positive"
+      },
+      "direct_transition": "NSCLC Treatment Encounter"
+    },
+    "Set_Attribute_ROS1": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_driver_variant",
+      "value": "ROS1",
+      "direct_transition": "Record_Driver_ROS1"
+    },
+    "Record_Driver_ROS1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "81747-8", "display": "ROS1 gene rearrangement analysis" }],
+      "value_code": {
+        "system": "SNOMED-CT", "code": "703423002", "display": "ROS1 positive"
+      },
+      "direct_transition": "NSCLC Treatment Encounter"
+    },
+    "Set_Attribute_BRAF": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_driver_variant",
+      "value": "BRAF",
+      "direct_transition": "Record_Driver_BRAF"
+    },
+    "Record_Driver_BRAF": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "97025-1", "display": "BRAF V600 mutation analysis" }],
+      "value_code": {
+        "system": "SNOMED-CT", "code": "443859005", "display": "BRAF V600E mutation positive"
+      },
+      "direct_transition": "NSCLC Treatment Encounter"
+    },
+    "Set_Attribute_MET": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_driver_variant",
+      "value": "MET",
+      "direct_transition": "Record_Driver_MET"
+    },
+    "Record_Driver_MET": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "96839-4", "display": "MET gene mutation analysis" }],
+      "value_code": {
+        "system": "SNOMED-CT", "code": "840552003", "display": "MET exon 14 skipping detected"
+      },
+      "direct_transition": "NSCLC Treatment Encounter"
+    },
+    "Set_Attribute_WildType": {
+      "type": "SetAttribute",
+      "attribute": "lung_cancer_driver_variant",
+      "value": "WildType",
+      "direct_transition": "Record_Driver_WildType"
+    },
+    "Record_Driver_WildType": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "69548-6", "display": "Genetic variant assessment" }],
+      "value_code": {
+        "system": "SNOMED-CT", "code": "260385009", "display": "Negative for relevant driver mutations"
+      },
       "direct_transition": "NSCLC Treatment Encounter"
     },
     "NSCLC Treatment Encounter": {

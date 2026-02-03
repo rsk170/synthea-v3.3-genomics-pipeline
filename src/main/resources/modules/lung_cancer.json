@@ -801,6 +801,231 @@
     },
     "SCLC Treatment Path": {
       "type": "Simple",
+      "direct_transition": "Assign_SCLC_Profile"
+    },
+    "Assign_SCLC_Profile": {
+      "type": "Simple",
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "sclc_genetics_done",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "SCLC Treatment Encounter"
+        },
+        {
+          "condition": {
+            "condition_type": "Age",
+            "operator": "<",
+            "quantity": 50,
+            "unit": "years"
+          },
+          "transition": "Assign_SCLC_Young_Split"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "smoker",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_SCLC_Smoker_Profile"
+        },
+        {
+          "transition": "Set_SCLC_NonSmoker_Profile"
+        }
+      ]
+    },
+    "Assign_SCLC_Young_Split": {
+      "type": "Simple",
+      "distributed_transition": [
+        { "transition": "Set_SCLC_NonSmoker_Profile", "distribution": 0.60 },
+        { "transition": "Set_SCLC_Smoker_Profile", "distribution": 0.40 }
+      ]
+    },
+    "Set_SCLC_Smoker_Profile": {
+      "type": "SetAttribute",
+      "attribute": "sclc_profile",
+      "value": "smoker_like",
+      "direct_transition": "Assign_SCLC_TP53"
+    },
+    "Set_SCLC_NonSmoker_Profile": {
+      "type": "SetAttribute",
+      "attribute": "sclc_profile",
+      "value": "nonsmoker_like",
+      "direct_transition": "Assign_SCLC_TP53"
+    },
+
+    "Assign_SCLC_TP53": {
+      "type": "Simple",
+      "remarks": [
+        "Core Driver 1: TP53. Smokers have 85% risk, Non-Smokers 59%."
+      ],
+      "complex_transition": [
+        {
+          "condition": { "condition_type": "Attribute", "attribute": "sclc_profile", "operator": "==", "value": "smoker_like" },
+          "distributions": [
+            { "transition": "Set_TP53_Positive", "distribution": 0.85 },
+            { "transition": "Assign_SCLC_RB1", "distribution": 0.15 }
+          ]
+        },
+        {
+          "condition": { "condition_type": "Attribute", "attribute": "sclc_profile", "operator": "==", "value": "nonsmoker_like" },
+          "distributions": [
+            { "transition": "Set_TP53_Positive", "distribution": 0.59 },
+            { "transition": "Assign_SCLC_RB1", "distribution": 0.41 }
+          ]
+        }
+      ]
+    },
+    "Set_TP53_Positive": {
+      "type": "SetAttribute",
+      "attribute": "sclc_tp53",
+      "value": true,
+      "direct_transition": "Record_TP53_Observation" 
+    },
+    "Record_TP53_Observation": {
+        "type": "Observation",
+        "category": "laboratory",
+        "codes": [{ "system": "LOINC", "code": "59253-5", "display": "TP53 gene mutation analysis" }],
+        "value_code": { "system": "SNOMED-CT", "code": "443628003", "display": "TP53 mutation detected" },
+        "direct_transition": "Assign_SCLC_RB1"
+    },
+
+    "Assign_SCLC_RB1": {
+      "type": "Simple",
+      "remarks": [
+        "Core Driver 2: RB1. Smokers have 63% risk, Non-Smokers 57%."
+      ],
+      "complex_transition": [
+        {
+          "condition": { "condition_type": "Attribute", "attribute": "sclc_profile", "operator": "==", "value": "smoker_like" },
+          "distributions": [
+            { "transition": "Set_RB1_Positive", "distribution": 0.63 },
+            { "transition": "Assign_SCLC_Secondary", "distribution": 0.37 }
+          ]
+        },
+        {
+          "condition": { "condition_type": "Attribute", "attribute": "sclc_profile", "operator": "==", "value": "nonsmoker_like" },
+          "distributions": [
+            { "transition": "Set_RB1_Positive", "distribution": 0.57 },
+            { "transition": "Assign_SCLC_Secondary", "distribution": 0.43 }
+          ]
+        }
+      ]
+    },
+    "Set_RB1_Positive": {
+      "type": "SetAttribute",
+      "attribute": "sclc_rb1",
+      "value": true,
+      "direct_transition": "Record_RB1_Observation"
+    },
+    "Record_RB1_Observation": {
+        "type": "Observation",
+        "category": "laboratory",
+        "codes": [{ "system": "LOINC", "code": "95796-7", "display": "RB1 gene mutation analysis" }],
+        "value_code": { "system": "SNOMED-CT", "code": "716183008", "display": "RB1 mutation detected" },
+        "direct_transition": "Assign_SCLC_Secondary"
+    },
+    "Assign_SCLC_Secondary": {
+      "type": "Simple",
+      "remarks": [
+        "Secondary Drivers are Mutually Exclusive. One driver per patient (or none)."
+      ],
+      "complex_transition": [
+        {
+          "condition": { "condition_type": "Attribute", "attribute": "sclc_profile", "operator": "==", "value": "smoker_like" },
+          "distributions": [
+            { "transition": "Set_SCLC_NOTCH", "distribution": 0.25 },
+            { "transition": "Set_SCLC_MYC", "distribution": 0.15 },
+            { "transition": "Set_SCLC_PI3K", "distribution": 0.08 },
+            { "transition": "Set_SCLC_CREBBP", "distribution": 0.10 },
+            { "transition": "SCLC_Finalize", "distribution": 0.42 }
+          ]
+        },
+        {
+          "condition": { "condition_type": "Attribute", "attribute": "sclc_profile", "operator": "==", "value": "nonsmoker_like" },
+          "distributions": [
+            { "transition": "Set_SCLC_EGFR", "distribution": 0.26 },
+            { "transition": "Set_SCLC_PI3K", "distribution": 0.15 },
+            { "transition": "Set_SCLC_NOTCH", "distribution": 0.20 },
+            { "transition": "Set_SCLC_MYC", "distribution": 0.10 },
+            { "transition": "SCLC_Finalize", "distribution": 0.29 }
+          ]
+        }
+      ]
+    },
+    "Set_SCLC_NOTCH": {
+      "type": "SetAttribute",
+      "attribute": "sclc_secondary_driver",
+      "value": "NOTCH",
+      "direct_transition": "Record_SCLC_NOTCH"
+    },
+    "Record_SCLC_NOTCH": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "69548-6", "display": "Genetic variant assessment" }],
+      "value_code": { "system": "SNOMED-CT", "code": "405824009", "display": "Notch1 gene mutation detected" },
+      "direct_transition": "SCLC_Finalize"
+    },
+    "Set_SCLC_MYC": {
+      "type": "SetAttribute",
+      "attribute": "sclc_secondary_driver",
+      "value": "MYC",
+      "direct_transition": "Record_SCLC_MYC"
+    },
+    "Record_SCLC_MYC": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "49852-7", "display": "MYC gene amplification" }],
+      "value_code": { "system": "SNOMED-CT", "code": "416962006", "display": "MYC gene amplification detected" },
+      "direct_transition": "SCLC_Finalize"
+    },
+    "Set_SCLC_PI3K": {
+      "type": "SetAttribute",
+      "attribute": "sclc_secondary_driver",
+      "value": "PI3K",
+      "direct_transition": "Record_SCLC_PI3K"
+    },
+    "Record_SCLC_PI3K": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "26425-9", "display": "PIK3CA gene mutation analysis" }],
+      "value_code": { "system": "SNOMED-CT", "code": "443729007", "display": "PIK3CA gene mutation detected" },
+      "direct_transition": "SCLC_Finalize"
+    },
+    "Set_SCLC_CREBBP": {
+      "type": "SetAttribute",
+      "attribute": "sclc_secondary_driver",
+      "value": "CREBBP",
+      "direct_transition": "Record_SCLC_CREBBP"
+    },
+    "Record_SCLC_CREBBP": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "69548-6", "display": "Genetic variant assessment" }],
+      "value_code": { "system": "SNOMED-CT", "code": "702766006", "display": "CREBBP gene mutation detected" },
+      "direct_transition": "SCLC_Finalize"
+    },
+    "Set_SCLC_EGFR": {
+      "type": "SetAttribute",
+      "attribute": "sclc_secondary_driver",
+      "value": "EGFR",
+      "direct_transition": "Record_SCLC_EGFR"
+    },
+    "Record_SCLC_EGFR": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "21636-6", "display": "EGFR gene mutation analysis" }],
+      "value_code": { "system": "SNOMED-CT", "code": "444439006", "display": "Epidermal growth factor receptor gene mutation positive" },
+      "direct_transition": "SCLC_Finalize"
+    },
+    "SCLC_Finalize": {
+      "type": "SetAttribute",
+      "attribute": "sclc_genetics_done",
+      "value": true,
       "direct_transition": "SCLC Treatment Encounter"
     },
     "SCLC Treatment Encounter": {

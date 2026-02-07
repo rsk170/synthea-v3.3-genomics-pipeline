@@ -758,24 +758,262 @@
       "type": "SetAttribute",
       "attribute": "colorectal_cancer_stage",
       "value": 1,
-      "direct_transition": "Colorectal_Cancer"
+      "direct_transition": "Assign_CRC_Site"
     },
     "Colorectal_Cancer_Diagnose_Stage_II": {
       "type": "SetAttribute",
       "attribute": "colorectal_cancer_stage",
       "value": 2,
-      "direct_transition": "Colorectal_Cancer"
+      "direct_transition": "Assign_CRC_Site"
     },
     "Colorectal_Cancer_Diagnose_Stage_III": {
       "type": "SetAttribute",
       "attribute": "colorectal_cancer_stage",
       "value": 3,
-      "direct_transition": "Colorectal_Cancer"
+      "direct_transition": "Assign_CRC_Site"
     },
     "Colorectal_Cancer_Diagnose_Stage_IV": {
       "type": "SetAttribute",
       "attribute": "colorectal_cancer_stage",
       "value": 4,
+      "direct_transition": "Assign_CRC_Site"
+    },
+    "Assign_CRC_Site": {
+      "type": "Simple",
+      "remarks": [
+        "Genetics Start. We already know the Stage (from the previous state).",
+        "Now we assign the Tumor Site (Right vs Left) to help determine Genetics.",
+        "Right-sided is more common in women and older patients."
+      ],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              { "condition_type": "Gender", "gender": "F" },
+              { "condition_type": "Age", "operator": ">", "quantity": 70, "unit": "years" }
+            ]
+          },
+          "distributions": [
+            { "transition": "Set_Right_Sided", "distribution": 0.55 },
+            { "transition": "Set_Left_Sided", "distribution": 0.45 }
+          ]
+        },
+        {
+          "distributions": [
+            { "transition": "Set_Right_Sided", "distribution": 0.35 },
+            { "transition": "Set_Left_Sided", "distribution": 0.65 }
+          ]
+        }
+      ]
+    },
+    "Set_Right_Sided": {
+      "type": "SetAttribute", "attribute": "crc_site", "value": "right",
+      "direct_transition": "Assign_MSI_Status"
+    },
+    "Set_Left_Sided": {
+      "type": "SetAttribute", "attribute": "crc_site", "value": "left",
+      "direct_transition": "Assign_MSI_Status"
+    },
+    "Assign_MSI_Status": {
+      "type": "Simple",
+      "remarks": ["Assign MSI Status based on Stage. Stage 4 has low MSI rates."],
+      "complex_transition": [
+        {
+          "condition": { "condition_type": "Attribute", "attribute": "colorectal_cancer_stage", "operator": "==", "value": 4 },
+          "distributions": [
+            { "transition": "Set_MSI_High", "distribution": 0.05 },
+            { "transition": "Set_MSS", "distribution": 0.95 }
+          ]
+        },
+        {
+          "distributions": [
+            { "transition": "Set_MSI_High", "distribution": 0.15 },
+            { "transition": "Set_MSS", "distribution": 0.85 }
+          ]
+        }
+      ]
+    },
+    "Set_MSI_High": {
+      "type": "SetAttribute", "attribute": "crc_msi_status", "value": "MSI-H",
+      "direct_transition": "Record_MSI_H"
+    },
+    "Record_MSI_H": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "81708-0", "display": "Microsatellite instability [Interpretation] in Cancer specimen" }],
+      "value_code": { "system": "SNOMED-CT", "code": "703666005", "display": "Microsatellite instability - high (finding)" },
+      "direct_transition": "Assign_BRAF"
+    },
+    "Set_MSS": {
+      "type": "SetAttribute", "attribute": "crc_msi_status", "value": "MSS",
+      "direct_transition": "Record_MSS"
+    },
+    "Record_MSS": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "81708-0", "display": "Microsatellite instability [Interpretation] in Cancer specimen" }],
+      "value_code": { "system": "SNOMED-CT", "code": "703667001", "display": "Microsatellite instability - stable (finding)" },
+      "direct_transition": "Assign_BRAF"
+    },
+    "Assign_BRAF": {
+      "type": "Simple",
+      "remarks": ["Assign BRAF. High risk (30%) if Right-Sided + Female + Older."],
+      "complex_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              { "condition_type": "Attribute", "attribute": "crc_site", "operator": "==", "value": "right" },
+              { "condition_type": "Gender", "gender": "F" },
+              { "condition_type": "Age", "operator": ">", "quantity": 70, "unit": "years" }
+            ]
+          },
+          "distributions": [
+            { "transition": "Set_Driver_BRAF", "distribution": 0.30 },
+            { "transition": "Assign_RAS", "distribution": 0.70 }
+          ]
+        },
+        {
+          "distributions": [
+            { "transition": "Set_Driver_BRAF", "distribution": 0.08 },
+            { "transition": "Assign_RAS", "distribution": 0.92 }
+          ]
+        }
+      ]
+    },
+    "Set_Driver_BRAF": {
+      "type": "SetAttribute", "attribute": "crc_driver", "value": "BRAF",
+      "direct_transition": "Record_BRAF"
+    },
+    "Record_BRAF": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "48679-5", "display": "BRAF gene p.Val600Glu [Presence] in Tissue by Molecular genetics method" }],
+      "value_code": { "system": "SNOMED-CT", "code": "443859005", "display": "BRAF V600E mutation positive" },
+      "direct_transition": "Check_CoMutation_APC" 
+    },
+    "Assign_RAS": {
+      "type": "Simple",
+      "remarks": ["Assign RAS (KRAS/NRAS). Mutually exclusive with BRAF."],
+      "distributed_transition": [
+        { "transition": "Set_Driver_KRAS", "distribution": 0.45 },
+        { "transition": "Set_Driver_NRAS", "distribution": 0.05 },
+        { "transition": "Assign_Rare_Drivers", "distribution": 0.50 }
+      ]
+    },
+    "Set_Driver_KRAS": {
+      "type": "SetAttribute", "attribute": "crc_driver", "value": "KRAS",
+      "direct_transition": "Record_KRAS"
+    },
+    "Record_KRAS": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "81560-5", "display": "KRAS gene mutation analysis" }],
+      "value_code": { "system": "SNOMED-CT", "code": "443628003", "display": "KRAS gene mutation positive" },
+      "direct_transition": "Check_CoMutation_APC"
+    },
+    "Set_Driver_NRAS": {
+      "type": "SetAttribute", "attribute": "crc_driver", "value": "NRAS",
+      "direct_transition": "Record_NRAS"
+    },
+    "Record_NRAS": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "82535-6", "display": "NRAS gene mutation analysis" }],
+      "value_code": { "system": "SNOMED-CT", "code": "703422007", "display": "NRAS mutation positive" },
+      "direct_transition": "Check_CoMutation_APC"
+    },
+    "Assign_Rare_Drivers": {
+      "type": "Simple",
+      "remarks": ["Rare Targets (HER2, NTRK) - only for Wild Type."],
+      "distributed_transition": [
+        { "transition": "Set_Driver_HER2", "distribution": 0.03 },
+        { "transition": "Set_Driver_NTRK", "distribution": 0.01 },
+        { "transition": "Set_Driver_WildType", "distribution": 0.96 }
+      ]
+    },
+    "Set_Driver_HER2": {
+      "type": "SetAttribute", "attribute": "crc_driver", "value": "HER2",
+      "direct_transition": "Record_HER2"
+    },
+    "Record_HER2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "72344-5", "display": "ERBB2 gene amplification" }],
+      "value_code": { "system": "SNOMED-CT", "code": "416962006", "display": "HER2/Neu positive" },
+      "direct_transition": "Check_CoMutation_APC"
+    },
+    "Set_Driver_NTRK": {
+      "type": "SetAttribute", "attribute": "crc_driver", "value": "NTRK",
+      "direct_transition": "Record_NTRK"
+    },
+    "Record_NTRK": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "98020-1", "display": "NTRK gene fusion analysis" }],
+      "value_code": { "system": "SNOMED-CT", "code": "703422007", "display": "NTRK fusion positive" },
+      "direct_transition": "Check_CoMutation_APC"
+    },
+    "Set_Driver_WildType": {
+      "type": "SetAttribute", "attribute": "crc_driver", "value": "WildType",
+      "direct_transition": "Record_WildType"
+    },
+    "Record_WildType": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "69548-6", "display": "Genetic variant assessment" }],
+      "value_code": { "system": "SNOMED-CT", "code": "260385009", "display": "Negative for relevant driver mutations" },
+      "direct_transition": "Check_CoMutation_APC"
+    },
+    "Check_CoMutation_APC": {
+      "type": "Simple",
+      "remarks": ["APC Co-Mutation (80%)"],
+      "distributed_transition": [
+        { "transition": "Record_APC", "distribution": 0.80 },
+        { "transition": "Check_CoMutation_TP53", "distribution": 0.20 }
+      ]
+    },
+    "Record_APC": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "21620-0", "display": "APC gene mutation analysis" }],
+      "value_code": { "system": "SNOMED-CT", "code": "444331006", "display": "APC gene mutation positive" },
+      "direct_transition": "Check_CoMutation_TP53"
+    },
+    "Check_CoMutation_TP53": {
+      "type": "Simple",
+      "remarks": ["TP53 Co-Mutation (60%)"],
+      "distributed_transition": [
+        { "transition": "Record_TP53_CRC", "distribution": 0.60 },
+        { "transition": "Check_CoMutation_PIK3CA", "distribution": 0.40 }
+      ]
+    },
+    "Record_TP53_CRC": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "59253-5", "display": "TP53 gene mutation analysis" }],
+      "value_code": { "system": "SNOMED-CT", "code": "443628003", "display": "TP53 mutation detected" },
+      "direct_transition": "Check_CoMutation_PIK3CA"
+    },
+    "Check_CoMutation_PIK3CA": {
+      "type": "Simple",
+      "remarks": ["PIK3CA Co-Mutation (15%)"],
+      "distributed_transition": [
+        { "transition": "Record_PIK3CA_CRC", "distribution": 0.15 },
+        { "transition": "CRC_Genetics_End", "distribution": 0.85 }
+      ]
+    },
+    "Record_PIK3CA_CRC": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [{ "system": "LOINC", "code": "26425-9", "display": "PIK3CA gene mutation analysis" }],
+      "value_code": { "system": "SNOMED-CT", "code": "443729007", "display": "PIK3CA gene mutation detected" },
+      "direct_transition": "CRC_Genetics_End"
+    },
+    "CRC_Genetics_End": {
+      "type": "Simple",
+      "remarks": ["End of Genetics. Pass control back to the Router."],
       "direct_transition": "Colorectal_Cancer"
     },
     "Colorectal_Cancer": {

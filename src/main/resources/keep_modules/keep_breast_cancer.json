@@ -1,0 +1,29 @@
+{
+  "name": "keep_breast_cancer",
+  "gmf_version": 2,
+  "priority": 1,
+  "remarks": [ "Keep only breast cancer patients" ],
+
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Keep",
+          "condition": {
+            "condition_type": "Active Condition",
+            "codes": [
+              { "system": "SNOMED-CT", "code": "254837009", "display": "Malignant tumor of breast (disorder)" }
+            ]
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+
+    "Keep": { "type": "Terminal" },
+    "Terminal": { "type": "Terminal" }
+  }
+}

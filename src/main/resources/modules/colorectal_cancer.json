@@ -889,7 +889,7 @@
     "Record_BRAF": {
       "type": "Observation",
       "category": "laboratory",
-      "codes": [{ "system": "LOINC", "code": "48679-5", "display": "BRAF gene p.Val600Glu [Presence] in Tissue by Molecular genetics method" }],
+      "codes": [{ "system": "LOINC", "code": "53844-7", "display": "BRAF gene targeted mutation analysis in Blood or Tissue by Molecular genetics method" }],
       "value_code": { "system": "SNOMED-CT", "code": "443859005", "display": "BRAF V600E mutation positive" },
       "direct_transition": "Check_CoMutation_APC" 
     },
@@ -909,7 +909,7 @@
     "Record_KRAS": {
       "type": "Observation",
       "category": "laboratory",
-      "codes": [{ "system": "LOINC", "code": "81560-5", "display": "KRAS gene mutation analysis" }],
+      "codes": [{ "system": "LOINC", "code": "82535-6", "display": "KRAS gene full mutation analysis in Blood or Tissue by Sequencing" }],
       "value_code": { "system": "SNOMED-CT", "code": "443628003", "display": "KRAS gene mutation positive" },
       "direct_transition": "Check_CoMutation_APC"
     },
@@ -920,7 +920,7 @@
     "Record_NRAS": {
       "type": "Observation",
       "category": "laboratory",
-      "codes": [{ "system": "LOINC", "code": "82535-6", "display": "NRAS gene mutation analysis" }],
+      "codes": [{ "system": "LOINC", "code": "21720-8", "display": "NRAS gene mutations tested for in Blood or Tissue by Molecular genetics method Nominal" }],
       "value_code": { "system": "SNOMED-CT", "code": "703422007", "display": "NRAS mutation positive" },
       "direct_transition": "Check_CoMutation_APC"
     },
@@ -940,7 +940,7 @@
     "Record_HER2": {
       "type": "Observation",
       "category": "laboratory",
-      "codes": [{ "system": "LOINC", "code": "72344-5", "display": "ERBB2 gene amplification" }],
+      "codes": [{ "system": "LOINC", "code": "48676-1", "display": "HER2 [Interpretation] in Tissue" }],
       "value_code": { "system": "SNOMED-CT", "code": "416962006", "display": "HER2/Neu positive" },
       "direct_transition": "Check_CoMutation_APC"
     },
@@ -951,7 +951,7 @@
     "Record_NTRK": {
       "type": "Observation",
       "category": "laboratory",
-      "codes": [{ "system": "LOINC", "code": "98020-1", "display": "NTRK gene fusion analysis" }],
+      "codes": [{ "system": "LOINC", "code": "93813-4", "display": "NTRK1, NTRK2 and NTRK3 gene rearrangements in Tissue by Molecular genetics method" }],
       "value_code": { "system": "SNOMED-CT", "code": "703422007", "display": "NTRK fusion positive" },
       "direct_transition": "Check_CoMutation_APC"
     },
@@ -977,7 +977,7 @@
     "Record_APC": {
       "type": "Observation",
       "category": "laboratory",
-      "codes": [{ "system": "LOINC", "code": "21620-0", "display": "APC gene mutation analysis" }],
+      "codes": [{ "system": "LOINC", "code": "21618-4", "display": "APC gene mutations tested for in Blood or Tissue by Molecular genetics method Nominal" }],
       "value_code": { "system": "SNOMED-CT", "code": "444331006", "display": "APC gene mutation positive" },
       "direct_transition": "Check_CoMutation_TP53"
     },
@@ -992,7 +992,7 @@
     "Record_TP53_CRC": {
       "type": "Observation",
       "category": "laboratory",
-      "codes": [{ "system": "LOINC", "code": "59253-5", "display": "TP53 gene mutation analysis" }],
+      "codes": [{ "system": "LOINC", "code": "103680-5", "display": "TP53 gene full mutation analysis in Blood or Tissue by Molecular genetics method" }],
       "value_code": { "system": "SNOMED-CT", "code": "443628003", "display": "TP53 mutation detected" },
       "direct_transition": "Check_CoMutation_PIK3CA"
     },
@@ -1007,7 +1007,7 @@
     "Record_PIK3CA_CRC": {
       "type": "Observation",
       "category": "laboratory",
-      "codes": [{ "system": "LOINC", "code": "26425-9", "display": "PIK3CA gene mutation analysis" }],
+      "codes": [{ "system": "LOINC", "code": "60034-6", "display": "PIK3CA gene targeted mutation analysis in Blood or Tissue by Molecular genetics method " }],
       "value_code": { "system": "SNOMED-CT", "code": "443729007", "display": "PIK3CA gene mutation detected" },
       "direct_transition": "CRC_Genetics_End"
     },

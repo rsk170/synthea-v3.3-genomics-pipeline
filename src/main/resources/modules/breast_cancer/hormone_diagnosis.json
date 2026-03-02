@@ -1,15 +1,1349 @@
 {
   "name": "Hormone_Diagnosis",
   "remarks": [
-    "This module checks for HER2 and then assigns either HER2 positive/negative. This follows suit for ER and PR. Finally, it accounts for the Triple negative factor at the end. "
+    "Unified module. Contains HER2, ER, PR checks, and the full genetics panel embedded directly."
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+      "direct_transition": "Tumor_Genome_Sequencing_Biopsy"
+    },
+    "Entered_Hormone_Diagnosis": {
+      "type": "SetAttribute",
+      "attribute": "entered_hormone_dx",
+      "value": true,
+      "direct_transition": "Tumor_Genome_Sequencing_Biopsy"
+    },
+    "Tumor_Genome_Sequencing_Biopsy": {
+      "type": "Procedure",
+      "reason": "breast_cancer_condition",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "733505001",
+          "display": "Tumor genomic profile (procedure)"
+        }
+      ],
+      "direct_transition": "Determine_Number_Of_Drivers"
+    },
+    "Determine_Number_Of_Drivers": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Assign_1_Drivers",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Assign_2_Drivers",
+          "distribution": 0.3
+        },
+        {
+          "transition": "Assign_3_Drivers",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Assign_1_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_count",
+      "value": 1,
+      "direct_transition": "Gate_1"
+    },
+    "Assign_2_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_count",
+      "value": 2,
+      "direct_transition": "Gate_1"
+    },
+    "Assign_3_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_count",
+      "value": 3,
+      "direct_transition": "Gate_1"
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Gate_1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_count",
+            "operator": ">=",
+            "value": 1
+          },
+          "transition": "Select_Driver_Gene_1"
+        },
+        {
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        }
+      ]
+    },
+    "Select_Driver_Gene_1": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_TP53_1",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Check_PIK3CA_1",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ARID1A_1",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_CCND1_1",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_PTEN_1",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_YWHAZ_1",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_MYC_1",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_GATA3_1",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ZNF703_1",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Check_TP53_1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_2"
+        },
+        {
+          "transition": "Set_TP53_1"
+        }
+      ]
+    },
+    "Set_TP53_1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_TP53",
+      "value": true,
+      "direct_transition": "Record_TP53_1"
+    },
+    "Record_TP53_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "TP53 mutation positive"
+      },
+      "direct_transition": "Gate_2"
+    },
+    "Check_PIK3CA_1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_2"
+        },
+        {
+          "transition": "Set_PIK3CA_1"
+        }
+      ]
+    },
+    "Set_PIK3CA_1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PIK3CA",
+      "value": true,
+      "direct_transition": "Record_PIK3CA_1"
+    },
+    "Record_PIK3CA_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PIK3CA mutation positive"
+      },
+      "direct_transition": "Gate_2"
+    },
+    "Check_ARID1A_1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ARID1A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_2"
+        },
+        {
+          "transition": "Set_ARID1A_1"
+        }
+      ]
+    },
+    "Set_ARID1A_1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ARID1A",
+      "value": true,
+      "direct_transition": "Record_ARID1A_1"
+    },
+    "Record_ARID1A_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ARID1A mutation positive"
+      },
+      "direct_transition": "Gate_2"
+    },
+    "Check_CCND1_1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CCND1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_2"
+        },
+        {
+          "transition": "Set_CCND1_1"
+        }
+      ]
+    },
+    "Set_CCND1_1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CCND1",
+      "value": true,
+      "direct_transition": "Record_CCND1_1"
+    },
+    "Record_CCND1_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CCND1 mutation positive"
+      },
+      "direct_transition": "Gate_2"
+    },
+    "Check_PTEN_1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_2"
+        },
+        {
+          "transition": "Set_PTEN_1"
+        }
+      ]
+    },
+    "Set_PTEN_1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PTEN",
+      "value": true,
+      "direct_transition": "Record_PTEN_1"
+    },
+    "Record_PTEN_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PTEN mutation positive"
+      },
+      "direct_transition": "Gate_2"
+    },
+    "Check_YWHAZ_1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_YWHAZ",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_2"
+        },
+        {
+          "transition": "Set_YWHAZ_1"
+        }
+      ]
+    },
+    "Set_YWHAZ_1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_YWHAZ",
+      "value": true,
+      "direct_transition": "Record_YWHAZ_1"
+    },
+    "Record_YWHAZ_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "YWHAZ mutation positive"
+      },
+      "direct_transition": "Gate_2"
+    },
+    "Check_MYC_1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MYC",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_2"
+        },
+        {
+          "transition": "Set_MYC_1"
+        }
+      ]
+    },
+    "Set_MYC_1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MYC",
+      "value": true,
+      "direct_transition": "Record_MYC_1"
+    },
+    "Record_MYC_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MYC mutation positive"
+      },
+      "direct_transition": "Gate_2"
+    },
+    "Check_GATA3_1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GATA3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_2"
+        },
+        {
+          "transition": "Set_GATA3_1"
+        }
+      ]
+    },
+    "Set_GATA3_1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_GATA3",
+      "value": true,
+      "direct_transition": "Record_GATA3_1"
+    },
+    "Record_GATA3_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "GATA3 mutation positive"
+      },
+      "direct_transition": "Gate_2"
+    },
+    "Check_ZNF703_1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ZNF703",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_2"
+        },
+        {
+          "transition": "Set_ZNF703_1"
+        }
+      ]
+    },
+    "Set_ZNF703_1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ZNF703",
+      "value": true,
+      "direct_transition": "Record_ZNF703_1"
+    },
+    "Record_ZNF703_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ZNF703 mutation positive"
+      },
+      "direct_transition": "Gate_2"
+    },
+    "Gate_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_count",
+            "operator": ">=",
+            "value": 2
+          },
+          "transition": "Select_Driver_Gene_2"
+        },
+        {
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        }
+      ]
+    },
+    "Select_Driver_Gene_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_TP53_2",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Check_PIK3CA_2",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ARID1A_2",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_CCND1_2",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_PTEN_2",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_YWHAZ_2",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_MYC_2",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_GATA3_2",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ZNF703_2",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Check_TP53_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_3"
+        },
+        {
+          "transition": "Set_TP53_2"
+        }
+      ]
+    },
+    "Set_TP53_2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_TP53",
+      "value": true,
+      "direct_transition": "Record_TP53_2"
+    },
+    "Record_TP53_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "TP53 mutation positive"
+      },
+      "direct_transition": "Gate_3"
+    },
+    "Check_PIK3CA_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_3"
+        },
+        {
+          "transition": "Set_PIK3CA_2"
+        }
+      ]
+    },
+    "Set_PIK3CA_2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PIK3CA",
+      "value": true,
+      "direct_transition": "Record_PIK3CA_2"
+    },
+    "Record_PIK3CA_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PIK3CA mutation positive"
+      },
+      "direct_transition": "Gate_3"
+    },
+    "Check_ARID1A_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ARID1A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_3"
+        },
+        {
+          "transition": "Set_ARID1A_2"
+        }
+      ]
+    },
+    "Set_ARID1A_2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ARID1A",
+      "value": true,
+      "direct_transition": "Record_ARID1A_2"
+    },
+    "Record_ARID1A_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ARID1A mutation positive"
+      },
+      "direct_transition": "Gate_3"
+    },
+    "Check_CCND1_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CCND1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_3"
+        },
+        {
+          "transition": "Set_CCND1_2"
+        }
+      ]
+    },
+    "Set_CCND1_2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CCND1",
+      "value": true,
+      "direct_transition": "Record_CCND1_2"
+    },
+    "Record_CCND1_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CCND1 mutation positive"
+      },
+      "direct_transition": "Gate_3"
+    },
+    "Check_PTEN_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_3"
+        },
+        {
+          "transition": "Set_PTEN_2"
+        }
+      ]
+    },
+    "Set_PTEN_2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PTEN",
+      "value": true,
+      "direct_transition": "Record_PTEN_2"
+    },
+    "Record_PTEN_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PTEN mutation positive"
+      },
+      "direct_transition": "Gate_3"
+    },
+    "Check_YWHAZ_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_YWHAZ",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_3"
+        },
+        {
+          "transition": "Set_YWHAZ_2"
+        }
+      ]
+    },
+    "Set_YWHAZ_2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_YWHAZ",
+      "value": true,
+      "direct_transition": "Record_YWHAZ_2"
+    },
+    "Record_YWHAZ_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "YWHAZ mutation positive"
+      },
+      "direct_transition": "Gate_3"
+    },
+    "Check_MYC_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MYC",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_3"
+        },
+        {
+          "transition": "Set_MYC_2"
+        }
+      ]
+    },
+    "Set_MYC_2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MYC",
+      "value": true,
+      "direct_transition": "Record_MYC_2"
+    },
+    "Record_MYC_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MYC mutation positive"
+      },
+      "direct_transition": "Gate_3"
+    },
+    "Check_GATA3_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GATA3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_3"
+        },
+        {
+          "transition": "Set_GATA3_2"
+        }
+      ]
+    },
+    "Set_GATA3_2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_GATA3",
+      "value": true,
+      "direct_transition": "Record_GATA3_2"
+    },
+    "Record_GATA3_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "GATA3 mutation positive"
+      },
+      "direct_transition": "Gate_3"
+    },
+    "Check_ZNF703_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ZNF703",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Gate_3"
+        },
+        {
+          "transition": "Set_ZNF703_2"
+        }
+      ]
+    },
+    "Set_ZNF703_2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ZNF703",
+      "value": true,
+      "direct_transition": "Record_ZNF703_2"
+    },
+    "Record_ZNF703_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ZNF703 mutation positive"
+      },
+      "direct_transition": "Gate_3"
+    },
+    "Gate_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_count",
+            "operator": ">=",
+            "value": 3
+          },
+          "transition": "Select_Driver_Gene_3"
+        },
+        {
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        }
+      ]
+    },
+    "Select_Driver_Gene_3": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_TP53_3",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Check_PIK3CA_3",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ARID1A_3",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_CCND1_3",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_PTEN_3",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_YWHAZ_3",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_MYC_3",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_GATA3_3",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ZNF703_3",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Check_TP53_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        },
+        {
+          "transition": "Set_TP53_3"
+        }
+      ]
+    },
+    "Set_TP53_3": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_TP53",
+      "value": true,
+      "direct_transition": "Record_TP53_3"
+    },
+    "Record_TP53_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "TP53 mutation positive"
+      },
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+    },
+    "Check_PIK3CA_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        },
+        {
+          "transition": "Set_PIK3CA_3"
+        }
+      ]
+    },
+    "Set_PIK3CA_3": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PIK3CA",
+      "value": true,
+      "direct_transition": "Record_PIK3CA_3"
+    },
+    "Record_PIK3CA_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PIK3CA mutation positive"
+      },
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+    },
+    "Check_ARID1A_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ARID1A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        },
+        {
+          "transition": "Set_ARID1A_3"
+        }
+      ]
+    },
+    "Set_ARID1A_3": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ARID1A",
+      "value": true,
+      "direct_transition": "Record_ARID1A_3"
+    },
+    "Record_ARID1A_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ARID1A mutation positive"
+      },
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+    },
+    "Check_CCND1_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CCND1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        },
+        {
+          "transition": "Set_CCND1_3"
+        }
+      ]
+    },
+    "Set_CCND1_3": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CCND1",
+      "value": true,
+      "direct_transition": "Record_CCND1_3"
+    },
+    "Record_CCND1_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CCND1 mutation positive"
+      },
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+    },
+    "Check_PTEN_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        },
+        {
+          "transition": "Set_PTEN_3"
+        }
+      ]
+    },
+    "Set_PTEN_3": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PTEN",
+      "value": true,
+      "direct_transition": "Record_PTEN_3"
+    },
+    "Record_PTEN_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PTEN mutation positive"
+      },
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+    },
+    "Check_YWHAZ_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_YWHAZ",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        },
+        {
+          "transition": "Set_YWHAZ_3"
+        }
+      ]
+    },
+    "Set_YWHAZ_3": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_YWHAZ",
+      "value": true,
+      "direct_transition": "Record_YWHAZ_3"
+    },
+    "Record_YWHAZ_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "YWHAZ mutation positive"
+      },
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+    },
+    "Check_MYC_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MYC",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        },
+        {
+          "transition": "Set_MYC_3"
+        }
+      ]
+    },
+    "Set_MYC_3": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MYC",
+      "value": true,
+      "direct_transition": "Record_MYC_3"
+    },
+    "Record_MYC_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MYC mutation positive"
+      },
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+    },
+    "Check_GATA3_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GATA3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        },
+        {
+          "transition": "Set_GATA3_3"
+        }
+      ]
+    },
+    "Set_GATA3_3": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_GATA3",
+      "value": true,
+      "direct_transition": "Record_GATA3_3"
+    },
+    "Record_GATA3_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "GATA3 mutation positive"
+      },
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+    },
+    "Check_ZNF703_3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ZNF703",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
+        },
+        {
+          "transition": "Set_ZNF703_3"
+        }
+      ]
+    },
+    "Set_ZNF703_3": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ZNF703",
+      "value": true,
+      "direct_transition": "Record_ZNF703_3"
+    },
+    "Record_ZNF703_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ZNF703 mutation positive"
+      },
+      "direct_transition": "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_"
     },
     "Human_Epidermal_Growth_Factor_Receptor_2__HER2__Detection___Fluorescence_in_situ_Hybridization__FISH_": {
       "type": "Procedure",

@@ -395,6 +395,11 @@
     "Diagnose_TNM_Markers": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/tnm_diagnosis",
+      "direct_transition": "Assign_Tumor_Drivers"
+    },
+    "Assign_Tumor_Drivers": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/tumor_driver_assignment",
       "direct_transition": "Diagnose Hormone Receptors"
     },
     "Diagnose Hormone Receptors": {

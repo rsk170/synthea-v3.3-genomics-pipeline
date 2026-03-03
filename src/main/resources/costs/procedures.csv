@@ -184,6 +184,7 @@ CODE,MIN,MODE,MAX,COMMENTS
 710818004,24.16,39.5,39.5,Inhaled steroid therapy - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5895474/
 71651007,80,120,212,Mammography (procedure) - https://health.costhelper.com/mammogram.html
 718347000,70,75,80,"Mental health care plan (record artifact) - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
+733505001,200,300,400,"Tumor genomic profile (procedure)"
 734163000,70,75,80,"Care Plan - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
 735984001,180,195,210,"Heart failure self management plan -  http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."
 736252007,180,195,210,"Cancer care plan - http://www.whatismedicalinsurancebilling.org/p/cpt-99201-99202-99203-99204-99205-which.html#:~:text=CPT%20Code%2099202%20OFFICE%20OUTPATIENT%20NEW%2020%20MINUTES,problem%20focused%20examination%3B%20and%20straightforward%20medical%20decision%20making."

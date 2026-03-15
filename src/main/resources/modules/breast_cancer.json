@@ -395,12 +395,12 @@
     "Diagnose_TNM_Markers": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/tnm_diagnosis",
-      "direct_transition": "Assign_Tumor_Drivers"
+      "direct_transition": "Diagnose Hormone Receptors"
     },
     "Assign_Tumor_Drivers": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/tumor_driver_assignment",
-      "direct_transition": "Diagnose Hormone Receptors"
+      "direct_transition": "End the Initial Encounter"
     },
     "Diagnose Hormone Receptors": {
       "type": "CallSubmodule",
@@ -444,7 +444,7 @@
           "display": "Stage group.clinical Cancer"
         }
       ],
-      "direct_transition": "End the Initial Encounter",
+      "direct_transition": "Assign_Tumor_Drivers",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 258228008,
@@ -545,7 +545,7 @@
         "code": 258224005,
         "display": "Stage 3 (qualifier value)"
       },
-      "direct_transition": "End the Initial Encounter"
+      "direct_transition": "Assign_Tumor_Drivers"
     },
     "Stage I": {
       "type": "Observation",
@@ -563,7 +563,7 @@
         "code": 258215001,
         "display": "Stage 1 (qualifier value)"
       },
-      "direct_transition": "End the Initial Encounter"
+      "direct_transition": "Assign_Tumor_Drivers"
     },
     "IIIB": {
       "type": "Observation",
@@ -849,7 +849,7 @@
         "code": 258219007,
         "display": "Stage 2 (qualifier value)"
       },
-      "direct_transition": "End the Initial Encounter"
+      "direct_transition": "Assign_Tumor_Drivers"
     },
     "Stage II Treatment": {
       "type": "Simple",

@@ -25,15 +25,27 @@
       "distributed_transition": [
         {
           "transition": "Assign_1_Drivers",
-          "distribution": 0.5
+          "distribution": 0.35
         },
         {
           "transition": "Assign_2_Drivers",
-          "distribution": 0.3
+          "distribution": 0.25
         },
         {
           "transition": "Assign_3_Drivers",
-          "distribution": 0.2
+          "distribution": 0.15
+        },
+        {
+          "transition": "Assign_4_Drivers",
+          "distribution": 0.10
+        },
+        {
+          "transition": "Assign_5_Drivers",
+          "distribution": 0.08
+        },
+        {
+          "transition": "Assign_6_Drivers",
+          "distribution": 0.07
         }
       ]
     },
@@ -53,6 +65,24 @@
       "type": "SetAttribute",
       "attribute": "tumor_driver_count",
       "value": 3,
+      "direct_transition": "Gate_1"
+    },
+        "Assign_4_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_count",
+      "value": 4,
+      "direct_transition": "Gate_1"
+    },
+    "Assign_5_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_count",
+      "value": 5,
+      "direct_transition": "Gate_1"
+    },
+    "Assign_6_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_count",
+      "value": 6,
       "direct_transition": "Gate_1"
     },
     "Gate_1": {
@@ -550,7 +580,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Gate_3"
+          "transition": "Select_Driver_Gene_2"
         },
         {
           "transition": "Set_TP53_2"
@@ -591,7 +621,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Gate_3"
+          "transition": "Select_Driver_Gene_2"
         },
         {
           "transition": "Set_PIK3CA_2"
@@ -632,7 +662,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Gate_3"
+          "transition": "Select_Driver_Gene_2"
         },
         {
           "transition": "Set_ARID1A_2"
@@ -673,7 +703,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Gate_3"
+          "transition": "Select_Driver_Gene_2"
         },
         {
           "transition": "Set_CCND1_2"
@@ -714,7 +744,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Gate_3"
+          "transition": "Select_Driver_Gene_2"
         },
         {
           "transition": "Set_PTEN_2"
@@ -755,7 +785,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Gate_3"
+          "transition": "Select_Driver_Gene_2"
         },
         {
           "transition": "Set_YWHAZ_2"
@@ -796,7 +826,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Gate_3"
+          "transition": "Select_Driver_Gene_2"
         },
         {
           "transition": "Set_MYC_2"
@@ -837,7 +867,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Gate_3"
+          "transition": "Select_Driver_Gene_2"
         },
         {
           "transition": "Set_GATA3_2"
@@ -878,7 +908,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Gate_3"
+          "transition": "Select_Driver_Gene_2"
         },
         {
           "transition": "Set_ZNF703_2"
@@ -977,7 +1007,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Terminal"
+          "transition": "Select_Driver_Gene_3"
         },
         {
           "transition": "Set_TP53_3"
@@ -1006,7 +1036,7 @@
         "code": "10828004",
         "display": "TP53 mutation positive"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Gate_4"
     },
     "Check_PIK3CA_3": {
       "type": "Simple",
@@ -1018,7 +1048,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Terminal"
+          "transition": "Select_Driver_Gene_3"
         },
         {
           "transition": "Set_PIK3CA_3"
@@ -1047,7 +1077,7 @@
         "code": "10828004",
         "display": "PIK3CA mutation positive"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Gate_4"
     },
     "Check_ARID1A_3": {
       "type": "Simple",
@@ -1059,7 +1089,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Terminal"
+          "transition": "Select_Driver_Gene_3"
         },
         {
           "transition": "Set_ARID1A_3"
@@ -1088,7 +1118,7 @@
         "code": "10828004",
         "display": "ARID1A mutation positive"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Gate_4"
     },
     "Check_CCND1_3": {
       "type": "Simple",
@@ -1100,7 +1130,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Terminal"
+          "transition": "Select_Driver_Gene_3"
         },
         {
           "transition": "Set_CCND1_3"
@@ -1129,7 +1159,7 @@
         "code": "10828004",
         "display": "CCND1 mutation positive"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Gate_4"
     },
     "Check_PTEN_3": {
       "type": "Simple",
@@ -1141,7 +1171,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Terminal"
+          "transition": "Select_Driver_Gene_3"
         },
         {
           "transition": "Set_PTEN_3"
@@ -1170,7 +1200,7 @@
         "code": "10828004",
         "display": "PTEN mutation positive"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Gate_4"
     },
     "Check_YWHAZ_3": {
       "type": "Simple",
@@ -1182,7 +1212,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Terminal"
+          "transition": "Select_Driver_Gene_3"
         },
         {
           "transition": "Set_YWHAZ_3"
@@ -1211,7 +1241,7 @@
         "code": "10828004",
         "display": "YWHAZ mutation positive"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Gate_4"
     },
     "Check_MYC_3": {
       "type": "Simple",
@@ -1223,7 +1253,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Terminal"
+          "transition": "Select_Driver_Gene_3"
         },
         {
           "transition": "Set_MYC_3"
@@ -1252,7 +1282,7 @@
         "code": "10828004",
         "display": "MYC mutation positive"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Gate_4"
     },
     "Check_GATA3_3": {
       "type": "Simple",
@@ -1264,7 +1294,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Terminal"
+          "transition": "Select_Driver_Gene_3"
         },
         {
           "transition": "Set_GATA3_3"
@@ -1293,7 +1323,7 @@
         "code": "10828004",
         "display": "GATA3 mutation positive"
       },
-      "direct_transition": "Terminal"
+      "direct_transition": "Gate_4"
     },
     "Check_ZNF703_3": {
       "type": "Simple",
@@ -1305,7 +1335,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Terminal"
+          "transition": "Select_Driver_Gene_3"
         },
         {
           "transition": "Set_ZNF703_3"
@@ -1319,6 +1349,1287 @@
       "direct_transition": "Record_ZNF703_3"
     },
     "Record_ZNF703_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ZNF703 mutation positive"
+      },
+      "direct_transition": "Gate_4"
+    },
+    "Gate_4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_count",
+            "operator": ">=",
+            "value": 4
+          },
+          "transition": "Select_Driver_Gene_4"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Gate_5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_count",
+            "operator": ">=",
+            "value": 5
+          },
+          "transition": "Select_Driver_Gene_5"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Gate_6": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_count",
+            "operator": ">=",
+            "value": 6
+          },
+          "transition": "Select_Driver_Gene_6"
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Select_Driver_Gene_4": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_TP53_4",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Check_PIK3CA_4",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ARID1A_4",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_CCND1_4",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_PTEN_4",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_YWHAZ_4",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_MYC_4",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_GATA3_4",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ZNF703_4",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Select_Driver_Gene_5": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_TP53_5",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Check_PIK3CA_5",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ARID1A_5",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_CCND1_5",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_PTEN_5",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_YWHAZ_5",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_MYC_5",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_GATA3_5",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ZNF703_5",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Select_Driver_Gene_6": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_TP53_6",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Check_PIK3CA_6",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ARID1A_6",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_CCND1_6",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_PTEN_6",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_YWHAZ_6",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_MYC_6",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_GATA3_6",
+          "distribution": 0.1
+        },
+        {
+          "transition": "Check_ZNF703_6",
+          "distribution": 0.1
+        }
+      ]
+    },
+    "Check_TP53_4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_4"
+        },
+        {
+          "transition": "Set_TP53_4"
+        }
+      ]
+    },
+    "Set_TP53_4": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_TP53",
+      "value": true,
+      "direct_transition": "Record_TP53_4"
+    },
+    "Record_TP53_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "TP53 mutation positive"
+      },
+      "direct_transition": "Gate_5"
+    },
+    "Check_TP53_5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_5"
+        },
+        {
+          "transition": "Set_TP53_5"
+        }
+      ]
+    },
+    "Set_TP53_5": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_TP53",
+      "value": true,
+      "direct_transition": "Record_TP53_5"
+    },
+    "Record_TP53_5": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "TP53 mutation positive"
+      },
+      "direct_transition": "Gate_6"
+    },
+    "Check_TP53_6": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_6"
+        },
+        {
+          "transition": "Set_TP53_6"
+        }
+      ]
+    },
+    "Set_TP53_6": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_TP53",
+      "value": true,
+      "direct_transition": "Record_TP53_6"
+    },
+    "Record_TP53_6": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "TP53 mutation positive"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Check_PIK3CA_4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_4"
+        },
+        {
+          "transition": "Set_PIK3CA_4"
+        }
+      ]
+    },
+    "Set_PIK3CA_4": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PIK3CA",
+      "value": true,
+      "direct_transition": "Record_PIK3CA_4"
+    },
+    "Record_PIK3CA_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PIK3CA mutation positive"
+      },
+      "direct_transition": "Gate_5"
+    },
+    "Check_PIK3CA_5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_5"
+        },
+        {
+          "transition": "Set_PIK3CA_5"
+        }
+      ]
+    },
+    "Set_PIK3CA_5": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PIK3CA",
+      "value": true,
+      "direct_transition": "Record_PIK3CA_5"
+    },
+    "Record_PIK3CA_5": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PIK3CA mutation positive"
+      },
+      "direct_transition": "Gate_6"
+    },
+    "Check_PIK3CA_6": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_6"
+        },
+        {
+          "transition": "Set_PIK3CA_6"
+        }
+      ]
+    },
+    "Set_PIK3CA_6": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PIK3CA",
+      "value": true,
+      "direct_transition": "Record_PIK3CA_6"
+    },
+    "Record_PIK3CA_6": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PIK3CA mutation positive"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Check_ARID1A_4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ARID1A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_4"
+        },
+        {
+          "transition": "Set_ARID1A_4"
+        }
+      ]
+    },
+    "Set_ARID1A_4": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ARID1A",
+      "value": true,
+      "direct_transition": "Record_ARID1A_4"
+    },
+    "Record_ARID1A_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ARID1A mutation positive"
+      },
+      "direct_transition": "Gate_5"
+    },
+    "Check_ARID1A_5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ARID1A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_5"
+        },
+        {
+          "transition": "Set_ARID1A_5"
+        }
+      ]
+    },
+    "Set_ARID1A_5": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ARID1A",
+      "value": true,
+      "direct_transition": "Record_ARID1A_5"
+    },
+    "Record_ARID1A_5": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ARID1A mutation positive"
+      },
+      "direct_transition": "Gate_6"
+    },
+    "Check_ARID1A_6": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ARID1A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_6"
+        },
+        {
+          "transition": "Set_ARID1A_6"
+        }
+      ]
+    },
+    "Set_ARID1A_6": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ARID1A",
+      "value": true,
+      "direct_transition": "Record_ARID1A_6"
+    },
+    "Record_ARID1A_6": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ARID1A mutation positive"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Check_CCND1_4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CCND1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_4"
+        },
+        {
+          "transition": "Set_CCND1_4"
+        }
+      ]
+    },
+    "Set_CCND1_4": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CCND1",
+      "value": true,
+      "direct_transition": "Record_CCND1_4"
+    },
+    "Record_CCND1_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CCND1 mutation positive"
+      },
+      "direct_transition": "Gate_5"
+    },
+    "Check_CCND1_5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CCND1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_5"
+        },
+        {
+          "transition": "Set_CCND1_5"
+        }
+      ]
+    },
+    "Set_CCND1_5": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CCND1",
+      "value": true,
+      "direct_transition": "Record_CCND1_5"
+    },
+    "Record_CCND1_5": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CCND1 mutation positive"
+      },
+      "direct_transition": "Gate_6"
+    },
+    "Check_CCND1_6": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CCND1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_6"
+        },
+        {
+          "transition": "Set_CCND1_6"
+        }
+      ]
+    },
+    "Set_CCND1_6": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CCND1",
+      "value": true,
+      "direct_transition": "Record_CCND1_6"
+    },
+    "Record_CCND1_6": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CCND1 mutation positive"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Check_PTEN_4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_4"
+        },
+        {
+          "transition": "Set_PTEN_4"
+        }
+      ]
+    },
+    "Set_PTEN_4": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PTEN",
+      "value": true,
+      "direct_transition": "Record_PTEN_4"
+    },
+    "Record_PTEN_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PTEN mutation positive"
+      },
+      "direct_transition": "Gate_5"
+    },
+    "Check_PTEN_5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_5"
+        },
+        {
+          "transition": "Set_PTEN_5"
+        }
+      ]
+    },
+    "Set_PTEN_5": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PTEN",
+      "value": true,
+      "direct_transition": "Record_PTEN_5"
+    },
+    "Record_PTEN_5": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PTEN mutation positive"
+      },
+      "direct_transition": "Gate_6"
+    },
+    "Check_PTEN_6": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_6"
+        },
+        {
+          "transition": "Set_PTEN_6"
+        }
+      ]
+    },
+    "Set_PTEN_6": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PTEN",
+      "value": true,
+      "direct_transition": "Record_PTEN_6"
+    },
+    "Record_PTEN_6": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PTEN mutation positive"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Check_YWHAZ_4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_YWHAZ",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_4"
+        },
+        {
+          "transition": "Set_YWHAZ_4"
+        }
+      ]
+    },
+    "Set_YWHAZ_4": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_YWHAZ",
+      "value": true,
+      "direct_transition": "Record_YWHAZ_4"
+    },
+    "Record_YWHAZ_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "YWHAZ mutation positive"
+      },
+      "direct_transition": "Gate_5"
+    },
+    "Check_YWHAZ_5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_YWHAZ",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_5"
+        },
+        {
+          "transition": "Set_YWHAZ_5"
+        }
+      ]
+    },
+    "Set_YWHAZ_5": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_YWHAZ",
+      "value": true,
+      "direct_transition": "Record_YWHAZ_5"
+    },
+    "Record_YWHAZ_5": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "YWHAZ mutation positive"
+      },
+      "direct_transition": "Gate_6"
+    },
+    "Check_YWHAZ_6": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_YWHAZ",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_6"
+        },
+        {
+          "transition": "Set_YWHAZ_6"
+        }
+      ]
+    },
+    "Set_YWHAZ_6": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_YWHAZ",
+      "value": true,
+      "direct_transition": "Record_YWHAZ_6"
+    },
+    "Record_YWHAZ_6": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "YWHAZ mutation positive"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Check_MYC_4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MYC",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_4"
+        },
+        {
+          "transition": "Set_MYC_4"
+        }
+      ]
+    },
+    "Set_MYC_4": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MYC",
+      "value": true,
+      "direct_transition": "Record_MYC_4"
+    },
+    "Record_MYC_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MYC mutation positive"
+      },
+      "direct_transition": "Gate_5"
+    },
+    "Check_MYC_5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MYC",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_5"
+        },
+        {
+          "transition": "Set_MYC_5"
+        }
+      ]
+    },
+    "Set_MYC_5": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MYC",
+      "value": true,
+      "direct_transition": "Record_MYC_5"
+    },
+    "Record_MYC_5": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MYC mutation positive"
+      },
+      "direct_transition": "Gate_6"
+    },
+    "Check_MYC_6": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MYC",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_6"
+        },
+        {
+          "transition": "Set_MYC_6"
+        }
+      ]
+    },
+    "Set_MYC_6": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MYC",
+      "value": true,
+      "direct_transition": "Record_MYC_6"
+    },
+    "Record_MYC_6": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MYC mutation positive"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Check_GATA3_4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GATA3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_4"
+        },
+        {
+          "transition": "Set_GATA3_4"
+        }
+      ]
+    },
+    "Set_GATA3_4": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_GATA3",
+      "value": true,
+      "direct_transition": "Record_GATA3_4"
+    },
+    "Record_GATA3_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "GATA3 mutation positive"
+      },
+      "direct_transition": "Gate_5"
+    },
+    "Check_GATA3_5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GATA3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_5"
+        },
+        {
+          "transition": "Set_GATA3_5"
+        }
+      ]
+    },
+    "Set_GATA3_5": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_GATA3",
+      "value": true,
+      "direct_transition": "Record_GATA3_5"
+    },
+    "Record_GATA3_5": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "GATA3 mutation positive"
+      },
+      "direct_transition": "Gate_6"
+    },
+    "Check_GATA3_6": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GATA3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_6"
+        },
+        {
+          "transition": "Set_GATA3_6"
+        }
+      ]
+    },
+    "Set_GATA3_6": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_GATA3",
+      "value": true,
+      "direct_transition": "Record_GATA3_6"
+    },
+    "Record_GATA3_6": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "GATA3 mutation positive"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Check_ZNF703_4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ZNF703",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_4"
+        },
+        {
+          "transition": "Set_ZNF703_4"
+        }
+      ]
+    },
+    "Set_ZNF703_4": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ZNF703",
+      "value": true,
+      "direct_transition": "Record_ZNF703_4"
+    },
+    "Record_ZNF703_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ZNF703 mutation positive"
+      },
+      "direct_transition": "Gate_5"
+    },
+    "Check_ZNF703_5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ZNF703",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_5"
+        },
+        {
+          "transition": "Set_ZNF703_5"
+        }
+      ]
+    },
+    "Set_ZNF703_5": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ZNF703",
+      "value": true,
+      "direct_transition": "Record_ZNF703_5"
+    },
+    "Record_ZNF703_5": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ZNF703 mutation positive"
+      },
+      "direct_transition": "Gate_6"
+    },
+    "Check_ZNF703_6": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ZNF703",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene_6"
+        },
+        {
+          "transition": "Set_ZNF703_6"
+        }
+      ]
+    },
+    "Set_ZNF703_6": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ZNF703",
+      "value": true,
+      "direct_transition": "Record_ZNF703_6"
+    },
+    "Record_ZNF703_6": {
       "type": "Observation",
       "category": "laboratory",
       "unit": "",

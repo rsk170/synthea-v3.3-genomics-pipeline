@@ -26,27 +26,67 @@
       "distributed_transition": [
         {
           "transition": "Assign_1_Drivers",
-          "distribution": 0.35
+          "distribution": 0.0512820512820513
         },
         {
           "transition": "Assign_2_Drivers",
-          "distribution": 0.25
+          "distribution": 0.0940170940170940
         },
         {
           "transition": "Assign_3_Drivers",
-          "distribution": 0.15
+          "distribution": 0.1025641025641030
         },
         {
           "transition": "Assign_4_Drivers",
-          "distribution": 0.10
+          "distribution": 0.0940170940170940
         },
         {
           "transition": "Assign_5_Drivers",
-          "distribution": 0.08
+          "distribution": 0.1111111111111110
         },
         {
           "transition": "Assign_6_Drivers",
-          "distribution": 0.07
+          "distribution": 0.0769230769230769
+        },
+        {
+          "transition": "Assign_7_Drivers",
+          "distribution": 0.0940170940170940
+        },
+        {
+          "transition": "Assign_8_Drivers",
+          "distribution": 0.0854700854700855
+        },
+        {
+          "transition": "Assign_9_Drivers",
+          "distribution": 0.0854700854700855
+        },
+        {
+          "transition": "Assign_10_Drivers",
+          "distribution": 0.0341880341880342
+        },
+        {
+          "transition": "Assign_11_Drivers",
+          "distribution": 0.0341880341880342
+        },
+        {
+          "transition": "Assign_12_Drivers",
+          "distribution": 0.0598290598290598
+        },
+        {
+          "transition": "Assign_13_Drivers",
+          "distribution": 0.0427350427350427
+        },
+        {
+          "transition": "Assign_14_Drivers",
+          "distribution": 0.0170940170940171
+        },
+        {
+          "transition": "Assign_15_Drivers",
+          "distribution": 0.00854700854700855
+        },
+        {
+          "transition": "Assign_16_Drivers",
+          "distribution": 0.00854700854700855
         }
       ]
     },
@@ -84,6 +124,66 @@
       "type": "SetAttribute",
       "attribute": "tumor_driver_target",
       "value": 6,
+      "direct_transition": "Initialize_Assigned_Driver_Count"
+    },
+    "Assign_7_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_target",
+      "value": 7,
+      "direct_transition": "Initialize_Assigned_Driver_Count"
+    },
+    "Assign_8_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_target",
+      "value": 8,
+      "direct_transition": "Initialize_Assigned_Driver_Count"
+    },
+    "Assign_9_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_target",
+      "value": 9,
+      "direct_transition": "Initialize_Assigned_Driver_Count"
+    },
+    "Assign_10_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_target",
+      "value": 10,
+      "direct_transition": "Initialize_Assigned_Driver_Count"
+    },
+    "Assign_11_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_target",
+      "value": 11,
+      "direct_transition": "Initialize_Assigned_Driver_Count"
+    },
+    "Assign_12_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_target",
+      "value": 12,
+      "direct_transition": "Initialize_Assigned_Driver_Count"
+    },
+    "Assign_13_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_target",
+      "value": 13,
+      "direct_transition": "Initialize_Assigned_Driver_Count"
+    },
+    "Assign_14_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_target",
+      "value": 14,
+      "direct_transition": "Initialize_Assigned_Driver_Count"
+    },
+    "Assign_15_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_target",
+      "value": 15,
+      "direct_transition": "Initialize_Assigned_Driver_Count"
+    },
+    "Assign_16_Drivers": {
+      "type": "SetAttribute",
+      "attribute": "tumor_driver_target",
+      "value": 16,
       "direct_transition": "Initialize_Assigned_Driver_Count"
     },
     "Initialize_Assigned_Driver_Count": {
@@ -216,6 +316,206 @@
           "transition": "Select_Driver_Gene"
         },
         {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_assigned",
+                "operator": "==",
+                "value": 6
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 7
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_assigned",
+                "operator": "==",
+                "value": 7
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 8
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_assigned",
+                "operator": "==",
+                "value": 8
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 9
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_assigned",
+                "operator": "==",
+                "value": 9
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 10
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_assigned",
+                "operator": "==",
+                "value": 10
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 11
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_assigned",
+                "operator": "==",
+                "value": 11
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 12
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_assigned",
+                "operator": "==",
+                "value": 12
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 13
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_assigned",
+                "operator": "==",
+                "value": 13
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 14
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_assigned",
+                "operator": "==",
+                "value": 14
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 15
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_assigned",
+                "operator": "==",
+                "value": 15
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 16
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
           "transition": "Terminal"
         }
       ]
@@ -225,39 +525,111 @@
       "distributed_transition": [
         {
           "transition": "Check_TP53",
-          "distribution": 0.20
+          "distribution": 0.1352112676056338
         },
         {
           "transition": "Check_PIK3CA",
-          "distribution": 0.10
+          "distribution": 0.1126760563380282
         },
         {
           "transition": "Check_ARID1A",
-          "distribution": 0.10
+          "distribution": 0.0507042253521127
         },
         {
           "transition": "Check_CCND1",
-          "distribution": 0.10
+          "distribution": 0.0507042253521127
         },
         {
           "transition": "Check_PTEN",
-          "distribution": 0.10
+          "distribution": 0.0507042253521127
         },
         {
           "transition": "Check_YWHAZ",
-          "distribution": 0.10
+          "distribution": 0.0450704225352113
         },
         {
           "transition": "Check_MYC",
-          "distribution": 0.10
+          "distribution": 0.0422535211267606
         },
         {
           "transition": "Check_GATA3",
-          "distribution": 0.10
+          "distribution": 0.0422535211267606
         },
         {
           "transition": "Check_ZNF703",
-          "distribution": 0.10
+          "distribution": 0.0422535211267606
+        },
+        {
+          "transition": "Check_MAP2K4",
+          "distribution": 0.0366197183098592
+        },
+        {
+          "transition": "Check_RB1",
+          "distribution": 0.0366197183098592
+        },
+        {
+          "transition": "Check_MAP3K1",
+          "distribution": 0.0366197183098592
+        },
+        {
+          "transition": "Check_PARK2",
+          "distribution": 0.0338028169014085
+        },
+        {
+          "transition": "Check_BRCA2",
+          "distribution": 0.0338028169014085
+        },
+        {
+          "transition": "Check_ERBB2",
+          "distribution": 0.0225352112676056
+        },
+        {
+          "transition": "Check_NCOR1",
+          "distribution": 0.0225352112676056
+        },
+        {
+          "transition": "Check_CDH1",
+          "distribution": 0.0225352112676056
+        },
+        {
+          "transition": "Check_PRKCI",
+          "distribution": 0.0197183098591549
+        },
+        {
+          "transition": "Check_KMT2C",
+          "distribution": 0.0197183098591549
+        },
+        {
+          "transition": "Check_LINC00290",
+          "distribution": 0.0197183098591549
+        },
+        {
+          "transition": "Check_MCL1",
+          "distribution": 0.0197183098591549
+        },
+        {
+          "transition": "Check_CBFB",
+          "distribution": 0.0197183098591549
+        },
+        {
+          "transition": "Check_FOXQ1",
+          "distribution": 0.0169014084507042
+        },
+        {
+          "transition": "Check_NF1",
+          "distribution": 0.0169014084507042
+        },
+        {
+          "transition": "Check_MECOM",
+          "distribution": 0.0169014084507042
+        },
+        {
+          "transition": "Check_NOTCH2",
+          "distribution": 0.0169014084507042
+        },
+        {
+          "transition": "Check_CDKN2A",
+          "distribution": 0.0169014084507042
         }
       ]
     },
@@ -627,6 +999,744 @@
         "system": "SNOMED-CT",
         "code": "10828004",
         "display": "ZNF703 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_MAP2K4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MAP2K4",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_MAP2K4"
+        }
+      ]
+    },
+    "Set_MAP2K4": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MAP2K4",
+      "value": true,
+      "direct_transition": "Record_MAP2K4"
+    },
+    "Record_MAP2K4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MAP2K4 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_RB1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_RB1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_RB1"
+        }
+      ]
+    },
+    "Set_RB1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_RB1",
+      "value": true,
+      "direct_transition": "Record_RB1"
+    },
+    "Record_RB1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "RB1 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_MAP3K1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MAP3K1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_MAP3K1"
+        }
+      ]
+    },
+    "Set_MAP3K1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MAP3K1",
+      "value": true,
+      "direct_transition": "Record_MAP3K1"
+    },
+    "Record_MAP3K1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MAP3K1 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_PARK2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PARK2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_PARK2"
+        }
+      ]
+    },
+    "Set_PARK2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PARK2",
+      "value": true,
+      "direct_transition": "Record_PARK2"
+    },
+    "Record_PARK2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PARK2 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_BRCA2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_BRCA2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_BRCA2"
+        }
+      ]
+    },
+    "Set_BRCA2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_BRCA2",
+      "value": true,
+      "direct_transition": "Record_BRCA2"
+    },
+    "Record_BRCA2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "BRCA2 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_ERBB2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ERBB2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_ERBB2"
+        }
+      ]
+    },
+    "Set_ERBB2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ERBB2",
+      "value": true,
+      "direct_transition": "Record_ERBB2"
+    },
+    "Record_ERBB2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ERBB2 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_NCOR1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_NCOR1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_NCOR1"
+        }
+      ]
+    },
+    "Set_NCOR1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_NCOR1",
+      "value": true,
+      "direct_transition": "Record_NCOR1"
+    },
+    "Record_NCOR1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "NCOR1 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_CDH1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CDH1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_CDH1"
+        }
+      ]
+    },
+    "Set_CDH1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CDH1",
+      "value": true,
+      "direct_transition": "Record_CDH1"
+    },
+    "Record_CDH1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CDH1 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_PRKCI": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PRKCI",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_PRKCI"
+        }
+      ]
+    },
+    "Set_PRKCI": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PRKCI",
+      "value": true,
+      "direct_transition": "Record_PRKCI"
+    },
+    "Record_PRKCI": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PRKCI mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_KMT2C": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_KMT2C",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_KMT2C"
+        }
+      ]
+    },
+    "Set_KMT2C": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_KMT2C",
+      "value": true,
+      "direct_transition": "Record_KMT2C"
+    },
+    "Record_KMT2C": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "KMT2C mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_LINC00290": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_LINC00290",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_LINC00290"
+        }
+      ]
+    },
+    "Set_LINC00290": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_LINC00290",
+      "value": true,
+      "direct_transition": "Record_LINC00290"
+    },
+    "Record_LINC00290": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "LINC00290 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_MCL1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MCL1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_MCL1"
+        }
+      ]
+    },
+    "Set_MCL1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MCL1",
+      "value": true,
+      "direct_transition": "Record_MCL1"
+    },
+    "Record_MCL1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MCL1 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_CBFB": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CBFB",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_CBFB"
+        }
+      ]
+    },
+    "Set_CBFB": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CBFB",
+      "value": true,
+      "direct_transition": "Record_CBFB"
+    },
+    "Record_CBFB": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CBFB mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_FOXQ1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_FOXQ1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_FOXQ1"
+        }
+      ]
+    },
+    "Set_FOXQ1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_FOXQ1",
+      "value": true,
+      "direct_transition": "Record_FOXQ1"
+    },
+    "Record_FOXQ1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "FOXQ1 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_NF1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_NF1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_NF1"
+        }
+      ]
+    },
+    "Set_NF1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_NF1",
+      "value": true,
+      "direct_transition": "Record_NF1"
+    },
+    "Record_NF1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "NF1 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_MECOM": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MECOM",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_MECOM"
+        }
+      ]
+    },
+    "Set_MECOM": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MECOM",
+      "value": true,
+      "direct_transition": "Record_MECOM"
+    },
+    "Record_MECOM": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MECOM mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_NOTCH2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_NOTCH2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_NOTCH2"
+        }
+      ]
+    },
+    "Set_NOTCH2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_NOTCH2",
+      "value": true,
+      "direct_transition": "Record_NOTCH2"
+    },
+    "Record_NOTCH2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "NOTCH2 mutation positive"
+      },
+      "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_CDKN2A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CDKN2A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "transition": "Set_CDKN2A"
+        }
+      ]
+    },
+    "Set_CDKN2A": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CDKN2A",
+      "value": true,
+      "direct_transition": "Record_CDKN2A"
+    },
+    "Record_CDKN2A": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CDKN2A mutation positive"
       },
       "direct_transition": "Increment_Assigned_Driver_Count"
     },

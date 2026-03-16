@@ -228,6 +228,32 @@
           "transition": "TNBC_Treatment_Gene_Draw_1"
         },
         {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_triple_negative",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "treatment_driver_assigned",
+                "operator": "<",
+                "value": 2
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              }
+            ]
+          },
+          "transition": "TNBC_Resistance_Gene_Draw"
+        },
+        {
           "transition": "Driver_Assignment_Gate"
         }
       ]
@@ -258,6 +284,47 @@
         {
           "transition": "Check_SLCO1B1",
           "distribution": 0.1666
+        }
+      ]
+    },
+    "TNBC_Resistance_Gene_Draw": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_TP53_RES",
+          "distribution": 0.1111111111
+        },
+        {
+          "transition": "Check_ASXL1_RES",
+          "distribution": 0.1111111111
+        },
+        {
+          "transition": "Check_GPS2_RES",
+          "distribution": 0.1111111111
+        },
+        {
+          "transition": "Check_CHD3_RES",
+          "distribution": 0.1111111111
+        },
+        {
+          "transition": "Check_CAMKK1_RES",
+          "distribution": 0.1111111111
+        },
+        {
+          "transition": "Check_AC064874_1_RES",
+          "distribution": 0.1111111111
+        },
+        {
+          "transition": "Check_AGAP1_RES",
+          "distribution": 0.1111111111
+        },
+        {
+          "transition": "Check_GUCA1A_RES",
+          "distribution": 0.1111111111
+        },
+        {
+          "transition": "Check_RP1_139D8_6_RES",
+          "distribution": 0.1111111111
         }
       ]
     },
@@ -2179,6 +2246,375 @@
         "display": "CDKN2A mutation positive"
       },
       "direct_transition": "Increment_Assigned_Driver_Count"
+    },
+    "Check_TP53_RES": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Resistance_Gene_Draw"
+        },
+        {
+          "transition": "Set_TP53_RES"
+        }
+      ]
+    },
+    "Set_TP53_RES": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_TP53",
+      "value": true,
+      "direct_transition": "Record_TP53_RES"
+    },
+    "Record_TP53_RES": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "TP53 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ASXL1_RES": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ASXL1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Resistance_Gene_Draw"
+        },
+        {
+          "transition": "Set_ASXL1_RES"
+        }
+      ]
+    },
+    "Set_ASXL1_RES": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ASXL1",
+      "value": true,
+      "direct_transition": "Record_ASXL1_RES"
+    },
+    "Record_ASXL1_RES": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ASXL1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_GPS2_RES": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GPS2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Resistance_Gene_Draw"
+        },
+        {
+          "transition": "Set_GPS2_RES"
+        }
+      ]
+    },
+    "Set_GPS2_RES": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_GPS2",
+      "value": true,
+      "direct_transition": "Record_GPS2_RES"
+    },
+    "Record_GPS2_RES": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "GPS2 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_CHD3_RES": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CHD3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Resistance_Gene_Draw"
+        },
+        {
+          "transition": "Set_CHD3_RES"
+        }
+      ]
+    },
+    "Set_CHD3_RES": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CHD3",
+      "value": true,
+      "direct_transition": "Record_CHD3_RES"
+    },
+    "Record_CHD3_RES": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CHD3 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_CAMKK1_RES": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CAMKK1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Resistance_Gene_Draw"
+        },
+        {
+          "transition": "Set_CAMKK1_RES"
+        }
+      ]
+    },
+    "Set_CAMKK1_RES": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CAMKK1",
+      "value": true,
+      "direct_transition": "Record_CAMKK1_RES"
+    },
+    "Record_CAMKK1_RES": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CAMKK1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_AC064874_1_RES": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_AC064874_1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Resistance_Gene_Draw"
+        },
+        {
+          "transition": "Set_AC064874_1_RES"
+        }
+      ]
+    },
+    "Set_AC064874_1_RES": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_AC064874_1",
+      "value": true,
+      "direct_transition": "Record_AC064874_1_RES"
+    },
+    "Record_AC064874_1_RES": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "AC064874.1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_AGAP1_RES": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_AGAP1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Resistance_Gene_Draw"
+        },
+        {
+          "transition": "Set_AGAP1_RES"
+        }
+      ]
+    },
+    "Set_AGAP1_RES": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_AGAP1",
+      "value": true,
+      "direct_transition": "Record_AGAP1_RES"
+    },
+    "Record_AGAP1_RES": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "AGAP1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_GUCA1A_RES": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GUCA1A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Resistance_Gene_Draw"
+        },
+        {
+          "transition": "Set_GUCA1A_RES"
+        }
+      ]
+    },
+    "Set_GUCA1A_RES": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_GUCA1A",
+      "value": true,
+      "direct_transition": "Record_GUCA1A_RES"
+    },
+    "Record_GUCA1A_RES": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "GUCA1A mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_RP1_139D8_6_RES": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_RP1_139D8_6",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Resistance_Gene_Draw"
+        },
+        {
+          "transition": "Set_RP1_139D8_6_RES"
+        }
+      ]
+    },
+    "Set_RP1_139D8_6_RES": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_RP1_139D8_6",
+      "value": true,
+      "direct_transition": "Record_RP1_139D8_6_RES"
+    },
+    "Record_RP1_139D8_6_RES": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "RP1-139D8.6 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
     },
     "Increment_Assigned_Driver_Count": {
       "type": "Counter",

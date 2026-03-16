@@ -219,6 +219,12 @@
               },
               {
                 "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 2
+              },
+              {
+                "condition_type": "Attribute",
                 "attribute": "breast_cancer_survival",
                 "operator": "==",
                 "value": "yes"
@@ -245,6 +251,12 @@
               },
               {
                 "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 2
+              },
+              {
+                "condition_type": "Attribute",
                 "attribute": "breast_cancer_survival",
                 "operator": "==",
                 "value": "no"
@@ -254,9 +266,423 @@
           "transition": "TNBC_Resistance_Gene_Draw"
         },
         {
-          "transition": "Driver_Assignment_Gate"
+          "transition": "Set_Main_Driver_Target"
         }
       ]
+    },
+    "Set_Main_Driver_Target": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "treatment_driver_assigned",
+            "operator": "==",
+            "value": 2
+          },
+          "transition": "MainTarget_TargetMinus2"
+        },
+        {
+          "transition": "MainTarget_SameAsTotal"
+        }
+      ]
+    },
+    "MainTarget_SameAsTotal": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 1
+          },
+          "transition": "Set_MainTarget_1"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 2
+          },
+          "transition": "Set_MainTarget_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 3
+          },
+          "transition": "Set_MainTarget_3"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 4
+          },
+          "transition": "Set_MainTarget_4"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 5
+          },
+          "transition": "Set_MainTarget_5"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 6
+          },
+          "transition": "Set_MainTarget_6"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 7
+          },
+          "transition": "Set_MainTarget_7"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 8
+          },
+          "transition": "Set_MainTarget_8"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 9
+          },
+          "transition": "Set_MainTarget_9"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 10
+          },
+          "transition": "Set_MainTarget_10"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 11
+          },
+          "transition": "Set_MainTarget_11"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 12
+          },
+          "transition": "Set_MainTarget_12"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 13
+          },
+          "transition": "Set_MainTarget_13"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 14
+          },
+          "transition": "Set_MainTarget_14"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 15
+          },
+          "transition": "Set_MainTarget_15"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 16
+          },
+          "transition": "Set_MainTarget_16"
+        },
+        {
+          "transition": "Set_MainTarget_0"
+        }
+      ]
+    },
+    "MainTarget_TargetMinus2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 2
+          },
+          "transition": "Set_MainTarget_0"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 3
+          },
+          "transition": "Set_MainTarget_1"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 4
+          },
+          "transition": "Set_MainTarget_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 5
+          },
+          "transition": "Set_MainTarget_3"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 6
+          },
+          "transition": "Set_MainTarget_4"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 7
+          },
+          "transition": "Set_MainTarget_5"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 8
+          },
+          "transition": "Set_MainTarget_6"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 9
+          },
+          "transition": "Set_MainTarget_7"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 10
+          },
+          "transition": "Set_MainTarget_8"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 11
+          },
+          "transition": "Set_MainTarget_9"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 12
+          },
+          "transition": "Set_MainTarget_10"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 13
+          },
+          "transition": "Set_MainTarget_11"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 14
+          },
+          "transition": "Set_MainTarget_12"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 15
+          },
+          "transition": "Set_MainTarget_13"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 16
+          },
+          "transition": "Set_MainTarget_14"
+        },
+        {
+          "transition": "Set_MainTarget_0"
+        }
+      ]
+    },
+    "Set_MainTarget_0": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 0,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_1": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 1,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_2": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 2,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_3": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 3,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_4": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 4,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_5": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 5,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_6": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 6,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_7": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 7,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_8": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 8,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_9": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 9,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_10": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 10,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_11": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 11,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_12": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 12,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_13": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 13,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_14": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 14,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_15": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 15,
+      "direct_transition": "Driver_Assignment_Gate"
+    },
+    "Set_MainTarget_16": {
+      "type": "SetAttribute",
+      "attribute": "main_driver_target",
+      "value": 16,
+      "direct_transition": "Driver_Assignment_Gate"
     },
     "TNBC_Treatment_Gene_Draw_1": {
       "type": "Simple",
@@ -714,7 +1140,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 1
               }
@@ -734,7 +1160,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 2
               }
@@ -754,7 +1180,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 3
               }
@@ -774,7 +1200,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 4
               }
@@ -794,7 +1220,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 5
               }
@@ -814,7 +1240,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 6
               }
@@ -834,7 +1260,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 7
               }
@@ -854,7 +1280,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 8
               }
@@ -874,7 +1300,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 9
               }
@@ -894,7 +1320,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 10
               }
@@ -914,7 +1340,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 11
               }
@@ -934,7 +1360,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 12
               }
@@ -954,7 +1380,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 13
               }
@@ -974,7 +1400,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 14
               }
@@ -994,7 +1420,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 15
               }
@@ -1014,7 +1440,7 @@
               },
               {
                 "condition_type": "Attribute",
-                "attribute": "tumor_driver_target",
+                "attribute": "main_driver_target",
                 "operator": ">=",
                 "value": 16
               }

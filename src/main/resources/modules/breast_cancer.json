@@ -397,11 +397,6 @@
       "submodule": "breast_cancer/tnm_diagnosis",
       "direct_transition": "Diagnose Hormone Receptors"
     },
-    "Assign_Tumor_Drivers": {
-      "type": "CallSubmodule",
-      "submodule": "breast_cancer/tumor_driver_assignment",
-      "direct_transition": "End the Initial Encounter"
-    },
     "Diagnose Hormone Receptors": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/hormone_diagnosis",
@@ -444,7 +439,7 @@
           "display": "Stage group.clinical Cancer"
         }
       ],
-      "direct_transition": "Assign_Tumor_Drivers",
+      "direct_transition": "End the Initial Encounter",
       "value_code": {
         "system": "SNOMED-CT",
         "code": 258228008,
@@ -545,7 +540,7 @@
         "code": 258224005,
         "display": "Stage 3 (qualifier value)"
       },
-      "direct_transition": "Assign_Tumor_Drivers"
+      "direct_transition": "End the Initial Encounter"
     },
     "Stage I": {
       "type": "Observation",
@@ -563,7 +558,7 @@
         "code": 258215001,
         "display": "Stage 1 (qualifier value)"
       },
-      "direct_transition": "Assign_Tumor_Drivers"
+      "direct_transition": "End the Initial Encounter"
     },
     "IIIB": {
       "type": "Observation",
@@ -849,7 +844,7 @@
         "code": 258219007,
         "display": "Stage 2 (qualifier value)"
       },
-      "direct_transition": "Assign_Tumor_Drivers"
+      "direct_transition": "End the Initial Encounter"
     },
     "Stage II Treatment": {
       "type": "Simple",
@@ -1303,14 +1298,45 @@
     "Treatment Unsuccessful": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_survival",
-      "direct_transition": "Impending Death from Cancer Complications",
+      "direct_transition": "Assign_Tumor_Drivers",
       "value": "no"
     },
     "Treatment Successful": {
       "type": "SetAttribute",
       "attribute": "breast_cancer_survival",
-      "direct_transition": "Sit-Down with Oncologist to Discuss Treatment Options",
+      "direct_transition": "Assign_Tumor_Drivers",
       "value": "yes"
+    },
+    "Assign_Tumor_Drivers": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/tumor_driver_assignment",
+      "direct_transition": "Treatment Outcome"
+    },
+    "Treatment Outcome": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_survival",
+            "operator": "==",
+            "value": "yes"
+          },
+          "transition": "Sit-Down with Oncologist to Discuss Treatment Options"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "breast_cancer_survival",
+            "operator": "==",
+            "value": "no"
+          },
+          "transition": "Impending Death from Cancer Complications"
+        },
+        {
+          "transition": "Sit-Down with Oncologist to Discuss Treatment Options"
+        }
+      ]
     },
     "Regular Mammogram Visit": {
       "type": "Encounter",

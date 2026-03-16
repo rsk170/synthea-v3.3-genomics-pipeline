@@ -190,7 +190,447 @@
       "type": "SetAttribute",
       "attribute": "tumor_driver_assigned",
       "value": 0,
-      "direct_transition": "Driver_Assignment_Gate"
+      "direct_transition": "Initialize_Treatment_Related_Driver_Count"
+    },
+    "Initialize_Treatment_Related_Driver_Count": {
+      "type": "SetAttribute",
+      "attribute": "treatment_driver_assigned",
+      "value": 0,
+      "direct_transition": "Treatment_Related_Gene_Gate"
+    },
+    "Treatment_Related_Gene_Gate": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_triple_negative",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "treatment_driver_assigned",
+                "operator": "<",
+                "value": 2
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              }
+            ]
+          },
+          "transition": "TNBC_Treatment_Gene_Draw_1"
+        },
+        {
+          "transition": "Driver_Assignment_Gate"
+        }
+      ]
+    },
+    "TNBC_Treatment_Gene_Draw_1": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_ERBB2_TREAT",
+          "distribution": 0.1667
+        },
+        {
+          "transition": "Check_CYP19A1",
+          "distribution": 0.1667
+        },
+        {
+          "transition": "Check_BIRC5",
+          "distribution": 0.1667
+        },
+        {
+          "transition": "Check_ABCB1",
+          "distribution": 0.1667
+        },
+        {
+          "transition": "Check_CYP1B1",
+          "distribution": 0.1666
+        },
+        {
+          "transition": "Check_SLCO1B1",
+          "distribution": 0.1666
+        }
+      ]
+    },
+    "Check_ERBB2_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ERBB2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Treatment_Gene_Draw_2"
+        },
+        {
+          "transition": "Set_ERBB2_TREAT"
+        }
+      ]
+    },
+    "Set_ERBB2_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ERBB2",
+      "value": true,
+      "direct_transition": "Record_ERBB2_TREAT"
+    },
+    "Record_ERBB2_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ERBB2 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_CYP19A1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CYP19A1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Treatment_Gene_Draw_2"
+        },
+        {
+          "transition": "Set_CYP19A1"
+        }
+      ]
+    },
+    "Set_CYP19A1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CYP19A1",
+      "value": true,
+      "direct_transition": "Record_CYP19A1"
+    },
+    "Record_CYP19A1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CYP19A1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_BIRC5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_BIRC5",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Treatment_Gene_Draw_2"
+        },
+        {
+          "transition": "Set_BIRC5"
+        }
+      ]
+    },
+    "Set_BIRC5": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_BIRC5",
+      "value": true,
+      "direct_transition": "Record_BIRC5"
+    },
+    "Record_BIRC5": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "BIRC5 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ABCB1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ABCB1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Treatment_Gene_Draw_2"
+        },
+        {
+          "transition": "Set_ABCB1"
+        }
+      ]
+    },
+    "Set_ABCB1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ABCB1",
+      "value": true,
+      "direct_transition": "Record_ABCB1"
+    },
+    "Record_ABCB1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ABCB1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_CYP1B1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CYP1B1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Treatment_Gene_Draw_2"
+        },
+        {
+          "transition": "Set_CYP1B1"
+        }
+      ]
+    },
+    "Set_CYP1B1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CYP1B1",
+      "value": true,
+      "direct_transition": "Record_CYP1B1"
+    },
+    "Record_CYP1B1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CYP1B1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_SLCO1B1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_SLCO1B1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "TNBC_Treatment_Gene_Draw_2"
+        },
+        {
+          "transition": "Set_SLCO1B1"
+        }
+      ]
+    },
+    "Set_SLCO1B1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_SLCO1B1",
+      "value": true,
+      "direct_transition": "Record_SLCO1B1"
+    },
+    "Record_SLCO1B1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "SLCO1B1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Increment_Treatment_Driver_Count": {
+      "type": "Counter",
+      "attribute": "treatment_driver_assigned",
+      "action": "increment",
+      "direct_transition": "Treatment_Related_Gene_Gate"
+    },
+    "TNBC_Treatment_Gene_Draw_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_ERBB2_TREAT",
+          "distribution": 0.125
+        },
+        {
+          "transition": "Check_CYP19A1",
+          "distribution": 0.125
+        },
+        {
+          "transition": "Check_BIRC5",
+          "distribution": 0.125
+        },
+        {
+          "transition": "Check_ABCB1",
+          "distribution": 0.125
+        },
+        {
+          "transition": "Check_CYP1B1",
+          "distribution": 0.125
+        },
+        {
+          "transition": "Check_SLCO1B1",
+          "distribution": 0.125
+        },
+        {
+          "transition": "Check_GSTP1",
+          "distribution": 0.125
+        },
+        {
+          "transition": "Check_ERCC1",
+          "distribution": 0.125
+        }
+      ]
+    },
+    "Check_GSTP1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GSTP1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Driver_Assignment_Gate"
+        },
+        {
+          "transition": "Set_GSTP1"
+        }
+      ]
+    },
+    "Set_GSTP1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_GSTP1",
+      "value": true,
+      "direct_transition": "Record_GSTP1"
+    },
+    "Record_GSTP1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "GSTP1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ERCC1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ERCC1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Driver_Assignment_Gate"
+        },
+        {
+          "transition": "Set_ERCC1"
+        }
+      ]
+    },
+    "Set_ERCC1": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ERCC1",
+      "value": true,
+      "direct_transition": "Record_ERCC1"
+    },
+    "Record_ERCC1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ERCC1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
     },
     "Driver_Assignment_Gate": {
       "type": "Simple",

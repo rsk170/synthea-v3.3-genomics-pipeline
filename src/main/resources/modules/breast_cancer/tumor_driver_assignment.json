@@ -207,6 +207,174 @@
             "conditions": [
               {
                 "condition_type": "Attribute",
+                "attribute": "breast_cancer_ER",
+                "operator": "==",
+                "value": "ER-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_PR",
+                "operator": "==",
+                "value": "PR-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "treatment_driver_assigned",
+                "operator": "<",
+                "value": 2
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 2
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              }
+            ]
+          },
+          "transition": "ERPR_Both_Positive_Draw_1"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "And",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_ER",
+                        "operator": "==",
+                        "value": "ER-positive"
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_PR",
+                        "operator": "!=",
+                        "value": "PR-positive"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "And",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_PR",
+                        "operator": "==",
+                        "value": "PR-positive"
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_ER",
+                        "operator": "!=",
+                        "value": "ER-positive"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "treatment_driver_assigned",
+                "operator": "<",
+                "value": 2
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 2
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              }
+            ]
+          },
+          "transition": "ERPR_Single_Positive_PGR"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "And",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_ER",
+                        "operator": "==",
+                        "value": "ER-positive"
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_PR",
+                        "operator": "!=",
+                        "value": "PR-positive"
+                      }
+                    ]
+                  },
+                  {
+                    "condition_type": "And",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_PR",
+                        "operator": "==",
+                        "value": "PR-positive"
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_ER",
+                        "operator": "!=",
+                        "value": "ER-positive"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "treatment_driver_assigned",
+                "operator": "<",
+                "value": 1
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_target",
+                "operator": ">=",
+                "value": 1
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              }
+            ]
+          },
+          "transition": "ERPR_Single_Positive_ASXL1"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
                 "attribute": "breast_cancer_triple_negative",
                 "operator": "==",
                 "value": true
@@ -281,6 +449,15 @@
             "value": 2
           },
           "transition": "MainTarget_TargetMinus2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "treatment_driver_assigned",
+            "operator": "==",
+            "value": 1
+          },
+          "transition": "MainTarget_TargetMinus1"
         },
         {
           "transition": "MainTarget_SameAsTotal"
@@ -576,6 +753,158 @@
             "value": 16
           },
           "transition": "Set_MainTarget_14"
+        },
+        {
+          "transition": "Set_MainTarget_0"
+        }
+      ]
+    },
+    "MainTarget_TargetMinus1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 1
+          },
+          "transition": "Set_MainTarget_0"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 2
+          },
+          "transition": "Set_MainTarget_1"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 3
+          },
+          "transition": "Set_MainTarget_2"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 4
+          },
+          "transition": "Set_MainTarget_3"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 5
+          },
+          "transition": "Set_MainTarget_4"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 6
+          },
+          "transition": "Set_MainTarget_5"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 7
+          },
+          "transition": "Set_MainTarget_6"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 8
+          },
+          "transition": "Set_MainTarget_7"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 9
+          },
+          "transition": "Set_MainTarget_8"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 10
+          },
+          "transition": "Set_MainTarget_9"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 11
+          },
+          "transition": "Set_MainTarget_10"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 12
+          },
+          "transition": "Set_MainTarget_11"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 13
+          },
+          "transition": "Set_MainTarget_12"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 14
+          },
+          "transition": "Set_MainTarget_13"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 15
+          },
+          "transition": "Set_MainTarget_14"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_driver_target",
+            "operator": "==",
+            "value": 16
+          },
+          "transition": "Set_MainTarget_15"
         },
         {
           "transition": "Set_MainTarget_0"
@@ -1122,6 +1451,896 @@
         "system": "SNOMED-CT",
         "code": "10828004",
         "display": "ERCC1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "ERPR_Single_Positive_PGR": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PGR",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Single_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_PGR_TREAT"
+        }
+      ]
+    },
+    "Set_PGR_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PGR",
+      "value": true,
+      "direct_transition": "Record_PGR_TREAT"
+    },
+    "Record_PGR_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PGR mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "ERPR_Single_Positive_Draw_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_ERBB2_ERPR_TREAT",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Check_CYP1B1_ERPR_TREAT",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Check_ESR1_TREAT",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Check_ESR2_TREAT",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Check_PIK3CA_ERPR_TREAT",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "ERPR_Single_Positive_ASXL1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ASXL1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Main_Driver_Target"
+        },
+        {
+          "transition": "Set_ASXL1_ERPR"
+        }
+      ]
+    },
+    "Set_ASXL1_ERPR": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ASXL1",
+      "value": true,
+      "direct_transition": "Record_ASXL1_ERPR"
+    },
+    "Record_ASXL1_ERPR": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ASXL1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "ERPR_Both_Positive_Draw_1": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_ERBB2_BOTH_TREAT",
+          "distribution": 0.1428571429
+        },
+        {
+          "transition": "Check_ESR1_BOTH_TREAT",
+          "distribution": 0.1428571429
+        },
+        {
+          "transition": "Check_CDKN2A_BOTH_TREAT",
+          "distribution": 0.1428571429
+        },
+        {
+          "transition": "Check_CCND1_BOTH_TREAT",
+          "distribution": 0.1428571429
+        },
+        {
+          "transition": "Check_PGR_BOTH_TREAT",
+          "distribution": 0.1428571429
+        },
+        {
+          "transition": "Check_ESR2_BOTH_TREAT",
+          "distribution": 0.1428571429
+        },
+        {
+          "transition": "Check_NRAS_TREAT",
+          "distribution": 0.1428571426
+        }
+      ]
+    },
+    "ERPR_Both_Positive_Draw_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_ERBB2_BOTH_TREAT",
+          "distribution": 0.0833333333
+        },
+        {
+          "transition": "Check_ESR1_BOTH_TREAT",
+          "distribution": 0.0833333333
+        },
+        {
+          "transition": "Check_CDKN2A_BOTH_TREAT",
+          "distribution": 0.0833333333
+        },
+        {
+          "transition": "Check_CCND1_BOTH_TREAT",
+          "distribution": 0.0833333333
+        },
+        {
+          "transition": "Check_PGR_BOTH_TREAT",
+          "distribution": 0.0833333333
+        },
+        {
+          "transition": "Check_ESR2_BOTH_TREAT",
+          "distribution": 0.0833333333
+        },
+        {
+          "transition": "Check_NRAS_TREAT",
+          "distribution": 0.0833333333
+        },
+        {
+          "transition": "Check_BRAF_TREAT",
+          "distribution": 0.0833333333
+        },
+        {
+          "transition": "Check_RB1_BOTH_TREAT",
+          "distribution": 0.0833333333
+        },
+        {
+          "transition": "Check_KRAS_TREAT",
+          "distribution": 0.0833333333
+        },
+        {
+          "transition": "Check_CCND3_TREAT",
+          "distribution": 0.0833333333
+        },
+        {
+          "transition": "Check_CCND2_TREAT",
+          "distribution": 0.0833333337
+        }
+      ]
+    },
+    "Check_ERBB2_ERPR_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ERBB2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Single_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_ERBB2_ERPR_TREAT"
+        }
+      ]
+    },
+    "Set_ERBB2_ERPR_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ERBB2",
+      "value": true,
+      "direct_transition": "Record_ERBB2_ERPR_TREAT"
+    },
+    "Record_ERBB2_ERPR_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ERBB2 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_CYP1B1_ERPR_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CYP1B1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Single_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_CYP1B1_ERPR_TREAT"
+        }
+      ]
+    },
+    "Set_CYP1B1_ERPR_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CYP1B1",
+      "value": true,
+      "direct_transition": "Record_CYP1B1_ERPR_TREAT"
+    },
+    "Record_CYP1B1_ERPR_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CYP1B1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ESR1_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ESR1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Single_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_ESR1_TREAT"
+        }
+      ]
+    },
+    "Set_ESR1_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ESR1",
+      "value": true,
+      "direct_transition": "Record_ESR1_TREAT"
+    },
+    "Record_ESR1_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ESR1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ESR2_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ESR2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Single_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_ESR2_TREAT"
+        }
+      ]
+    },
+    "Set_ESR2_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ESR2",
+      "value": true,
+      "direct_transition": "Record_ESR2_TREAT"
+    },
+    "Record_ESR2_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ESR2 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_PIK3CA_ERPR_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Single_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_PIK3CA_ERPR_TREAT"
+        }
+      ]
+    },
+    "Set_PIK3CA_ERPR_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PIK3CA",
+      "value": true,
+      "direct_transition": "Record_PIK3CA_ERPR_TREAT"
+    },
+    "Record_PIK3CA_ERPR_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PIK3CA mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ERBB2_BOTH_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ERBB2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_ERBB2_BOTH_TREAT"
+        }
+      ]
+    },
+    "Set_ERBB2_BOTH_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ERBB2",
+      "value": true,
+      "direct_transition": "Record_ERBB2_BOTH_TREAT"
+    },
+    "Record_ERBB2_BOTH_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ERBB2 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ESR1_BOTH_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ESR1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_ESR1_BOTH_TREAT"
+        }
+      ]
+    },
+    "Set_ESR1_BOTH_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ESR1",
+      "value": true,
+      "direct_transition": "Record_ESR1_BOTH_TREAT"
+    },
+    "Record_ESR1_BOTH_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ESR1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_CDKN2A_BOTH_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CDKN2A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_CDKN2A_BOTH_TREAT"
+        }
+      ]
+    },
+    "Set_CDKN2A_BOTH_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CDKN2A",
+      "value": true,
+      "direct_transition": "Record_CDKN2A_BOTH_TREAT"
+    },
+    "Record_CDKN2A_BOTH_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CDKN2A mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_CCND1_BOTH_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CCND1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_CCND1_BOTH_TREAT"
+        }
+      ]
+    },
+    "Set_CCND1_BOTH_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CCND1",
+      "value": true,
+      "direct_transition": "Record_CCND1_BOTH_TREAT"
+    },
+    "Record_CCND1_BOTH_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CCND1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_PGR_BOTH_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PGR",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_PGR_BOTH_TREAT"
+        }
+      ]
+    },
+    "Set_PGR_BOTH_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PGR",
+      "value": true,
+      "direct_transition": "Record_PGR_BOTH_TREAT"
+    },
+    "Record_PGR_BOTH_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PGR mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ESR2_BOTH_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ESR2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_ESR2_BOTH_TREAT"
+        }
+      ]
+    },
+    "Set_ESR2_BOTH_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ESR2",
+      "value": true,
+      "direct_transition": "Record_ESR2_BOTH_TREAT"
+    },
+    "Record_ESR2_BOTH_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ESR2 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_NRAS_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_NRAS",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_NRAS_TREAT"
+        }
+      ]
+    },
+    "Set_NRAS_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_NRAS",
+      "value": true,
+      "direct_transition": "Record_NRAS_TREAT"
+    },
+    "Record_NRAS_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "NRAS mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_BRAF_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_BRAF",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_BRAF_TREAT"
+        }
+      ]
+    },
+    "Set_BRAF_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_BRAF",
+      "value": true,
+      "direct_transition": "Record_BRAF_TREAT"
+    },
+    "Record_BRAF_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "BRAF mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_RB1_BOTH_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_RB1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_RB1_BOTH_TREAT"
+        }
+      ]
+    },
+    "Set_RB1_BOTH_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_RB1",
+      "value": true,
+      "direct_transition": "Record_RB1_BOTH_TREAT"
+    },
+    "Record_RB1_BOTH_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "RB1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_KRAS_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_KRAS",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_KRAS_TREAT"
+        }
+      ]
+    },
+    "Set_KRAS_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_KRAS",
+      "value": true,
+      "direct_transition": "Record_KRAS_TREAT"
+    },
+    "Record_KRAS_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "KRAS mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_CCND3_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CCND3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_CCND3_TREAT"
+        }
+      ]
+    },
+    "Set_CCND3_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CCND3",
+      "value": true,
+      "direct_transition": "Record_CCND3_TREAT"
+    },
+    "Record_CCND3_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CCND3 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_CCND2_TREAT": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CCND2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "ERPR_Both_Positive_Draw_2"
+        },
+        {
+          "transition": "Set_CCND2_TREAT"
+        }
+      ]
+    },
+    "Set_CCND2_TREAT": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CCND2",
+      "value": true,
+      "direct_transition": "Record_CCND2_TREAT"
+    },
+    "Record_CCND2_TREAT": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CCND2 mutation positive"
       },
       "direct_transition": "Increment_Treatment_Driver_Count"
     },

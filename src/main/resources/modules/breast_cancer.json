@@ -1309,7 +1309,7 @@
     },
     "Assign_Tumor_Drivers": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/tumor_driver_assignment",
+      "submodule": "breast_cancer/tumor_driver_assignment_1gene",
       "direct_transition": "Treatment Outcome"
     },
     "Treatment Outcome": {
@@ -1508,6 +1508,28 @@
           "display": "Treatment status Cancer"
         }
       ],
+      "direct_transition": "Post_Treatment_Tumor_Response_Sequencing",
+      "remarks": [
+        "The American Cancer Society report that 5-year survival rates break down by stage as follows:",
+        "Stage 0-1: Close to 100 percent survival rate. Approximately 61 percent of all breast cancers are diagnosed at this stage.",
+        "Stage 2: Relative survival rate of 93 percent.",
+        "Stage 3: Relative survival rate of 72 percent. Many women with this stage breast cancer are treated successfully.",
+        "Stage 4: Relative survival rate of 22 percent. Many different treatment options are available:",
+        "https://www.medicalnewstoday.com/articles/316867.php"
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": 445528004,
+        "display": "Treatment changed (situation)"
+      }
+    },
+    "Post_Treatment_Tumor_Response_Sequencing": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/tumor_response_sequencing",
+      "direct_transition": "Post_Treatment_Response_Routing"
+    },
+    "Post_Treatment_Response_Routing": {
+      "type": "Simple",
       "conditional_transition": [
         {
           "transition": "Improvement After Surgery/Therapy",
@@ -1526,21 +1548,11 @@
             "operator": "==",
             "value": "no"
           }
+        },
+        {
+          "transition": "Improvement After Surgery/Therapy"
         }
-      ],
-      "remarks": [
-        "The American Cancer Society report that 5-year survival rates break down by stage as follows:",
-        "Stage 0-1: Close to 100 percent survival rate. Approximately 61 percent of all breast cancers are diagnosed at this stage.",
-        "Stage 2: Relative survival rate of 93 percent.",
-        "Stage 3: Relative survival rate of 72 percent. Many women with this stage breast cancer are treated successfully.",
-        "Stage 4: Relative survival rate of 22 percent. Many different treatment options are available:",
-        "https://www.medicalnewstoday.com/articles/316867.php"
-      ],
-      "value_code": {
-        "system": "SNOMED-CT",
-        "code": 445528004,
-        "display": "Treatment changed (situation)"
-      }
+      ]
     },
     "End Neodjuvant Medication in Preparation for Surgery": {
       "type": "MedicationEnd",

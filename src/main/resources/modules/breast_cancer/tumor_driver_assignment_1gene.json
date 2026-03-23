@@ -901,117 +901,6 @@
                 "condition_type": "Attribute",
                 "attribute": "breast_cancer_survival",
                 "operator": "==",
-                "value": "yes"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "chemo_group_count",
-                "operator": "==",
-                "value": 1
-              }
-            ]
-          },
-          "transition": "Chemo_Draw_2"
-        },
-        {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Or",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "breast_cancer_triple_negative",
-                    "operator": "==",
-                    "value": true
-                  },
-                  {
-                    "condition_type": "Observation",
-                    "codes": [
-                      {
-                        "system": "LOINC",
-                        "code": "21908-9",
-                        "display": "Stage group.clinical Cancer"
-                      }
-                    ],
-                    "operator": "==",
-                    "value_code": {
-                      "system": "SNOMED-CT",
-                      "code": 258224005,
-                      "display": "Stage 3 (qualifier value)"
-                    }
-                  },
-                  {
-                    "condition_type": "Observation",
-                    "codes": [
-                      {
-                        "system": "LOINC",
-                        "code": "21908-9",
-                        "display": "Stage group.clinical Cancer"
-                      }
-                    ],
-                    "operator": "==",
-                    "value_code": {
-                      "system": "SNOMED-CT",
-                      "code": 261638004,
-                      "display": "Stage 3A (qualifier value)"
-                    }
-                  },
-                  {
-                    "condition_type": "Observation",
-                    "codes": [
-                      {
-                        "system": "LOINC",
-                        "code": "21908-9",
-                        "display": "Stage group.clinical Cancer"
-                      }
-                    ],
-                    "operator": "==",
-                    "value_code": {
-                      "system": "SNOMED-CT",
-                      "code": 261639007,
-                      "display": "Stage 3B (qualifier value)"
-                    }
-                  },
-                  {
-                    "condition_type": "Observation",
-                    "codes": [
-                      {
-                        "system": "LOINC",
-                        "code": "21908-9",
-                        "display": "Stage group.clinical Cancer"
-                      }
-                    ],
-                    "operator": "==",
-                    "value_code": {
-                      "system": "SNOMED-CT",
-                      "code": 261640009,
-                      "display": "Stage 3C (qualifier value)"
-                    }
-                  },
-                  {
-                    "condition_type": "Observation",
-                    "codes": [
-                      {
-                        "system": "LOINC",
-                        "code": "21908-9",
-                        "display": "Stage group.clinical Cancer"
-                      }
-                    ],
-                    "operator": "==",
-                    "value_code": {
-                      "system": "SNOMED-CT",
-                      "code": 258228008,
-                      "display": "Stage 4 (qualifier value)"
-                    }
-                  }
-                ]
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "breast_cancer_survival",
-                "operator": "==",
                 "value": "no"
               },
               {
@@ -1068,43 +957,6 @@
             ]
           },
           "transition": "Endocrine_Draw_1"
-        },
-        {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Or",
-                "conditions": [
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "breast_cancer_ER",
-                    "operator": "==",
-                    "value": "ER-positive"
-                  },
-                  {
-                    "condition_type": "Attribute",
-                    "attribute": "breast_cancer_PR",
-                    "operator": "==",
-                    "value": "PR-positive"
-                  }
-                ]
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "breast_cancer_survival",
-                "operator": "==",
-                "value": "yes"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "endocrine_group_count",
-                "operator": "==",
-                "value": 1
-              }
-            ]
-          },
-          "transition": "Endocrine_Draw_2"
         },
         {
           "condition": {
@@ -1242,38 +1094,6 @@
             ]
           },
           "transition": "CDK46_Draw_1"
-        },
-        {
-          "condition": {
-            "condition_type": "And",
-            "conditions": [
-              {
-                "condition_type": "Attribute",
-                "attribute": "breast_cancer_ER",
-                "operator": "==",
-                "value": "ER-positive"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "breast_cancer_PR",
-                "operator": "==",
-                "value": "PR-positive"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "breast_cancer_survival",
-                "operator": "==",
-                "value": "yes"
-              },
-              {
-                "condition_type": "Attribute",
-                "attribute": "cdk46_group_count",
-                "operator": "==",
-                "value": 1
-              }
-            ]
-          },
-          "transition": "CDK46_Draw_2"
         },
         {
           "condition": {

@@ -1508,7 +1508,7 @@
           "display": "Treatment status Cancer"
         }
       ],
-      "direct_transition": "Post_Treatment_Tumor_Response_Sequencing",
+      "direct_transition": "Post_Treatment_Response_Routing",
       "remarks": [
         "The American Cancer Society report that 5-year survival rates break down by stage as follows:",
         "Stage 0-1: Close to 100 percent survival rate. Approximately 61 percent of all breast cancers are diagnosed at this stage.",
@@ -1526,7 +1526,7 @@
     "Post_Treatment_Tumor_Response_Sequencing": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/tumor_response_sequencing",
-      "direct_transition": "Post_Treatment_Response_Routing"
+      "direct_transition": "Post-Treatment Surveillance"
     },
     "Post_Treatment_Response_Routing": {
       "type": "Simple",
@@ -1990,7 +1990,7 @@
           "display": "Response to cancer treatment"
         }
       ],
-      "direct_transition": "Begin Surgery and Radiation Treatment",
+      "direct_transition": "Set_Post_Chemo_Sequencing_Phase",
       "remarks": [
         "http://standardhealthrecord.org/guides/mcode/ValueSet-shr-core-ConditionStatusTrendVS.html"
       ],
@@ -1999,6 +1999,12 @@
         "code": 385633008,
         "display": "Improving (qualifier value)"
       }
+    },
+    "Set_Post_Chemo_Sequencing_Phase": {
+      "type": "SetAttribute",
+      "attribute": "tumor_response_sequencing_phase",
+      "value": "post_chemo",
+      "direct_transition": "Begin Surgery and Radiation Treatment"
     },
     "Improvement After Surgery/Therapy": {
       "type": "Observation",
@@ -2019,7 +2025,7 @@
         "code": 385633008,
         "display": "Improving (qualifier value)"
       },
-      "direct_transition": "Post-Treatment Surveillance"
+      "direct_transition": "Set_Final_Sequencing_Phase"
     },
     "Worsening After Surgery/Therapy": {
       "type": "Observation",
@@ -2040,7 +2046,230 @@
         "code": 230993007,
         "display": "Worsening (qualifier value)"
       },
-      "direct_transition": "Post-Treatment Surveillance"
+      "direct_transition": "Set_Final_Sequencing_Phase"
+    },
+    "Set_Final_Sequencing_Phase": {
+      "type": "SetAttribute",
+      "attribute": "tumor_response_sequencing_phase",
+      "value": "final",
+      "direct_transition": "Final_Sequencing_Eligibility_Gate"
+    },
+    "Final_Sequencing_Eligibility_Gate": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Or",
+            "conditions": [
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ER_medication",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_PGR",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_CYP1B1",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_ESR1",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_ESR2",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_PIK3CA",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_ASXL1",
+                        "operator": "==",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "HER2_medication",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_HER2",
+                        "operator": "==",
+                        "value": "HER2-positive"
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_BRAF",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_PIK3CA",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_ESR1",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_PGR",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_ESR2",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_ERBB3",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_MET",
+                        "operator": "==",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ER_PR_medication",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Or",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_ESR1",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_CDKN2A",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_CCND1",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_PGR",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_ESR2",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_NRAS",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_BRAF",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_KRAS",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_RB1",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_CCND3",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_CCND2",
+                        "operator": "==",
+                        "value": true
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "has_gene_CCNE1",
+                        "operator": "==",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Post_Treatment_Tumor_Response_Sequencing"
+        },
+        {
+          "transition": "Post-Treatment Surveillance"
+        }
+      ]
     },
     "Post-Op Cancer Status": {
       "type": "Simple",

@@ -461,13 +461,57 @@
       "remarks": [
         "https://www.breastcancer.org/treatment/surgery/mastectomy/expectations"
       ],
-      "direct_transition": "Delay after Mastectomy"
+      "direct_transition": "Post_Chemo_Sequencing_Gate_After_Mastectomy"
     },
     "BCS end surgery": {
       "type": "EncounterEnd",
       "remarks": [
         "https://www.breastcancer.org/treatment/surgery/lumpectomy/expectations"
       ],
+      "direct_transition": "Post_Chemo_Sequencing_Gate_After_BCS"
+    },
+    "Post_Chemo_Sequencing_Gate_After_Mastectomy": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_response_sequencing_phase",
+            "operator": "==",
+            "value": "post_chemo"
+          },
+          "transition": "Post_Chemo_Sequencing_After_Mastectomy"
+        },
+        {
+          "transition": "Delay after Mastectomy"
+        }
+      ]
+    },
+    "Post_Chemo_Sequencing_After_Mastectomy": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/tumor_response_sequencing",
+      "direct_transition": "Delay after Mastectomy"
+    },
+    "Post_Chemo_Sequencing_Gate_After_BCS": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_response_sequencing_phase",
+            "operator": "==",
+            "value": "post_chemo"
+          },
+          "transition": "Post_Chemo_Sequencing_After_BCS"
+        },
+        {
+          "transition": "Delay After BCS"
+        }
+      ]
+    },
+    "Post_Chemo_Sequencing_After_BCS": {
+      "type": "CallSubmodule",
+      "submodule": "breast_cancer/tumor_response_sequencing",
       "direct_transition": "Delay After BCS"
     },
     "Delay After BCS": {

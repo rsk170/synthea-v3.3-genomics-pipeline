@@ -1,7 +1,7 @@
 {
   "name": "Tumor_Response_Sequencing",
   "remarks": [
-    "Second genomic sequencing event after treatment completion.",
+    "Genomic sequencing event after treatment milestones.",
     "This module does not assign new genes.",
     "It reads already assigned tumor driver genes and records one post-treatment clone trend observation per gene.",
     "decreasing = treatment-sensitive clone expected to shrink",
@@ -434,16 +434,59 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "HER2_medication",
-            "operator": "is not nil"
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "HER2_medication",
+                "operator": "is not nil"
+              }
+            ]
           },
-          "transition": "HER2_BRAF"
+          "transition": "Set_Trend_HER2_Decreasing"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "final"
+              }
+            ]
+          },
+          "transition": "Set_Trend_HER2_Increasing"
         },
         {
           "transition": "CDK46_Response_Gate"
         }
       ]
+    },
+    "Set_Trend_HER2_Decreasing": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_HER2",
+      "value": "decreasing",
+      "direct_transition": "HER2_BRAF"
+    },
+    "Set_Trend_HER2_Increasing": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_HER2",
+      "value": "increasing",
+      "direct_transition": "CDK46_Response_Gate"
     },
     "HER2_BRAF": {
       "type": "Simple",
@@ -618,7 +661,7 @@
           "transition": "CDK46_ESR1"
         },
         {
-          "transition": "Stable_Gene_Gate"
+          "transition": "Stable_Treatment_CYP19A1"
         }
       ]
     },
@@ -896,6 +939,864 @@
       "type": "SetAttribute",
       "attribute": "clone_trend_CCNE1",
       "value": "increasing",
+      "direct_transition": "Stable_Treatment_CYP19A1"
+    },
+    "Stable_Treatment_CYP19A1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CYP19A1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CYP19A1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CYP19A1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_BIRC5"
+        }
+      ]
+    },
+    "Set_Trend_CYP19A1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CYP19A1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_BIRC5"
+    },
+    "Stable_Treatment_BIRC5": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_BIRC5",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_BIRC5",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_BIRC5_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_ABCB1"
+        }
+      ]
+    },
+    "Set_Trend_BIRC5_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_BIRC5",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_ABCB1"
+    },
+    "Stable_Treatment_ABCB1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ABCB1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ABCB1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ABCB1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_CYP1B1"
+        }
+      ]
+    },
+    "Set_Trend_ABCB1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ABCB1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_CYP1B1"
+    },
+    "Stable_Treatment_CYP1B1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CYP1B1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CYP1B1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CYP1B1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_SLCO1B1"
+        }
+      ]
+    },
+    "Set_Trend_CYP1B1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CYP1B1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_SLCO1B1"
+    },
+    "Stable_Treatment_SLCO1B1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_SLCO1B1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_SLCO1B1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_SLCO1B1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_GSTP1"
+        }
+      ]
+    },
+    "Set_Trend_SLCO1B1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_SLCO1B1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_GSTP1"
+    },
+    "Stable_Treatment_GSTP1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_GSTP1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_GSTP1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_GSTP1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_ERCC1"
+        }
+      ]
+    },
+    "Set_Trend_GSTP1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_GSTP1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_ERCC1"
+    },
+    "Stable_Treatment_ERCC1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ERCC1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ERCC1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ERCC1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_BRCA1"
+        }
+      ]
+    },
+    "Set_Trend_ERCC1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ERCC1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_BRCA1"
+    },
+    "Stable_Treatment_BRCA1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_BRCA1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_BRCA1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_BRCA1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_NCOR2"
+        }
+      ]
+    },
+    "Set_Trend_BRCA1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_BRCA1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_NCOR2"
+    },
+    "Stable_Treatment_NCOR2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_NCOR2",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_NCOR2",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_NCOR2_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_HER2"
+        }
+      ]
+    },
+    "Set_Trend_NCOR2_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_NCOR2",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_HER2"
+    },
+    "Stable_Treatment_HER2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_HER2",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_HER2_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_PGR"
+        }
+      ]
+    },
+    "Set_Trend_HER2_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_HER2",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_PGR"
+    },
+    "Stable_Treatment_PGR": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_PGR",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_PGR",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_PGR_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_ESR1"
+        }
+      ]
+    },
+    "Set_Trend_PGR_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PGR",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_ESR1"
+    },
+    "Stable_Treatment_ESR1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ESR1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ESR1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ESR1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_ESR2"
+        }
+      ]
+    },
+    "Set_Trend_ESR1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ESR1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_ESR2"
+    },
+    "Stable_Treatment_ESR2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ESR2",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ESR2",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ESR2_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_PIK3CA"
+        }
+      ]
+    },
+    "Set_Trend_ESR2_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ESR2",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_PIK3CA"
+    },
+    "Stable_Treatment_PIK3CA": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_PIK3CA",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_PIK3CA",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_PIK3CA_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_ASXL1"
+        }
+      ]
+    },
+    "Set_Trend_PIK3CA_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PIK3CA",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_ASXL1"
+    },
+    "Stable_Treatment_ASXL1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ASXL1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ASXL1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ASXL1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_BRAF"
+        }
+      ]
+    },
+    "Set_Trend_ASXL1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ASXL1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_BRAF"
+    },
+    "Stable_Treatment_BRAF": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_BRAF",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_BRAF",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_BRAF_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_ERBB3"
+        }
+      ]
+    },
+    "Set_Trend_BRAF_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_BRAF",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_ERBB3"
+    },
+    "Stable_Treatment_ERBB3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ERBB3",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ERBB3",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ERBB3_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_MET"
+        }
+      ]
+    },
+    "Set_Trend_ERBB3_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ERBB3",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_MET"
+    },
+    "Stable_Treatment_MET": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_MET",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_MET",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_MET_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_CDKN2A"
+        }
+      ]
+    },
+    "Set_Trend_MET_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_MET",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_CDKN2A"
+    },
+    "Stable_Treatment_CDKN2A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CDKN2A",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CDKN2A",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CDKN2A_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_CCND1"
+        }
+      ]
+    },
+    "Set_Trend_CDKN2A_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CDKN2A",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_CCND1"
+    },
+    "Stable_Treatment_CCND1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CCND1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CCND1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CCND1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_NRAS"
+        }
+      ]
+    },
+    "Set_Trend_CCND1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CCND1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_NRAS"
+    },
+    "Stable_Treatment_NRAS": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_NRAS",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_NRAS",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_NRAS_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_KRAS"
+        }
+      ]
+    },
+    "Set_Trend_NRAS_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_NRAS",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_KRAS"
+    },
+    "Stable_Treatment_KRAS": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_KRAS",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_KRAS",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_KRAS_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_RB1"
+        }
+      ]
+    },
+    "Set_Trend_KRAS_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_KRAS",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_RB1"
+    },
+    "Stable_Treatment_RB1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_RB1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_RB1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_RB1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_CCND3"
+        }
+      ]
+    },
+    "Set_Trend_RB1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_RB1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_CCND3"
+    },
+    "Stable_Treatment_CCND3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CCND3",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CCND3",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CCND3_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_CCND2"
+        }
+      ]
+    },
+    "Set_Trend_CCND3_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CCND3",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_CCND2"
+    },
+    "Stable_Treatment_CCND2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CCND2",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CCND2",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CCND2_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_CCNE1"
+        }
+      ]
+    },
+    "Set_Trend_CCND2_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CCND2",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_CCNE1"
+    },
+    "Stable_Treatment_CCNE1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CCNE1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CCNE1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CCNE1_Stable"
+        },
+        {
+          "transition": "Stable_Gene_Gate"
+        }
+      ]
+    },
+    "Set_Trend_CCNE1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CCNE1",
+      "value": "stable",
       "direct_transition": "Stable_Gene_Gate"
     },
     "Stable_Gene_Gate": {
@@ -1687,7 +2588,7 @@
           "transition": "Record_Trend_NCOR2"
         },
         {
-          "transition": "Export_PGR"
+          "transition": "Export_HER2"
         }
       ]
     },
@@ -1703,6 +2604,36 @@
         }
       ],
       "attribute": "clone_trend_NCOR2",
+      "direct_transition": "Export_HER2"
+    },
+    "Export_HER2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "clone_trend_HER2",
+            "operator": "is not nil"
+          },
+          "transition": "Record_Trend_HER2"
+        },
+        {
+          "transition": "Export_PGR"
+        }
+      ]
+    },
+    "Record_Trend_HER2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Post-treatment clone trend HER2"
+        }
+      ],
+      "attribute": "clone_trend_HER2",
       "direct_transition": "Export_PGR"
     },
     "Export_PGR": {

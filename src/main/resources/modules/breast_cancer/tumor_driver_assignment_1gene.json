@@ -220,6 +220,12 @@
       "type": "SetAttribute",
       "attribute": "cdk46_group_count",
       "value": 0,
+      "direct_transition": "Initialize_Current_Treatment_Group"
+    },
+    "Initialize_Current_Treatment_Group": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "",
       "direct_transition": "Set_Treatment_Driver_Budget"
     },
     "Set_Treatment_Driver_Budget": {
@@ -268,7 +274,7 @@
             "operator": "==",
             "value": 5
           },
-          "transition": "Budget_4"
+          "transition": "Budget_3"
         },
         {
           "condition": {
@@ -277,7 +283,7 @@
             "operator": "==",
             "value": 6
           },
-          "transition": "Budget_4"
+          "transition": "Budget_3"
         },
         {
           "condition": {
@@ -286,7 +292,7 @@
             "operator": "==",
             "value": 7
           },
-          "transition": "Budget_5"
+          "transition": "Budget_3"
         },
         {
           "condition": {
@@ -295,7 +301,7 @@
             "operator": "==",
             "value": 8
           },
-          "transition": "Budget_6"
+          "transition": "Budget_3"
         },
         {
           "condition": {
@@ -304,7 +310,7 @@
             "operator": "==",
             "value": 9
           },
-          "transition": "Budget_6"
+          "transition": "Budget_3"
         },
         {
           "condition": {
@@ -313,7 +319,7 @@
             "operator": "==",
             "value": 10
           },
-          "transition": "Budget_7"
+          "transition": "Budget_3"
         },
         {
           "condition": {
@@ -322,7 +328,7 @@
             "operator": "==",
             "value": 11
           },
-          "transition": "Budget_8"
+          "transition": "Budget_3"
         },
         {
           "condition": {
@@ -331,7 +337,7 @@
             "operator": "==",
             "value": 12
           },
-          "transition": "Budget_8"
+          "transition": "Budget_3"
         },
         {
           "condition": {
@@ -340,7 +346,7 @@
             "operator": "==",
             "value": 13
           },
-          "transition": "Budget_9"
+          "transition": "Budget_3"
         },
         {
           "condition": {
@@ -349,7 +355,7 @@
             "operator": "==",
             "value": 14
           },
-          "transition": "Budget_10"
+          "transition": "Budget_3"
         },
         {
           "condition": {
@@ -358,7 +364,7 @@
             "operator": "==",
             "value": 15
           },
-          "transition": "Budget_11"
+          "transition": "Budget_3"
         },
         {
           "condition": {
@@ -367,7 +373,7 @@
             "operator": "==",
             "value": 16
           },
-          "transition": "Budget_11"
+          "transition": "Budget_3"
         },
         {
           "transition": "Budget_0"
@@ -800,7 +806,7 @@
               }
             ]
           },
-          "transition": "Chemo_Draw_1"
+          "transition": "Enter_Chemo_Draw_1"
         },
         {
           "condition": {
@@ -911,7 +917,7 @@
               }
             ]
           },
-          "transition": "Chemo_Resistance_Draw"
+          "transition": "Enter_Chemo_Resistance_Draw"
         },
         {
           "transition": "Endocrine_Group_Gate"
@@ -956,7 +962,7 @@
               }
             ]
           },
-          "transition": "Endocrine_Draw_1"
+          "transition": "Enter_Endocrine_Draw_1"
         },
         {
           "condition": {
@@ -993,7 +999,7 @@
               }
             ]
           },
-          "transition": "Endocrine_Resistance_Draw"
+          "transition": "Enter_Endocrine_Resistance_Draw"
         },
         {
           "transition": "HER2_Group_Gate"
@@ -1027,7 +1033,7 @@
               }
             ]
           },
-          "transition": "HER2_Draw_1"
+          "transition": "Enter_HER2_Draw_1"
         },
         {
           "condition": {
@@ -1053,7 +1059,7 @@
               }
             ]
           },
-          "transition": "HER2_Resistance_Draw"
+          "transition": "Enter_HER2_Resistance_Draw"
         },
         {
           "transition": "CDK46_Group_Gate"
@@ -1093,7 +1099,7 @@
               }
             ]
           },
-          "transition": "CDK46_Draw_1"
+          "transition": "Enter_CDK46_Draw_1"
         },
         {
           "condition": {
@@ -1125,7 +1131,7 @@
               }
             ]
           },
-          "transition": "CDK46_Resistance_Draw"
+          "transition": "Enter_CDK46_Resistance_Draw"
         },
         {
           "transition": "Driver_Assignment_Gate"
@@ -1173,239 +1179,37 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_CYP19A1"
+            "condition_type": "Attribute",
+            "attribute": "current_treatment_group",
+            "operator": "==",
+            "value": "chemo"
           },
           "transition": "Increment_Chemo_Group_Count"
         },
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_BIRC5"
-          },
-          "transition": "Increment_Chemo_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_ABCB1"
-          },
-          "transition": "Increment_Chemo_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_CYP1B1_CHEMO"
-          },
-          "transition": "Increment_Chemo_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_SLCO1B1"
-          },
-          "transition": "Increment_Chemo_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_GSTP1"
-          },
-          "transition": "Increment_Chemo_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_ERCC1"
-          },
-          "transition": "Increment_Chemo_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_BRCA1"
-          },
-          "transition": "Increment_Chemo_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_NCOR2"
-          },
-          "transition": "Increment_Chemo_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_PGR_ENDO"
+            "condition_type": "Attribute",
+            "attribute": "current_treatment_group",
+            "operator": "==",
+            "value": "endocrine"
           },
           "transition": "Increment_Endocrine_Group_Count"
         },
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_CYP1B1_ENDO"
-          },
-          "transition": "Increment_Endocrine_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_ESR1_ENDO"
-          },
-          "transition": "Increment_Endocrine_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_ESR2_ENDO"
-          },
-          "transition": "Increment_Endocrine_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_PIK3CA_ENDO"
-          },
-          "transition": "Increment_Endocrine_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_ASXL1"
-          },
-          "transition": "Increment_Endocrine_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_BRAF_HER2"
+            "condition_type": "Attribute",
+            "attribute": "current_treatment_group",
+            "operator": "==",
+            "value": "her2"
           },
           "transition": "Increment_HER2_Group_Count"
         },
         {
           "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_PIK3CA_HER2"
-          },
-          "transition": "Increment_HER2_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_ESR1_HER2"
-          },
-          "transition": "Increment_HER2_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_PGR_HER2"
-          },
-          "transition": "Increment_HER2_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_ESR2_HER2"
-          },
-          "transition": "Increment_HER2_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_ERBB3"
-          },
-          "transition": "Increment_HER2_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_MET"
-          },
-          "transition": "Increment_HER2_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_ESR1_CDK"
-          },
-          "transition": "Increment_CDK46_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_CDKN2A_CDK"
-          },
-          "transition": "Increment_CDK46_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_CCND1_CDK"
-          },
-          "transition": "Increment_CDK46_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_PGR_CDK"
-          },
-          "transition": "Increment_CDK46_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_ESR2_CDK"
-          },
-          "transition": "Increment_CDK46_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_NRAS"
-          },
-          "transition": "Increment_CDK46_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_BRAF_CDK"
-          },
-          "transition": "Increment_CDK46_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_KRAS"
-          },
-          "transition": "Increment_CDK46_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_RB1_CDK"
-          },
-          "transition": "Increment_CDK46_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_CCND3"
-          },
-          "transition": "Increment_CDK46_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_CCND2"
-          },
-          "transition": "Increment_CDK46_Group_Count"
-        },
-        {
-          "condition": {
-            "condition_type": "PriorState",
-            "name": "Record_CCNE1"
+            "condition_type": "Attribute",
+            "attribute": "current_treatment_group",
+            "operator": "==",
+            "value": "cdk46"
           },
           "transition": "Increment_CDK46_Group_Count"
         },
@@ -1413,6 +1217,54 @@
           "transition": "Treatment_Related_Gene_Gate"
         }
       ]
+    },
+    "Enter_Chemo_Draw_1": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "chemo",
+      "direct_transition": "Chemo_Draw_1"
+    },
+    "Enter_Chemo_Resistance_Draw": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "chemo",
+      "direct_transition": "Chemo_Resistance_Draw"
+    },
+    "Enter_Endocrine_Draw_1": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "endocrine",
+      "direct_transition": "Endocrine_Draw_1"
+    },
+    "Enter_Endocrine_Resistance_Draw": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "endocrine",
+      "direct_transition": "Endocrine_Resistance_Draw"
+    },
+    "Enter_HER2_Draw_1": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "her2",
+      "direct_transition": "HER2_Draw_1"
+    },
+    "Enter_HER2_Resistance_Draw": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "her2",
+      "direct_transition": "HER2_Resistance_Draw"
+    },
+    "Enter_CDK46_Draw_1": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "cdk46",
+      "direct_transition": "CDK46_Draw_1"
+    },
+    "Enter_CDK46_Resistance_Draw": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "cdk46",
+      "direct_transition": "CDK46_Resistance_Draw"
     },
     "Chemo_Draw_1": {
       "type": "Simple",
@@ -1441,40 +1293,7 @@
     },
     "Chemo_Draw_2": {
       "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Check_CYP19A1_CHEMO2",
-          "distribution": 0.125
-        },
-        {
-          "transition": "Check_BIRC5_CHEMO2",
-          "distribution": 0.125
-        },
-        {
-          "transition": "Check_ABCB1_CHEMO2",
-          "distribution": 0.125
-        },
-        {
-          "transition": "Check_CYP1B1_CHEMO2",
-          "distribution": 0.125
-        },
-        {
-          "transition": "Check_SLCO1B1_CHEMO2",
-          "distribution": 0.125
-        },
-        {
-          "transition": "Check_GSTP1_CHEMO2",
-          "distribution": 0.125
-        },
-        {
-          "transition": "Check_ERCC1_CHEMO2",
-          "distribution": 0.125
-        },
-        {
-          "transition": "Check_BRCA1_CHEMO2",
-          "distribution": 0.125
-        }
-      ]
+      "direct_transition": "Endocrine_Group_Gate"
     },
     "Chemo_Resistance_Draw": {
       "type": "Simple",
@@ -1496,24 +1315,7 @@
     },
     "Endocrine_Draw_2": {
       "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Check_CYP1B1_ENDO2",
-          "distribution": 0.25
-        },
-        {
-          "transition": "Check_ESR1_ENDO2",
-          "distribution": 0.25
-        },
-        {
-          "transition": "Check_ESR2_ENDO2",
-          "distribution": 0.25
-        },
-        {
-          "transition": "Check_PIK3CA_ENDO2",
-          "distribution": 0.25
-        }
-      ]
+      "direct_transition": "HER2_Group_Gate"
     },
     "Endocrine_Resistance_Draw": {
       "type": "Simple",
@@ -1593,52 +1395,7 @@
     },
     "CDK46_Draw_2": {
       "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Check_ESR1_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_CDKN2A_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_CCND1_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_PGR_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_ESR2_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_NRAS_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_BRAF_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_KRAS_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_RB1_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_CCND3_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_CCND2_CDK2",
-          "distribution": 0.0909090
-        }
-      ]
+      "direct_transition": "Driver_Assignment_Gate"
     },
     "CDK46_Resistance_Draw": {
       "type": "Simple",

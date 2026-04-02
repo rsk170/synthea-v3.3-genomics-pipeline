@@ -6,7 +6,8 @@
     "It reads already assigned tumor driver genes and records one post-treatment clone trend observation per gene.",
     "decreasing = treatment-sensitive clone expected to shrink",
     "increasing = treatment-resistant clone expected to expand",
-    "stable = observed gene without a treatment-specific response rule"
+    "stable = treatment-related observed gene without a treatment-specific response rule",
+    "unknown = non-treatment/random-driver gene grouped into mixed clones with treatment-related genes"
   ],
   "states": {
     "Initial": {
@@ -1823,7 +1824,7 @@
     "Set_Trend_ARID1A_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_ARID1A",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_BRCA2"
     },
     "Stable_BRCA2": {
@@ -1846,7 +1847,7 @@
     "Set_Trend_BRCA2_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_BRCA2",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_CBFB"
     },
     "Stable_CBFB": {
@@ -1869,7 +1870,7 @@
     "Set_Trend_CBFB_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_CBFB",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_CDH1"
     },
     "Stable_CDH1": {
@@ -1892,7 +1893,7 @@
     "Set_Trend_CDH1_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_CDH1",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_ERBB2"
     },
     "Stable_ERBB2": {
@@ -1915,7 +1916,7 @@
     "Set_Trend_ERBB2_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_ERBB2",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_FOXQ1"
     },
     "Stable_FOXQ1": {
@@ -1938,7 +1939,7 @@
     "Set_Trend_FOXQ1_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_FOXQ1",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_GATA3"
     },
     "Stable_GATA3": {
@@ -1961,7 +1962,7 @@
     "Set_Trend_GATA3_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_GATA3",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_KMT2C"
     },
     "Stable_KMT2C": {
@@ -1984,7 +1985,7 @@
     "Set_Trend_KMT2C_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_KMT2C",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_LINC00290"
     },
     "Stable_LINC00290": {
@@ -2007,7 +2008,7 @@
     "Set_Trend_LINC00290_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_LINC00290",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_MAP2K4"
     },
     "Stable_MAP2K4": {
@@ -2030,7 +2031,7 @@
     "Set_Trend_MAP2K4_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_MAP2K4",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_MAP3K1"
     },
     "Stable_MAP3K1": {
@@ -2053,7 +2054,7 @@
     "Set_Trend_MAP3K1_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_MAP3K1",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_MCL1"
     },
     "Stable_MCL1": {
@@ -2076,7 +2077,7 @@
     "Set_Trend_MCL1_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_MCL1",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_MECOM"
     },
     "Stable_MECOM": {
@@ -2099,7 +2100,7 @@
     "Set_Trend_MECOM_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_MECOM",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_MYC"
     },
     "Stable_MYC": {
@@ -2122,7 +2123,7 @@
     "Set_Trend_MYC_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_MYC",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_NCOR1"
     },
     "Stable_NCOR1": {
@@ -2145,7 +2146,7 @@
     "Set_Trend_NCOR1_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_NCOR1",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_NF1"
     },
     "Stable_NF1": {
@@ -2168,7 +2169,7 @@
     "Set_Trend_NF1_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_NF1",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_NOTCH2"
     },
     "Stable_NOTCH2": {
@@ -2191,7 +2192,7 @@
     "Set_Trend_NOTCH2_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_NOTCH2",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_PARK2"
     },
     "Stable_PARK2": {
@@ -2214,7 +2215,7 @@
     "Set_Trend_PARK2_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_PARK2",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_PRKCI"
     },
     "Stable_PRKCI": {
@@ -2237,7 +2238,7 @@
     "Set_Trend_PRKCI_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_PRKCI",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_PTEN"
     },
     "Stable_PTEN": {
@@ -2260,7 +2261,7 @@
     "Set_Trend_PTEN_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_PTEN",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_TP53"
     },
     "Stable_TP53": {
@@ -2283,7 +2284,7 @@
     "Set_Trend_TP53_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_TP53",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_YWHAZ"
     },
     "Stable_YWHAZ": {
@@ -2306,7 +2307,7 @@
     "Set_Trend_YWHAZ_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_YWHAZ",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Stable_ZNF703"
     },
     "Stable_ZNF703": {
@@ -2329,7 +2330,7 @@
     "Set_Trend_ZNF703_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_ZNF703",
-      "value": "stable",
+      "value": "unknown",
       "direct_transition": "Export_Trends"
     },
     "Export_Trends": {

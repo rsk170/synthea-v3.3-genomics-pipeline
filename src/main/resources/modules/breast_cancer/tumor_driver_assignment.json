@@ -226,6 +226,12 @@
       "type": "SetAttribute",
       "attribute": "current_treatment_group",
       "value": "",
+      "direct_transition": "Initialize_Treatment_Assignment_Pass"
+    },
+    "Initialize_Treatment_Assignment_Pass": {
+      "type": "SetAttribute",
+      "attribute": "treatment_assignment_pass",
+      "value": 1,
       "direct_transition": "Set_Treatment_Driver_Budget"
     },
     "Set_Treatment_Driver_Budget": {
@@ -800,6 +806,12 @@
               },
               {
                 "condition_type": "Attribute",
+                "attribute": "treatment_assignment_pass",
+                "operator": "==",
+                "value": 1
+              },
+              {
+                "condition_type": "Attribute",
                 "attribute": "chemo_group_count",
                 "operator": "==",
                 "value": 0
@@ -908,6 +920,12 @@
                 "attribute": "breast_cancer_survival",
                 "operator": "==",
                 "value": "yes"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "treatment_assignment_pass",
+                "operator": "==",
+                "value": 2
               },
               {
                 "condition_type": "Attribute",
@@ -1067,6 +1085,12 @@
               },
               {
                 "condition_type": "Attribute",
+                "attribute": "treatment_assignment_pass",
+                "operator": "==",
+                "value": 1
+              },
+              {
+                "condition_type": "Attribute",
                 "attribute": "endocrine_group_count",
                 "operator": "==",
                 "value": 0
@@ -1101,6 +1125,12 @@
                 "attribute": "breast_cancer_survival",
                 "operator": "==",
                 "value": "yes"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "treatment_assignment_pass",
+                "operator": "==",
+                "value": 2
               },
               {
                 "condition_type": "Attribute",
@@ -1175,6 +1205,12 @@
               },
               {
                 "condition_type": "Attribute",
+                "attribute": "treatment_assignment_pass",
+                "operator": "==",
+                "value": 1
+              },
+              {
+                "condition_type": "Attribute",
                 "attribute": "her2_group_count",
                 "operator": "==",
                 "value": 0
@@ -1198,6 +1234,12 @@
                 "attribute": "breast_cancer_survival",
                 "operator": "==",
                 "value": "yes"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "treatment_assignment_pass",
+                "operator": "==",
+                "value": 2
               },
               {
                 "condition_type": "Attribute",
@@ -1267,6 +1309,12 @@
               },
               {
                 "condition_type": "Attribute",
+                "attribute": "treatment_assignment_pass",
+                "operator": "==",
+                "value": 1
+              },
+              {
+                "condition_type": "Attribute",
                 "attribute": "cdk46_group_count",
                 "operator": "==",
                 "value": 0
@@ -1296,6 +1344,12 @@
                 "attribute": "breast_cancer_survival",
                 "operator": "==",
                 "value": "yes"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "treatment_assignment_pass",
+                "operator": "==",
+                "value": 2
               },
               {
                 "condition_type": "Attribute",
@@ -1340,7 +1394,7 @@
           "transition": "Enter_CDK46_Resistance_Draw"
         },
         {
-          "transition": "Driver_Assignment_Gate"
+          "transition": "Treatment_Group_Pass_Complete"
         }
       ]
     },
@@ -1379,6 +1433,40 @@
       "attribute": "cdk46_group_count",
       "action": "increment",
       "direct_transition": "Treatment_Related_Gene_Gate"
+    },
+    "Set_Treatment_Assignment_Pass_2": {
+      "type": "SetAttribute",
+      "attribute": "treatment_assignment_pass",
+      "value": 2,
+      "direct_transition": "Treatment_Related_Gene_Gate"
+    },
+    "Treatment_Group_Pass_Complete": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "treatment_assignment_pass",
+                "operator": "==",
+                "value": 1
+              }
+            ]
+          },
+          "transition": "Set_Treatment_Assignment_Pass_2"
+        },
+        {
+          "transition": "Driver_Assignment_Gate"
+        }
+      ]
     },
     "Return_After_Treatment_Assignment": {
       "type": "Simple",

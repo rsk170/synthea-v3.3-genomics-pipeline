@@ -1289,7 +1289,7 @@
           "display": "Postoperative follow-up visit (procedure)"
         }
       ],
-      "direct_transition": "Follow up examination",
+      "direct_transition": "Initial_Followup_Final_Sequencing_Gate",
       "remarks": [
         "Doctor visits: At first, your follow-up doctor visits will probably be scheduled for every few months. The longer you have been free of cancer, the less often the appointments are needed. After 5 years, they are typically done about once a year.",
         "https://www.cancer.org/cancer/breast-cancer/living-as-a-breast-cancer-survivor/follow-up-care-after-breast-cancer-treatment.html"
@@ -1309,7 +1309,7 @@
     },
     "Assign_Tumor_Drivers": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/tumor_driver_assignment_1gene",
+      "submodule": "breast_cancer/tumor_driver_assignment",
       "direct_transition": "Treatment Outcome"
     },
     "Treatment Outcome": {
@@ -1526,7 +1526,7 @@
     "Post_Treatment_Tumor_Response_Sequencing": {
       "type": "CallSubmodule",
       "submodule": "breast_cancer/tumor_response_sequencing",
-      "direct_transition": "Post-Treatment Surveillance"
+      "direct_transition": "Clear_Final_Sequencing_Phase"
     },
     "Post_Treatment_Response_Routing": {
       "type": "Simple",
@@ -2052,7 +2052,24 @@
       "type": "SetAttribute",
       "attribute": "tumor_response_sequencing_phase",
       "value": "final",
-      "direct_transition": "Final_Sequencing_Eligibility_Gate"
+      "direct_transition": "Post-Treatment Surveillance"
+    },
+    "Initial_Followup_Final_Sequencing_Gate": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_response_sequencing_phase",
+            "operator": "==",
+            "value": "final"
+          },
+          "transition": "Final_Sequencing_Eligibility_Gate"
+        },
+        {
+          "transition": "Follow up examination"
+        }
+      ]
     },
     "Final_Sequencing_Eligibility_Gate": {
       "type": "Simple",
@@ -2267,9 +2284,15 @@
           "transition": "Post_Treatment_Tumor_Response_Sequencing"
         },
         {
-          "transition": "Post-Treatment Surveillance"
+          "transition": "Clear_Final_Sequencing_Phase"
         }
       ]
+    },
+    "Clear_Final_Sequencing_Phase": {
+      "type": "SetAttribute",
+      "attribute": "tumor_response_sequencing_phase",
+      "value": "",
+      "direct_transition": "Follow up examination"
     },
     "Post-Op Cancer Status": {
       "type": "Simple",

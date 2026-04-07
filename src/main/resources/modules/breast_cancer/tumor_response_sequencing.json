@@ -1790,7 +1790,7 @@
           "transition": "Set_Trend_CCNE1_Stable"
         },
         {
-          "transition": "Stable_Gene_Gate"
+          "transition": "Reclassify_Treatment_PGR"
         }
       ]
     },
@@ -1798,6 +1798,787 @@
       "type": "SetAttribute",
       "attribute": "clone_trend_CCNE1",
       "value": "stable",
+      "direct_transition": "Reclassify_Treatment_PGR"
+    },
+    "Reclassify_Treatment_PGR": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_PGR",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Or",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_HER2",
+                      "operator": "==",
+                      "value": "HER2-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_PGR_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_ESR1"
+        }
+      ]
+    },
+    "Set_Trend_PGR_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PGR",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_ESR1"
+    },
+    "Reclassify_Treatment_ESR1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ESR1",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Or",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_HER2",
+                      "operator": "==",
+                      "value": "HER2-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_ESR1_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_ESR2"
+        }
+      ]
+    },
+    "Set_Trend_ESR1_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ESR1",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_ESR2"
+    },
+    "Reclassify_Treatment_ESR2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ESR2",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Or",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_HER2",
+                      "operator": "==",
+                      "value": "HER2-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_ESR2_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_PIK3CA"
+        }
+      ]
+    },
+    "Set_Trend_ESR2_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ESR2",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_PIK3CA"
+    },
+    "Reclassify_Treatment_PIK3CA": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_PIK3CA",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Or",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_HER2",
+                      "operator": "==",
+                      "value": "HER2-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_PIK3CA_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_ASXL1"
+        }
+      ]
+    },
+    "Set_Trend_PIK3CA_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PIK3CA",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_ASXL1"
+    },
+    "Reclassify_Treatment_ASXL1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ASXL1",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Or",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_ASXL1_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_BRAF"
+        }
+      ]
+    },
+    "Set_Trend_ASXL1_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ASXL1",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_BRAF"
+    },
+    "Reclassify_Treatment_BRAF": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_BRAF",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Or",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_HER2",
+                      "operator": "==",
+                      "value": "HER2-positive"
+                    },
+                    {
+                      "condition_type": "And",
+                      "conditions": [
+                        {
+                          "condition_type": "Attribute",
+                          "attribute": "breast_cancer_ER",
+                          "operator": "==",
+                          "value": "ER-positive"
+                        },
+                        {
+                          "condition_type": "Attribute",
+                          "attribute": "breast_cancer_PR",
+                          "operator": "==",
+                          "value": "PR-positive"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_BRAF_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_ERBB3"
+        }
+      ]
+    },
+    "Set_Trend_BRAF_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_BRAF",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_ERBB3"
+    },
+    "Reclassify_Treatment_ERBB3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ERBB3",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Attribute",
+                  "attribute": "breast_cancer_HER2",
+                  "operator": "==",
+                  "value": "HER2-positive"
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_ERBB3_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_MET"
+        }
+      ]
+    },
+    "Set_Trend_ERBB3_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ERBB3",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_MET"
+    },
+    "Reclassify_Treatment_MET": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_MET",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Attribute",
+                  "attribute": "breast_cancer_HER2",
+                  "operator": "==",
+                  "value": "HER2-positive"
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_MET_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_CDKN2A"
+        }
+      ]
+    },
+    "Set_Trend_MET_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_MET",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_CDKN2A"
+    },
+    "Reclassify_Treatment_CDKN2A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CDKN2A",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "And",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_CDKN2A_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_CCND1"
+        }
+      ]
+    },
+    "Set_Trend_CDKN2A_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CDKN2A",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_CCND1"
+    },
+    "Reclassify_Treatment_CCND1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CCND1",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "And",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_CCND1_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_NRAS"
+        }
+      ]
+    },
+    "Set_Trend_CCND1_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CCND1",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_NRAS"
+    },
+    "Reclassify_Treatment_NRAS": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_NRAS",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "And",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_NRAS_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_KRAS"
+        }
+      ]
+    },
+    "Set_Trend_NRAS_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_NRAS",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_KRAS"
+    },
+    "Reclassify_Treatment_KRAS": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_KRAS",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "And",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_KRAS_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_RB1"
+        }
+      ]
+    },
+    "Set_Trend_KRAS_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_KRAS",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_RB1"
+    },
+    "Reclassify_Treatment_RB1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_RB1",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "And",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_RB1_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_CCND3"
+        }
+      ]
+    },
+    "Set_Trend_RB1_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_RB1",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_CCND3"
+    },
+    "Reclassify_Treatment_CCND3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CCND3",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "And",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_CCND3_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_CCND2"
+        }
+      ]
+    },
+    "Set_Trend_CCND3_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CCND3",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_CCND2"
+    },
+    "Reclassify_Treatment_CCND2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CCND2",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "And",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_CCND2_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_CCNE1"
+        }
+      ]
+    },
+    "Set_Trend_CCND2_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CCND2",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_CCNE1"
+    },
+    "Reclassify_Treatment_CCNE1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CCNE1",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "And",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_CCNE1_Unknown"
+        },
+        {
+          "transition": "Stable_Gene_Gate"
+        }
+      ]
+    },
+    "Set_Trend_CCNE1_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CCNE1",
+      "value": "unknown",
       "direct_transition": "Stable_Gene_Gate"
     },
     "Stable_Gene_Gate": {

@@ -1614,35 +1614,23 @@
       "distributed_transition": [
         {
           "transition": "Check_CYP19A1_CHEMO2",
-          "distribution": 0.125
+          "distribution": 0.2
         },
         {
           "transition": "Check_BIRC5_CHEMO2",
-          "distribution": 0.125
+          "distribution": 0.2
         },
         {
           "transition": "Check_ABCB1_CHEMO2",
-          "distribution": 0.125
+          "distribution": 0.2
         },
         {
           "transition": "Check_CYP1B1_CHEMO2",
-          "distribution": 0.125
+          "distribution": 0.2
         },
         {
           "transition": "Check_SLCO1B1_CHEMO2",
-          "distribution": 0.125
-        },
-        {
-          "transition": "Check_GSTP1_CHEMO2",
-          "distribution": 0.125
-        },
-        {
-          "transition": "Check_ERCC1_CHEMO2",
-          "distribution": 0.125
-        },
-        {
-          "transition": "Check_BRCA1_CHEMO2",
-          "distribution": 0.125
+          "distribution": 0.2
         }
       ]
     },
@@ -1666,30 +1654,13 @@
     },
     "Endocrine_Draw_2": {
       "type": "Simple",
-      "distributed_transition": [
-        {
-          "transition": "Check_CYP1B1_ENDO2",
-          "distribution": 0.25
-        },
-        {
-          "transition": "Check_ESR1_ENDO2",
-          "distribution": 0.25
-        },
-        {
-          "transition": "Check_ESR2_ENDO2",
-          "distribution": 0.25
-        },
-        {
-          "transition": "Check_PIK3CA_ENDO2",
-          "distribution": 0.25
-        }
-      ]
+      "direct_transition": "HER2_Group_Gate"
     },
     "Endocrine_Resistance_Draw": {
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Check_ASXL1_ENDORES",
+          "transition": "Check_NF1_ENDORES",
           "distribution": 1.0
         }
       ]
@@ -1795,47 +1766,27 @@
       "distributed_transition": [
         {
           "transition": "Check_ESR1_CDK2",
-          "distribution": 0.0909091
+          "distribution": 0.1666667
         },
         {
           "transition": "Check_CDKN2A_CDK2",
-          "distribution": 0.0909091
+          "distribution": 0.1666667
         },
         {
           "transition": "Check_CCND1_CDK2",
-          "distribution": 0.0909091
+          "distribution": 0.1666667
         },
         {
           "transition": "Check_PGR_CDK2",
-          "distribution": 0.0909091
+          "distribution": 0.1666667
         },
         {
           "transition": "Check_ESR2_CDK2",
-          "distribution": 0.0909091
+          "distribution": 0.1666666
         },
         {
           "transition": "Check_NRAS_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_BRAF_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_KRAS_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_RB1_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_CCND3_CDK2",
-          "distribution": 0.0909091
-        },
-        {
-          "transition": "Check_CCND2_CDK2",
-          "distribution": 0.0909090
+          "distribution": 0.1666666
         }
       ]
     },
@@ -1843,7 +1794,7 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Check_CCNE1_CDKRES",
+          "transition": "Check_RB1_CDKRES",
           "distribution": 1.0
         }
       ]
@@ -2507,30 +2458,30 @@
       },
       "direct_transition": "Increment_Treatment_Driver_Count"
     },
-    "Check_ASXL1_ENDORES": {
+    "Check_NF1_ENDORES": {
       "type": "Simple",
       "conditional_transition": [
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "has_gene_ASXL1",
+            "attribute": "has_gene_NF1",
             "operator": "==",
             "value": true
           },
           "transition": "Endocrine_Group_Gate"
         },
         {
-          "transition": "Set_ASXL1"
+          "transition": "Set_NF1_ENDO"
         }
       ]
     },
-    "Set_ASXL1": {
+    "Set_NF1_ENDO": {
       "type": "SetAttribute",
-      "attribute": "has_gene_ASXL1",
+      "attribute": "has_gene_NF1",
       "value": true,
-      "direct_transition": "Record_ASXL1"
+      "direct_transition": "Record_NF1_ENDO"
     },
-    "Record_ASXL1": {
+    "Record_NF1_ENDO": {
       "type": "Observation",
       "category": "laboratory",
       "unit": "",
@@ -2544,7 +2495,7 @@
       "value_code": {
         "system": "SNOMED-CT",
         "code": "10828004",
-        "display": "ASXL1 mutation positive"
+        "display": "NF1 mutation positive"
       },
       "direct_transition": "Increment_Treatment_Driver_Count"
     },
@@ -3388,20 +3339,20 @@
       },
       "direct_transition": "Increment_Treatment_Driver_Count"
     },
-    "Check_CCNE1_CDKRES": {
+    "Check_RB1_CDKRES": {
       "type": "Simple",
       "conditional_transition": [
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "has_gene_CCNE1",
+            "attribute": "has_gene_RB1",
             "operator": "==",
             "value": true
           },
           "transition": "CDK46_Group_Gate"
         },
         {
-          "transition": "Set_CCNE1"
+          "transition": "Set_RB1_CDK"
         }
       ]
     },
@@ -4386,6 +4337,32 @@
       "conditional_transition": [
         {
           "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_ER",
+                "operator": "==",
+                "value": "ER-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_PR",
+                "operator": "==",
+                "value": "PR-positive"
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "condition": {
             "condition_type": "Attribute",
             "attribute": "has_gene_RB1",
             "operator": "==",
@@ -4876,6 +4853,37 @@
     "Check_NF1": {
       "type": "Simple",
       "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
         {
           "condition": {
             "condition_type": "Attribute",

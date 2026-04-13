@@ -1,0 +1,6 @@
+START,STOP,PATIENT,ENCOUNTER,CODE,SYSTEM,DESCRIPTION,TYPE,CATEGORY,REACTION1,DESCRIPTION1,SEVERITY1,REACTION2,DESCRIPTION2,SEVERITY2
+2001-06-30,,f0f12c78-5940-069e-1440-67501fa16120,543ac705-115c-fb20-7dbf-50264a3c94aa,419199007,Unknown,Allergy to substance (finding),allergy,environment,,,,,,
+2001-06-30,,f0f12c78-5940-069e-1440-67501fa16120,543ac705-115c-fb20-7dbf-50264a3c94aa,264287008,Unknown,Animal dander (substance),allergy,environment,878820003,Rhinoconjunctivitis (disorder),MODERATE,267036007,Dyspnea (finding),MILD
+1968-06-14,,9125f158-2fb2-7b53-4dee-0fa41b47e685,44c96675-b4ea-c5da-7898-7ef81e188f49,419199007,Unknown,Allergy to substance (finding),allergy,environment,,,,,,
+1968-06-14,,9125f158-2fb2-7b53-4dee-0fa41b47e685,44c96675-b4ea-c5da-7898-7ef81e188f49,84489001,Unknown,Mold (organism),allergy,environment,56018004,Wheezing,MILD,,,
+1968-06-14,,9125f158-2fb2-7b53-4dee-0fa41b47e685,44c96675-b4ea-c5da-7898-7ef81e188f49,256277009,Unknown,Grass pollen (substance),allergy,environment,,,,,,

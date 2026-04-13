@@ -18,6 +18,9 @@ lib/custom/*.jar
 **/*.log
 
 output_runs/
+*.maf
+*.maf.gz
+TableS3_panorama_driver_mutations_ICGC_samples.controlled.tsv
 
 # don't commit the autobuilt version file
 src/main/resources/version.txt

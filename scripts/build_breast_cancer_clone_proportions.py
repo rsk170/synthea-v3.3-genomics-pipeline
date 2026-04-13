@@ -14,6 +14,15 @@ import math
 import random
 from pathlib import Path
 
+from build_breast_cancer_clones import (
+    DEFAULT_OUTPUT_NAME as CLONE_GROUPS_DEFAULT_OUTPUT_NAME,
+    build_clone_rows,
+    load_patient_data,
+    newest_observations_csv,
+    patient_order_from_observations,
+    write_rows as write_clone_group_rows,
+)
+
 
 DEFAULT_INPUT_NAME = "breast_cancer_clone_groups.csv"
 DEFAULT_OUTPUT_NAME = "breast_cancer_clone_proportions.csv"
@@ -25,16 +34,25 @@ ROUNDING_UNITS = 10000  # basis points of 1%
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Create per-timepoint breast cancer clonal VAFs from "
-            "breast_cancer_clone_groups.csv."
+            "Create per-timepoint breast cancer clonal VAFs from clone groups, "
+            "or build clone groups from observations.csv first."
         )
+    )
+    parser.add_argument(
+        "--observations",
+        type=Path,
+        help=(
+            "Path to observations.csv. If provided, clone groups are rebuilt first. "
+            "If neither --observations nor --clone-groups is given, the newest "
+            "output_runs/*/csv/observations.csv is used."
+        ),
     )
     parser.add_argument(
         "--clone-groups",
         type=Path,
         help=(
-            "Path to breast_cancer_clone_groups.csv. Defaults to the newest "
-            "output_runs/*/csv/breast_cancer_clone_groups.csv."
+            "Path to breast_cancer_clone_groups.csv. If omitted, clone groups are "
+            "built from observations.csv first."
         ),
     )
     parser.add_argument(
@@ -139,6 +157,90 @@ def round_percentages(values: list[float]) -> list[float]:
         base_units[index] += 1
 
     return [unit / 100 for unit in base_units]
+
+
+def midpoint_state(clone: dict) -> str:
+    return clone["states"][1] if len(clone["states"]) > 2 else "unknown"
+
+
+def stable_band(p0: float) -> tuple[float, float]:
+    delta = max(2.0, min(3.5, p0 * 0.08))
+    return max(0.0, p0 - delta), min(100.0, p0 + delta)
+
+
+def donor_floor(clone: dict, start: dict[str, float], final: dict[str, float]) -> float:
+    clone_id = clone["clone_id"]
+    p0 = start[clone_id]
+    p2 = final[clone_id]
+    state = midpoint_state(clone)
+
+    if state == "unknown":
+        return 0.5
+    if state == "increasing":
+        return max(0.5, p0 + max(1.0, 0.40 * (p2 - p0)))
+    if state == "decreasing":
+        return max(0.5, p2 + max(1.0, 0.15 * (p0 - p2)))
+    if state == "stable":
+        return stable_band(p0)[0]
+    return 0.5
+
+
+def adjust_midpoint_stable_clones(
+    clones: list[dict],
+    proportions: dict[str, float],
+    start: dict[str, float],
+    final: dict[str, float],
+) -> dict[str, float]:
+    adjusted = dict(proportions)
+    donors_by_priority = sorted(
+        clones,
+        key=lambda clone: (
+            {"unknown": 0, "increasing": 1, "decreasing": 2, "stable": 3}.get(midpoint_state(clone), 4),
+            -start[clone["clone_id"]],
+            clone["clone_id"],
+        ),
+    )
+
+    for clone in clones:
+        if midpoint_state(clone) != "stable":
+            continue
+
+        clone_id = clone["clone_id"]
+        low, high = stable_band(start[clone_id])
+
+        if adjusted[clone_id] < low:
+            need = round(low - adjusted[clone_id], 2)
+            for donor in donors_by_priority:
+                donor_id = donor["clone_id"]
+                if donor_id == clone_id or need <= 0:
+                    continue
+
+                floor = donor_floor(donor, start, final)
+                available = round(adjusted[donor_id] - floor, 2)
+                if available <= 0:
+                    continue
+
+                transfer = min(need, available)
+                transfer = math.floor(transfer * 100) / 100
+                if transfer <= 0:
+                    continue
+
+                adjusted[donor_id] = round(adjusted[donor_id] - transfer, 2)
+                adjusted[clone_id] = round(adjusted[clone_id] + transfer, 2)
+                need = round(need - transfer, 2)
+
+        elif adjusted[clone_id] > high:
+            excess = round(adjusted[clone_id] - high, 2)
+            recipients = [donor for donor in donors_by_priority if donor["clone_id"] != clone_id]
+            for recipient in recipients:
+                if excess <= 0:
+                    break
+                recipient_id = recipient["clone_id"]
+                adjusted[recipient_id] = round(adjusted[recipient_id] + 0.01, 2)
+                adjusted[clone_id] = round(adjusted[clone_id] - 0.01, 2)
+                excess = round(excess - 0.01, 2)
+
+    return adjusted
 
 
 def type_factor(clone_type: str, endpoint: str) -> float:
@@ -264,21 +366,25 @@ def interpolate_midpoint_percentages(
         state = clone["states"][1] if len(clone["states"]) > 2 else "unknown"
 
         if state == "increasing":
-            raw = (0.35 * p0) + (0.65 * p2)
+            raw = (0.15 * p0) + (0.85 * p2)
         elif state == "decreasing":
-            raw = (0.6 * p0) + (0.4 * p2)
+            raw = (0.30 * p0) + (0.70 * p2)
         elif state == "stable":
-            raw = (0.8 * p0) + (0.2 * p2)
+            raw = p0
         elif state == "unknown":
-            raw = (0.85 * p0) + (0.15 * p2)
+            raw = (0.70 * p0) + (0.30 * p2)
         else:
             raw = (p0 + p2) / 2
 
-        raw *= 0.97 + (rng.random() * 0.06)
+        if state == "stable":
+            raw *= 0.995 + (rng.random() * 0.01)
+        else:
+            raw *= 0.98 + (rng.random() * 0.04)
         raw_values.append(raw)
 
     rounded = round_percentages(raw_values)
-    return {clone["clone_id"]: value for clone, value in zip(clones, rounded)}
+    midpoint = {clone["clone_id"]: value for clone, value in zip(clones, rounded)}
+    return adjust_midpoint_stable_clones(clones, midpoint, start, final)
 
 
 def proportions_for_patient(patient_id: str, clones: list[dict]) -> dict[str, list[float]]:
@@ -312,10 +418,21 @@ def proportions_for_patient(patient_id: str, clones: list[dict]) -> dict[str, li
     )
 
 
-def build_output_rows(patients: dict[str, list[dict]]) -> list[dict[str, str]]:
+def build_output_rows(
+    patients: dict[str, list[dict]], patient_order: list[str] | None = None
+) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
 
-    for patient_id, clones in patients.items():
+    if patient_order is None:
+        ordered_patient_ids = list(patients)
+    else:
+        ordered_patient_ids = [patient_id for patient_id in patient_order if patient_id in patients]
+        ordered_patient_ids.extend(
+            patient_id for patient_id in patients if patient_id not in set(ordered_patient_ids)
+        )
+
+    for patient_id in ordered_patient_ids:
+        clones = patients[patient_id]
         clone_proportions = proportions_for_patient(patient_id, clones)
         if not clone_proportions:
             continue
@@ -393,19 +510,42 @@ def main() -> int:
     args = parse_args()
     repo_root = Path(__file__).resolve().parents[1]
 
-    clone_groups_path = args.clone_groups or newest_clone_groups_csv(repo_root)
-    if not clone_groups_path.exists():
-        raise FileNotFoundError(f"Clone groups file not found: {clone_groups_path}")
+    built_from_observations = args.observations is not None or args.clone_groups is None
+    clone_groups_path: Path
+
+    if built_from_observations:
+        observations_path = args.observations or newest_observations_csv(repo_root)
+        if not observations_path.exists():
+            raise FileNotFoundError(f"Observations file not found: {observations_path}")
+
+        patients = load_patient_data(observations_path)
+        patient_order = patient_order_from_observations(observations_path)
+        clone_group_rows = build_clone_rows(patients, patient_order=patient_order)
+        clone_groups_path = observations_path.with_name(CLONE_GROUPS_DEFAULT_OUTPUT_NAME)
+        write_clone_group_rows(clone_groups_path, clone_group_rows)
+    else:
+        clone_groups_path = args.clone_groups or newest_clone_groups_csv(repo_root)
+        if not clone_groups_path.exists():
+            raise FileNotFoundError(f"Clone groups file not found: {clone_groups_path}")
 
     output_path = args.output or clone_groups_path.with_name(DEFAULT_OUTPUT_NAME)
 
     patients = load_clone_groups(clone_groups_path)
-    rows = build_output_rows(patients)
+    observations_for_order = clone_groups_path.with_name("observations.csv")
+    patient_order = None
+    if observations_for_order.exists():
+        patient_order = patient_order_from_observations(observations_for_order)
+
+    rows = build_output_rows(patients, patient_order=patient_order)
     validate_rows(rows)
     write_rows(output_path, rows)
 
     patient_count = len({row["patient_id"] for row in rows})
-    print(f"Input clone groups: {clone_groups_path}")
+    if built_from_observations:
+        print(f"Input observations: {observations_path}")
+        print(f"Rebuilt clone groups: {clone_groups_path}")
+    else:
+        print(f"Input clone groups: {clone_groups_path}")
     print(f"Wrote clone proportions: {output_path}")
     print(f"Patients with VAF output: {patient_count}")
     print(f"Total clone rows: {len(rows)}")

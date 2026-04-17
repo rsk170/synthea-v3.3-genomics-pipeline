@@ -549,8 +549,6 @@ def baseline_date(patient_data: dict) -> str | None:
         return min(patient_data["genomic_dates"])
     if patient_data["her2_dates"]:
         return min(patient_data["her2_dates"])
-    if patient_data["trend_dates"]:
-        return min(patient_data["trend_dates"])
     return None
 
 
@@ -571,6 +569,8 @@ def build_clone_rows(
         patient = patients[patient_id]
         trend_dates = sorted(patient["trend_dates"])
         t0 = baseline_date(patient)
+        if t0 is None:
+            continue
         genes = sorted(
             set(patient["baseline_driver_genes"])
             | set(patient["special_baseline_genes"])

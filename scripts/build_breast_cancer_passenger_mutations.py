@@ -27,25 +27,6 @@ DEFAULT_MAF_NAME = "final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf"
 DEFAULT_PASSENGER_POOL_NAME = "breast_cancer_passenger_only_from_maf.maf"
 DEFAULT_ASSIGNED_NAME = "breast_cancer_assigned_passenger_mutations.tsv"
 DEFAULT_PROJECT_PREFIX = "Breast-"
-CODING_VARIANT_CLASSES = {
-    "Missense_Mutation",
-    "Nonsense_Mutation",
-    "Nonstop_Mutation",
-    "Silent",
-    "Frame_Shift_Del",
-    "Frame_Shift_Ins",
-    "In_Frame_Del",
-    "In_Frame_Ins",
-    "Splice_Site",
-    "Translation_Start_Site",
-    "Start_Codon_SNP",
-    "Start_Codon_Del",
-    "Start_Codon_Ins",
-    "Stop_Codon_Del",
-    "Stop_Codon_Ins",
-    "De_novo_Start_InFrame",
-    "De_novo_Start_OutOfFrame",
-}
 
 ASSIGNED_PATIENT_ID = "assigned_patient_id"
 SOURCE_TUMOR_SAMPLE_BARCODE = "source_tumor_sample_barcode"
@@ -173,11 +154,6 @@ def build_passenger_maf(
                 continue
 
             stats["project_rows_seen"] += 1
-            variant_classification = row.get("Variant_Classification", "").strip()
-            if variant_classification not in CODING_VARIANT_CLASSES:
-                stats["noncoding_rows_removed"] += 1
-                continue
-
             gene = row.get("Hugo_Symbol", "").strip()
             if gene in driver_genes:
                 stats["driver_rows_removed"] += 1
@@ -358,7 +334,6 @@ def main() -> None:
     for key in (
         "maf_rows_total",
         "project_rows_seen",
-        "noncoding_rows_removed",
         "driver_rows_removed",
         "passenger_rows_written",
     ):

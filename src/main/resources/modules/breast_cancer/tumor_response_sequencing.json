@@ -19,10 +19,21 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "tumor_driver_assigned",
-            "operator": ">",
-            "value": 0
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_driver_assigned",
+                "operator": ">",
+                "value": 0
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "baseline_genomic_assessment_recorded",
+                "operator": "==",
+                "value": true
+              }
+            ]
           },
           "transition": "Post_Treatment_Genome_Sequencing"
         },
@@ -397,7 +408,7 @@
           "transition": "Set_Trend_PIK3CA_Decreasing_Endocrine"
         },
         {
-          "transition": "Endocrine_ASXL1"
+          "transition": "Endocrine_NF1"
         }
       ]
     },
@@ -405,7 +416,7 @@
       "type": "SetAttribute",
       "attribute": "clone_trend_PIK3CA",
       "value": "decreasing",
-      "direct_transition": "Endocrine_ASXL1"
+      "direct_transition": "Endocrine_NF1"
     },
     "Endocrine_ASXL1": {
       "type": "Simple",
@@ -420,13 +431,36 @@
           "transition": "Set_Trend_ASXL1_Increasing_Endocrine"
         },
         {
-          "transition": "HER2_Response_Gate"
+          "transition": "Endocrine_NF1"
         }
       ]
     },
     "Set_Trend_ASXL1_Increasing_Endocrine": {
       "type": "SetAttribute",
       "attribute": "clone_trend_ASXL1",
+      "value": "increasing",
+      "direct_transition": "Endocrine_NF1"
+    },
+    "Endocrine_NF1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_NF1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_NF1_Increasing_Endocrine"
+        },
+        {
+          "transition": "HER2_Response_Gate"
+        }
+      ]
+    },
+    "Set_Trend_NF1_Increasing_Endocrine": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_NF1",
       "value": "increasing",
       "direct_transition": "HER2_Response_Gate"
     },
@@ -860,17 +894,17 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Set_Trend_RB1_Decreasing_CDK46"
+          "transition": "Set_Trend_RB1_Increasing_CDK46"
         },
         {
           "transition": "CDK46_CCND3"
         }
       ]
     },
-    "Set_Trend_RB1_Decreasing_CDK46": {
+    "Set_Trend_RB1_Increasing_CDK46": {
       "type": "SetAttribute",
       "attribute": "clone_trend_RB1",
-      "value": "decreasing",
+      "value": "increasing",
       "direct_transition": "CDK46_CCND3"
     },
     "CDK46_CCND3": {
@@ -1394,7 +1428,7 @@
           "transition": "Set_Trend_PIK3CA_Stable"
         },
         {
-          "transition": "Stable_Treatment_ASXL1"
+          "transition": "Stable_Treatment_NF1"
         }
       ]
     },
@@ -1402,7 +1436,7 @@
       "type": "SetAttribute",
       "attribute": "clone_trend_PIK3CA",
       "value": "stable",
-      "direct_transition": "Stable_Treatment_ASXL1"
+      "direct_transition": "Stable_Treatment_NF1"
     },
     "Stable_Treatment_ASXL1": {
       "type": "Simple",
@@ -1427,13 +1461,46 @@
           "transition": "Set_Trend_ASXL1_Stable"
         },
         {
-          "transition": "Stable_Treatment_BRAF"
+          "transition": "Stable_Treatment_NF1"
         }
       ]
     },
     "Set_Trend_ASXL1_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_ASXL1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_NF1"
+    },
+    "Stable_Treatment_NF1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_NF1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_NF1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_NF1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_BRAF"
+        }
+      ]
+    },
+    "Set_Trend_NF1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_NF1",
       "value": "stable",
       "direct_transition": "Stable_Treatment_BRAF"
     },
@@ -2006,7 +2073,7 @@
           "transition": "Set_Trend_PIK3CA_Unknown"
         },
         {
-          "transition": "Reclassify_Treatment_ASXL1"
+          "transition": "Reclassify_Treatment_NF1"
         }
       ]
     },
@@ -2014,7 +2081,7 @@
       "type": "SetAttribute",
       "attribute": "clone_trend_PIK3CA",
       "value": "unknown",
-      "direct_transition": "Reclassify_Treatment_ASXL1"
+      "direct_transition": "Reclassify_Treatment_NF1"
     },
     "Reclassify_Treatment_ASXL1": {
       "type": "Simple",
@@ -2054,13 +2121,61 @@
           "transition": "Set_Trend_ASXL1_Unknown"
         },
         {
-          "transition": "Reclassify_Treatment_BRAF"
+          "transition": "Reclassify_Treatment_NF1"
         }
       ]
     },
     "Set_Trend_ASXL1_Unknown": {
       "type": "SetAttribute",
       "attribute": "clone_trend_ASXL1",
+      "value": "unknown",
+      "direct_transition": "Reclassify_Treatment_NF1"
+    },
+    "Reclassify_Treatment_NF1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_NF1",
+                "operator": "==",
+                "value": "stable"
+              },
+              {
+                "condition_type": "Not",
+                "condition": {
+                  "condition_type": "Or",
+                  "conditions": [
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_ER",
+                      "operator": "==",
+                      "value": "ER-positive"
+                    },
+                    {
+                      "condition_type": "Attribute",
+                      "attribute": "breast_cancer_PR",
+                      "operator": "==",
+                      "value": "PR-positive"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "transition": "Set_Trend_NF1_Treatment_Unknown"
+        },
+        {
+          "transition": "Reclassify_Treatment_BRAF"
+        }
+      ]
+    },
+    "Set_Trend_NF1_Treatment_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_NF1",
       "value": "unknown",
       "direct_transition": "Reclassify_Treatment_BRAF"
     },
@@ -2935,19 +3050,29 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "has_gene_NF1",
-            "operator": "==",
-            "value": true
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_NF1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_NF1",
+                "operator": "is nil"
+              }
+            ]
           },
-          "transition": "Set_Trend_NF1_Stable"
+          "transition": "Set_Trend_NF1_Unknown"
         },
         {
           "transition": "Stable_NOTCH2"
         }
       ]
     },
-    "Set_Trend_NF1_Stable": {
+    "Set_Trend_NF1_Unknown": {
       "type": "SetAttribute",
       "attribute": "clone_trend_NF1",
       "value": "unknown",
@@ -3544,17 +3669,17 @@
         {
           "condition": {
             "condition_type": "Attribute",
-            "attribute": "clone_trend_ASXL1",
+            "attribute": "clone_trend_NF1",
             "operator": "is not nil"
           },
-          "transition": "Record_Trend_ASXL1"
+          "transition": "Record_Trend_NF1_Treatment"
         },
         {
           "transition": "Export_BRAF"
         }
       ]
     },
-    "Record_Trend_ASXL1": {
+    "Record_Trend_NF1_Treatment": {
       "type": "Observation",
       "category": "laboratory",
       "unit": "",
@@ -3562,10 +3687,10 @@
         {
           "system": "LOINC",
           "code": "69548-6",
-          "display": "Post-treatment clone trend ASXL1"
+          "display": "Post-treatment clone trend NF1"
         }
       ],
-      "attribute": "clone_trend_ASXL1",
+      "attribute": "clone_trend_NF1",
       "direct_transition": "Export_BRAF"
     },
     "Export_BRAF": {
@@ -4330,7 +4455,7 @@
           "transition": "Record_Trend_NCOR1"
         },
         {
-          "transition": "Export_NF1"
+          "transition": "Export_NOTCH2"
         }
       ]
     },
@@ -4346,7 +4471,7 @@
         }
       ],
       "attribute": "clone_trend_NCOR1",
-      "direct_transition": "Export_NF1"
+      "direct_transition": "Export_NOTCH2"
     },
     "Export_NF1": {
       "type": "Simple",

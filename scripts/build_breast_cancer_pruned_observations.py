@@ -432,6 +432,9 @@ def transform_observations(
 
                 patient_id = row["PATIENT"].strip()
                 vaf_pct = lookup_gene_vaf(row, gene, gene_vafs)
+                if vaf_pct is None:
+                    stats["her2_variant_groups_skipped_without_vaf"] += 1
+                    continue
                 cache_key = (patient_id, gene)
                 if cache_key not in patient_variant_cache:
                     patient_variant_cache[cache_key] = choose_patient_gene_variant(
@@ -476,6 +479,10 @@ def transform_observations(
 
             patient_id = row["PATIENT"].strip()
             vaf_pct = lookup_gene_vaf(row, gene, gene_vafs)
+            if vaf_pct is None:
+                removed_rows.append(row)
+                stats["genomic_rows_suppressed_without_clone_vaf"] += 1
+                continue
 
             cache_key = (patient_id, gene)
             if cache_key not in patient_variant_cache:
@@ -580,6 +587,14 @@ def main() -> int:
     print(f"HER2 rows removed: {transform_stats['her2_rows_removed']}")
     print(f"HER2 baseline rows kept unchanged: {transform_stats['her2_baseline_rows_kept']}")
     print(f"Non-positive or FISH genomic rows suppressed: {transform_stats['genomic_source_rows_suppressed']}")
+    print(
+        "Genomic rows suppressed without clone VAF: "
+        f"{transform_stats['genomic_rows_suppressed_without_clone_vaf']}"
+    )
+    print(
+        "HER2 variant groups skipped without clone VAF: "
+        f"{transform_stats['her2_variant_groups_skipped_without_vaf']}"
+    )
     print(f"Variant groups emitted: {transform_stats['variant_groups_emitted']}")
     print(
         "Variant groups emitted from driver file: "

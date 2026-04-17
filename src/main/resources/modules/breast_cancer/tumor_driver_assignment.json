@@ -232,6 +232,12 @@
       "type": "SetAttribute",
       "attribute": "treatment_assignment_pass",
       "value": 1,
+      "direct_transition": "Initialize_Baseline_Genomic_Assessment_Recorded"
+    },
+    "Initialize_Baseline_Genomic_Assessment_Recorded": {
+      "type": "SetAttribute",
+      "attribute": "baseline_genomic_assessment_recorded",
+      "value": false,
       "direct_transition": "Set_Treatment_Driver_Budget"
     },
     "Set_Treatment_Driver_Budget": {
@@ -1408,6 +1414,12 @@
       "type": "Counter",
       "attribute": "tumor_driver_assigned",
       "action": "increment",
+      "direct_transition": "Mark_Baseline_Genomic_Assessment_Recorded_Treatment"
+    },
+    "Mark_Baseline_Genomic_Assessment_Recorded_Treatment": {
+      "type": "SetAttribute",
+      "attribute": "baseline_genomic_assessment_recorded",
+      "value": true,
       "direct_transition": "Return_After_Treatment_Assignment"
     },
     "Increment_Chemo_Group_Count": {
@@ -5049,6 +5061,12 @@
       "type": "Counter",
       "attribute": "tumor_driver_assigned",
       "action": "increment",
+      "direct_transition": "Mark_Baseline_Genomic_Assessment_Recorded_Random"
+    },
+    "Mark_Baseline_Genomic_Assessment_Recorded_Random": {
+      "type": "SetAttribute",
+      "attribute": "baseline_genomic_assessment_recorded",
+      "value": true,
       "direct_transition": "Driver_Assignment_Gate"
     },
     "Terminal": {

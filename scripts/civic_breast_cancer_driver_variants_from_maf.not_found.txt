@@ -1,0 +1,25 @@
+total unique profiles searched: 6
+matched in breast cancer: 2
+matched in pan-cancer fallback: 0
+skipped as duplicate within batch: 0
+skipped as already present: 0
+not found: 4
+output rows before: 45
+output rows after: 47
+
+MAF matching note: the local ICGC MAF does not contain protein-change or cDNA-change columns, so matches were saved at exact_allele level after CIViC profile resolution.
+Therapy-specific duplicate rows are allowed when drug_name or type differs.
+
+accepted protein changes after API resolution:
+104 accepted protein changes: E545K
+37 accepted protein changes: L755_T759del
+1208 accepted protein changes: K111N
+2204 accepted protein changes: T798I
+634 accepted protein changes: M695FS*26
+777 accepted protein changes: Mutation
+
+not found details:
+37 | https://civicdb.org/molecular-profiles/37 | no exact genomic MAF match | ERBB2 L755_T759del
+2204 | https://civicdb.org/molecular-profiles/2204 | no exact genomic MAF match | ERBB2 T798I
+634 | https://civicdb.org/molecular-profiles/634 | no exact genomic MAF match | RB1 M695FS*26
+777 | https://civicdb.org/molecular-profiles/777 | not compatible with somatic SNV/indel MAF matching | RB1 Mutation

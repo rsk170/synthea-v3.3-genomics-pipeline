@@ -1309,7 +1309,7 @@
     },
     "Assign_Tumor_Drivers": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/tumor_driver_assignment",
+      "submodule": "breast_cancer/tumor_driver_assignment_v2",
       "direct_transition": "Treatment Outcome"
     },
     "Treatment Outcome": {
@@ -1525,7 +1525,7 @@
     },
     "Post_Treatment_Tumor_Response_Sequencing": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/tumor_response_sequencing",
+      "submodule": "breast_cancer/tumor_response_sequencing_v2",
       "direct_transition": "Clear_Final_Sequencing_Phase"
     },
     "Post_Treatment_Response_Routing": {

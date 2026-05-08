@@ -37,10 +37,22 @@ from build_breast_cancer_clones_v2 import (
 
 DEFAULT_PROPORTIONS_NAME = "breast_cancer_clone_proportions.csv"
 DEFAULT_OUTPUT_NAME = "observations_pruned_by_clone_vaf.csv"
+DEFAULT_CIVIC_DRIVER_VARIANTS_NAME = "civic_breast_cancer_driver_variants_from_maf.csv"
 DEFAULT_DRIVER_VARIANTS_NAME = "breast_cancer_driver_variants_from_maf.csv"
 DEFAULT_NON_DISRUPTIVE_VARIANTS_NAME = "breast_cancer_non_disruptive_variants_from_maf.csv"
+DEFAULT_MEDICATIONS_NAME = "medications.csv"
 HER2_FISH_DESCRIPTION = "HER2 [Presence] in Breast cancer specimen by FISH"
 GENE_ALIASES = {"HER2": "ERBB2"}
+CIVIC_TREND_TO_TYPE = {"decreasing": "sensitivity", "increasing": "resistance"}
+CIVIC_DRUG_ALIASES = {
+    "doxorubicin": "Doxorubicin",
+    "fulvestrant": "Fulvestrant",
+    "lapatinib": "Lapatinib",
+    "neratinib": "Neratinib",
+    "palbociclib": "Palbociclib",
+    "tamoxifen": "Tamoxifen",
+    "trastuzumab": "Trastuzumab",
+}
 
 GENE_CODE = "48018-6"
 GENE_DESCRIPTION = "Gene studied [ID]"
@@ -51,7 +63,7 @@ LOCAL_VARIANT_CLASS_DESCRIPTION = "Variant classification"
 VARIANT_TYPE_CODE = "48019-4"
 VARIANT_TYPE_DESCRIPTION = "DNA change type"
 VAF_CODE = "81258-6"
-VAF_DESCRIPTION = "Sample variant allelic frequency [NFr]"
+VAF_DESCRIPTION = "Estimated clonal prevalence [NFr]"
 CLONAL_ROLE_CODE = "CLONAL_ROLE"
 CLONAL_ROLE_DESCRIPTION_SUFFIX = " - clonal role"
 FOUNDING_ROLE_VALUE = "founding"
@@ -96,11 +108,27 @@ def parse_args() -> argparse.Namespace:
         help="Drop genes at any timepoint with clone VAF below this percentage. Default: 5.0",
     )
     parser.add_argument(
+        "--civic-driver-variants",
+        type=Path,
+        help=(
+            "Path to civic_breast_cancer_driver_variants_from_maf.csv. Defaults to "
+            "scripts/civic_breast_cancer_driver_variants_from_maf.csv."
+        ),
+    )
+    parser.add_argument(
         "--driver-variants",
         type=Path,
         help=(
             "Path to breast_cancer_driver_variants_from_maf.csv. Defaults to "
             "scripts/breast_cancer_driver_variants_from_maf.csv."
+        ),
+    )
+    parser.add_argument(
+        "--medications",
+        type=Path,
+        help=(
+            "Path to medications.csv. Defaults to medications.csv in the same "
+            "directory as the input observations.csv."
         ),
     )
     parser.add_argument(
@@ -301,12 +329,135 @@ def load_variant_rows(variant_path: Path) -> dict[str, list[dict[str, str]]]:
     return rows_by_gene
 
 
+def normalize_civic_drug_name(name: str) -> str | None:
+    return CIVIC_DRUG_ALIASES.get(name.strip().lower())
+
+
+def medication_to_civic_drugs(description: str) -> set[str]:
+    lower = description.strip().lower()
+    return {canonical for token, canonical in CIVIC_DRUG_ALIASES.items() if token in lower}
+
+
+def load_latest_gene_trends(
+    observations_path: Path,
+) -> dict[tuple[str, str], tuple[str, str]]:
+    latest_trends: dict[tuple[str, str], tuple[str, str, str]] = {}
+
+    with observations_path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            description = row["DESCRIPTION"].strip()
+            if not description.startswith(POST_TREATMENT_PREFIX):
+                continue
+
+            gene = description[len(POST_TREATMENT_PREFIX) :].strip()
+            if not gene:
+                continue
+
+            patient_id = row["PATIENT"].strip()
+            date = row["DATE"].strip()
+            encounter = row["ENCOUNTER"].strip()
+            trend = row["VALUE"].strip().lower()
+            canonical_gene = canonical_gene_name(gene)
+            key = (patient_id, canonical_gene)
+            marker = (date, encounter)
+            existing = latest_trends.get(key)
+            if existing is None or marker >= (existing[0], existing[1]):
+                latest_trends[key] = (date, encounter, trend)
+
+    return {
+        (patient_id, gene): (date, trend)
+        for (patient_id, gene), (date, _, trend) in latest_trends.items()
+    }
+
+
+def load_patient_civic_medications(
+    medications_path: Path,
+) -> dict[str, list[tuple[str, str]]]:
+    patient_medications: dict[str, list[tuple[str, str]]] = defaultdict(list)
+
+    with medications_path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            patient_id = row["PATIENT"].strip()
+            if not patient_id:
+                continue
+
+            start = row["START"].strip()
+            description = row["DESCRIPTION"].strip()
+            for civic_drug in medication_to_civic_drugs(description):
+                patient_medications[patient_id].append((start, civic_drug))
+
+    for patient_id in patient_medications:
+        patient_medications[patient_id].sort()
+    return patient_medications
+
+
+def civic_medications_for_patient(
+    patient_id: str,
+    cutoff_date: str | None,
+    patient_medications: dict[str, list[tuple[str, str]]],
+) -> list[str]:
+    matched = {
+        civic_drug
+        for start, civic_drug in patient_medications.get(patient_id, [])
+        if not cutoff_date or not start or start <= cutoff_date
+    }
+    return sorted(matched)
+
+
+def choose_civic_patient_gene_variant(
+    patient_id: str,
+    gene: str,
+    civic_variants: dict[str, list[dict[str, str]]],
+    latest_gene_trends: dict[tuple[str, str], tuple[str, str]],
+    patient_medications: dict[str, list[tuple[str, str]]],
+) -> tuple[dict[str, str], str]:
+    canonical_gene = canonical_gene_name(gene)
+    latest = latest_gene_trends.get((patient_id, canonical_gene))
+    if latest is None:
+        return {}, "missing_trend"
+
+    trend_date, trend = latest
+    civic_type = CIVIC_TREND_TO_TYPE.get(trend)
+    if civic_type is None:
+        return {}, "non_directional_trend"
+
+    medications = civic_medications_for_patient(patient_id, trend_date, patient_medications)
+    if not medications:
+        return {}, "missing_medication"
+
+    pool = [
+        row
+        for row in civic_variants.get(canonical_gene, [])
+        if row.get("type", "").strip().lower() == civic_type
+        and normalize_civic_drug_name(row.get("drug_name", "")) in medications
+    ]
+    if not pool:
+        return {}, "missing_civic_match"
+
+    return dict(random.choice(pool)), "civic"
+
+
 def choose_patient_gene_variant(
     patient_id: str,
     gene: str,
+    civic_variants: dict[str, list[dict[str, str]]],
+    latest_gene_trends: dict[tuple[str, str], tuple[str, str]],
+    patient_medications: dict[str, list[tuple[str, str]]],
     driver_variants: dict[str, list[dict[str, str]]],
     non_disruptive_variants: dict[str, list[dict[str, str]]],
 ) -> tuple[dict[str, str], str]:
+    civic_variant, _ = choose_civic_patient_gene_variant(
+        patient_id,
+        gene,
+        civic_variants,
+        latest_gene_trends,
+        patient_medications,
+    )
+    if civic_variant:
+        return civic_variant, "civic"
+
     canonical_gene = canonical_gene_name(gene)
     pool = driver_variants.get(canonical_gene)
     source = "driver"
@@ -380,7 +531,7 @@ def build_variant_observation_group(
         build_observation_row(
             base_row,
             VAF_CODE,
-            f"{block_label} - sample variant allelic frequency",
+            f"{block_label} - estimated clonal prevalence",
             format_vaf_value(vaf_pct),
             "numeric",
         ),
@@ -409,6 +560,9 @@ def transform_observations(
     dated_genes_to_remove: dict[str, dict[str, set[str]]],
     gene_vafs: dict[str, dict[str, dict[str, float]]],
     founding_genes: dict[str, set[str]],
+    civic_variants: dict[str, list[dict[str, str]]],
+    latest_gene_trends: dict[tuple[str, str], tuple[str, str]],
+    patient_medications: dict[str, list[tuple[str, str]]],
     driver_variants: dict[str, list[dict[str, str]]],
     non_disruptive_variants: dict[str, list[dict[str, str]]],
 ) -> tuple[list[dict[str, str]], list[dict[str, str]], list[str], Counter]:
@@ -449,6 +603,9 @@ def transform_observations(
                     patient_variant_cache[cache_key] = choose_patient_gene_variant(
                         patient_id,
                         gene,
+                        civic_variants,
+                        latest_gene_trends,
+                        patient_medications,
                         driver_variants,
                         non_disruptive_variants,
                     )
@@ -507,6 +664,9 @@ def transform_observations(
                 patient_variant_cache[cache_key] = choose_patient_gene_variant(
                     patient_id,
                     gene,
+                    civic_variants,
+                    latest_gene_trends,
+                    patient_medications,
                     driver_variants,
                     non_disruptive_variants,
                 )
@@ -547,6 +707,9 @@ def transform_observations(
                     patient_variant_cache[cache_key] = choose_patient_gene_variant(
                         patient_id,
                         gene,
+                        civic_variants,
+                        latest_gene_trends,
+                        patient_medications,
                         driver_variants,
                         non_disruptive_variants,
                     )
@@ -600,12 +763,20 @@ def main() -> int:
             raise FileNotFoundError(f"Observations file not found: {observations_path}")
 
     output_path = args.output or observations_path.with_name(DEFAULT_OUTPUT_NAME)
+    medications_path = args.medications or observations_path.with_name(DEFAULT_MEDICATIONS_NAME)
+    civic_variants_path = args.civic_driver_variants or (
+        repo_root / "scripts" / DEFAULT_CIVIC_DRIVER_VARIANTS_NAME
+    )
     driver_variants_path = args.driver_variants or (
         repo_root / "scripts" / DEFAULT_DRIVER_VARIANTS_NAME
     )
     non_disruptive_variants_path = args.non_disruptive_variants or (
         repo_root / "scripts" / DEFAULT_NON_DISRUPTIVE_VARIANTS_NAME
     )
+    if not medications_path.exists():
+        raise FileNotFoundError(f"Medications file not found: {medications_path}")
+    if not civic_variants_path.exists():
+        raise FileNotFoundError(f"CIViC driver variant file not found: {civic_variants_path}")
     if not driver_variants_path.exists():
         raise FileNotFoundError(f"Driver variant file not found: {driver_variants_path}")
     if not non_disruptive_variants_path.exists():
@@ -618,6 +789,9 @@ def main() -> int:
     )
     gene_vafs = load_clone_vaf_map(clone_proportions_path)
     founding_genes = load_founding_gene_map(clone_proportions_path)
+    civic_variants = load_variant_rows(civic_variants_path)
+    latest_gene_trends = load_latest_gene_trends(observations_path)
+    patient_medications = load_patient_civic_medications(medications_path)
     driver_variants = load_variant_rows(driver_variants_path)
     non_disruptive_variants = load_variant_rows(non_disruptive_variants_path)
     kept_rows, removed_rows, fieldnames, transform_stats = transform_observations(
@@ -626,6 +800,9 @@ def main() -> int:
         dated_genes_to_remove,
         gene_vafs,
         founding_genes,
+        civic_variants,
+        latest_gene_trends,
+        patient_medications,
         driver_variants,
         non_disruptive_variants,
     )
@@ -633,6 +810,8 @@ def main() -> int:
 
     print(f"Clone proportions: {clone_proportions_path}")
     print(f"Input observations: {observations_path}")
+    print(f"Input medications: {medications_path}")
+    print(f"CIViC driver variants: {civic_variants_path}")
     print(f"Driver variants: {driver_variants_path}")
     print(f"Non-disruptive variants: {non_disruptive_variants_path}")
     print(f"Wrote standardized observations: {output_path}")
@@ -658,6 +837,10 @@ def main() -> int:
         f"{transform_stats['her2_variant_groups_skipped_without_vaf']}"
     )
     print(f"Variant groups emitted: {transform_stats['variant_groups_emitted']}")
+    print(
+        "Variant groups emitted from CIViC driver file: "
+        f"{transform_stats['variant_groups_emitted_civic']}"
+    )
     print(
         "Variant groups emitted from driver file: "
         f"{transform_stats['variant_groups_emitted_driver']}"

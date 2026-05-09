@@ -489,7 +489,7 @@
     },
     "Post_Chemo_Sequencing_After_Mastectomy": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/tumor_response_sequencing_v2",
+      "submodule": "breast_cancer/tumor_response_sequencing",
       "direct_transition": "Delay after Mastectomy"
     },
     "Post_Chemo_Sequencing_Gate_After_BCS": {
@@ -511,7 +511,7 @@
     },
     "Post_Chemo_Sequencing_After_BCS": {
       "type": "CallSubmodule",
-      "submodule": "breast_cancer/tumor_response_sequencing_v2",
+      "submodule": "breast_cancer/tumor_response_sequencing",
       "direct_transition": "Delay After BCS"
     },
     "Delay After BCS": {

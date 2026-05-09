@@ -73,7 +73,7 @@
               }
             ]
           },
-          "transition": "Chemo_CYP19A1"
+          "transition": "Chemo_TP53"
         },
         {
           "transition": "Endocrine_Response_Gate"
@@ -296,7 +296,7 @@
             "attribute": "ER_medication",
             "operator": "is not nil"
           },
-          "transition": "Endocrine_PGR"
+          "transition": "Endocrine_ESR1_V2"
         },
         {
           "transition": "HER2_Response_Gate"
@@ -481,10 +481,41 @@
                 "condition_type": "Attribute",
                 "attribute": "HER2_medication",
                 "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
               }
             ]
           },
-          "transition": "Set_Trend_HER2_Decreasing"
+          "transition": "Set_Trend_HER2_Decreasing_V2"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "HER2_medication",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              }
+            ]
+          },
+          "transition": "Set_Trend_HER2_Increasing_With_Treatment_V2"
         },
         {
           "condition": {
@@ -504,7 +535,7 @@
               }
             ]
           },
-          "transition": "Set_Trend_HER2_Increasing"
+          "transition": "Set_Trend_HER2_Increasing_Final_V2"
         },
         {
           "transition": "CDK46_Response_Gate"
@@ -689,14 +720,44 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "ER_PR_medication",
-            "operator": "is not nil"
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_PR_medication",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              }
+            ]
           },
-          "transition": "CDK46_ESR1"
+          "transition": "CDK46_ESR1_V2"
         },
         {
-          "transition": "Stable_Treatment_CYP19A1"
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_PR_medication",
+                "operator": "is not nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              }
+            ]
+          },
+          "transition": "CDK46_RB1_V2"
+        },
+        {
+          "transition": "Stable_Treatment_TP53_CHEMO"
         }
       ]
     },
@@ -974,7 +1035,7 @@
       "type": "SetAttribute",
       "attribute": "clone_trend_CCNE1",
       "value": "increasing",
-      "direct_transition": "Stable_Treatment_CYP19A1"
+      "direct_transition": "Stable_Treatment_TP53_CHEMO"
     },
     "Stable_Treatment_CYP19A1": {
       "type": "Simple",
@@ -1560,7 +1621,7 @@
           "transition": "Set_Trend_ERBB3_Stable"
         },
         {
-          "transition": "Stable_Treatment_MET"
+          "transition": "Stable_Treatment_FCGR2A"
         }
       ]
     },
@@ -1568,7 +1629,7 @@
       "type": "SetAttribute",
       "attribute": "clone_trend_ERBB3",
       "value": "stable",
-      "direct_transition": "Stable_Treatment_MET"
+      "direct_transition": "Stable_Treatment_FCGR2A"
     },
     "Stable_Treatment_MET": {
       "type": "Simple",
@@ -1765,6 +1826,39 @@
     "Set_Trend_RB1_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_RB1",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_FAT1"
+    },
+    "Stable_Treatment_FAT1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_FAT1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_FAT1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_FAT1_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_CCND3"
+        }
+      ]
+    },
+    "Set_Trend_FAT1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_FAT1",
       "value": "stable",
       "direct_transition": "Stable_Treatment_CCND3"
     },
@@ -2698,6 +2792,1837 @@
     },
     "Stable_Gene_Gate": {
       "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "tumor_response_sequencing_phase",
+            "operator": "==",
+            "value": "post_chemo"
+          },
+          "transition": "Stable_Current_Treatment_HER2"
+        },
+        {
+          "transition": "Unknown_Current_Treatment_HER2"
+        }
+      ]
+    },
+    "Unknown_Current_Treatment_HER2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_HER2",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_HER2_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Unknown_Current_Treatment_ESR1"
+        }
+      ]
+    },
+    "Set_Trend_HER2_Current_Treatment_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_HER2",
+      "value": "unknown",
+      "direct_transition": "Unknown_Current_Treatment_ESR1"
+    },
+    "Unknown_Current_Treatment_ESR1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ESR1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ESR1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ESR1_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Unknown_Current_Treatment_PIK3CA"
+        }
+      ]
+    },
+    "Set_Trend_ESR1_Current_Treatment_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ESR1",
+      "value": "unknown",
+      "direct_transition": "Unknown_Current_Treatment_PIK3CA"
+    },
+    "Unknown_Current_Treatment_PIK3CA": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_PIK3CA",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_PIK3CA",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_PIK3CA_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Unknown_Current_Treatment_CHEK2"
+        }
+      ]
+    },
+    "Set_Trend_PIK3CA_Current_Treatment_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PIK3CA",
+      "value": "unknown",
+      "direct_transition": "Unknown_Current_Treatment_CHEK2"
+    },
+    "Unknown_Current_Treatment_CHEK2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CHEK2",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CHEK2",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CHEK2_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Unknown_Current_Treatment_ERBB3"
+        }
+      ]
+    },
+    "Set_Trend_CHEK2_Current_Treatment_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CHEK2",
+      "value": "unknown",
+      "direct_transition": "Unknown_Current_Treatment_ERBB3"
+    },
+    "Unknown_Current_Treatment_ERBB3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ERBB3",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ERBB3",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ERBB3_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Unknown_Current_Treatment_FCGR2A"
+        }
+      ]
+    },
+    "Set_Trend_ERBB3_Current_Treatment_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ERBB3",
+      "value": "unknown",
+      "direct_transition": "Unknown_Current_Treatment_FCGR2A"
+    },
+    "Unknown_Current_Treatment_FCGR2A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_FCGR2A",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_FCGR2A",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_FCGR2A_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Unknown_Current_Treatment_RB1"
+        }
+      ]
+    },
+    "Set_Trend_FCGR2A_Current_Treatment_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_FCGR2A",
+      "value": "unknown",
+      "direct_transition": "Unknown_Current_Treatment_RB1"
+    },
+    "Unknown_Current_Treatment_RB1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_RB1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_RB1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_RB1_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Unknown_Current_Treatment_FAT1"
+        }
+      ]
+    },
+    "Set_Trend_RB1_Current_Treatment_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_RB1",
+      "value": "unknown",
+      "direct_transition": "Unknown_Current_Treatment_FAT1"
+    },
+    "Unknown_Current_Treatment_FAT1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_FAT1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_FAT1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_FAT1_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Stable_ARID1A"
+        }
+      ]
+    },
+    "Set_Trend_FAT1_Current_Treatment_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_FAT1",
+      "value": "unknown",
+      "direct_transition": "Stable_ARID1A"
+    },
+    "Stable_Current_Treatment_HER2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_HER2",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "HER2_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_HER2_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_HER2",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              }
+            ]
+          },
+          "transition": "Set_Trend_HER2_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_ESR1"
+        }
+      ]
+    },
+    "Set_Trend_HER2_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_HER2",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_ESR1"
+    },
+    "Stable_Current_Treatment_ESR1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ESR1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ESR1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ER_medication",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ER_PR_medication",
+                    "operator": "is not nil"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_ESR1_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ESR1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ESR1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_ESR1_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ESR1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ESR1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ESR1_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Stable_Current_Treatment_GATA3"
+        }
+      ]
+    },
+    "Set_Trend_ESR1_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ESR1",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_GATA3"
+    },
+    "Stable_Current_Treatment_GATA3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_GATA3",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_GATA3",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_GATA3_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_GATA3",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_GATA3",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_GATA3_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_MAP3K1"
+        }
+      ]
+    },
+    "Set_Trend_GATA3_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_GATA3",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_MAP3K1"
+    },
+    "Stable_Current_Treatment_MAP3K1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_MAP3K1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_MAP3K1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_MAP3K1_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_MAP3K1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_MAP3K1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_MAP3K1_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_MAP2K4"
+        }
+      ]
+    },
+    "Set_Trend_MAP3K1_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_MAP3K1",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_MAP2K4"
+    },
+    "Stable_Current_Treatment_MAP2K4": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_MAP2K4",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_MAP2K4",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_MAP2K4_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_MAP2K4",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_MAP2K4",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_MAP2K4_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_PIK3CA"
+        }
+      ]
+    },
+    "Set_Trend_MAP2K4_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_MAP2K4",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_PIK3CA"
+    },
+    "Stable_Current_Treatment_PIK3CA": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_PIK3CA",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_PIK3CA",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ER_medication",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ER_PR_medication",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "And",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_HER2",
+                        "operator": "==",
+                        "value": "HER2-positive"
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "HER2_medication",
+                        "operator": "is not nil"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_PIK3CA_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_PIK3CA",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_PIK3CA",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_HER2",
+                    "operator": "==",
+                    "value": "HER2-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_PIK3CA_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_STK11"
+        }
+      ]
+    },
+    "Set_Trend_PIK3CA_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PIK3CA",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_STK11"
+    },
+    "Stable_Current_Treatment_STK11": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_STK11",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_STK11",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_STK11_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_STK11",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_STK11",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_STK11_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_AKT1"
+        }
+      ]
+    },
+    "Set_Trend_STK11_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_STK11",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_AKT1"
+    },
+    "Stable_Current_Treatment_AKT1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_AKT1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_AKT1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_AKT1_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_AKT1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_AKT1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_AKT1_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_ARID1A"
+        }
+      ]
+    },
+    "Set_Trend_AKT1_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_AKT1",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_ARID1A"
+    },
+    "Stable_Current_Treatment_ARID1A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ARID1A",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ARID1A",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ARID1A_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ARID1A",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ARID1A",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_ARID1A_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_RUNX1"
+        }
+      ]
+    },
+    "Set_Trend_ARID1A_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ARID1A",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_RUNX1"
+    },
+    "Stable_Current_Treatment_RUNX1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_RUNX1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_RUNX1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_RUNX1_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_RUNX1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_RUNX1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_RUNX1_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_CTCF"
+        }
+      ]
+    },
+    "Set_Trend_RUNX1_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_RUNX1",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_CTCF"
+    },
+    "Stable_Current_Treatment_CTCF": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CTCF",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CTCF",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CTCF_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CTCF",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CTCF",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_CTCF_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_TP53"
+        }
+      ]
+    },
+    "Set_Trend_CTCF_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CTCF",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_TP53"
+    },
+    "Stable_Current_Treatment_TP53": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_TP53",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_TP53_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_CHEK2"
+        }
+      ]
+    },
+    "Set_Trend_TP53_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_TP53",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_CHEK2"
+    },
+    "Stable_Current_Treatment_CHEK2": {
+      "type": "Simple",
+      "direct_transition": "Stable_Current_Treatment_NF1"
+    },
+    "Stable_Current_Treatment_NF1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_NF1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_NF1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ER_medication",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ER_PR_medication",
+                    "operator": "is not nil"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_NF1_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_NF1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_NF1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_NF1_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_ERBB3"
+        }
+      ]
+    },
+    "Set_Trend_NF1_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_NF1",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_ERBB3"
+    },
+    "Stable_Current_Treatment_ERBB3": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ERBB3",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ERBB3",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "HER2_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ERBB3_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ERBB3",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ERBB3",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ERBB3_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ERBB3",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ERBB3",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ERBB3_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Stable_Current_Treatment_FCGR2A"
+        }
+      ]
+    },
+    "Set_Trend_ERBB3_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ERBB3",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_FCGR2A"
+    },
+    "Stable_Current_Treatment_FCGR2A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_FCGR2A",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_FCGR2A",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "HER2_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_FCGR2A_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_FCGR2A",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_FCGR2A",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              }
+            ]
+          },
+          "transition": "Set_Trend_FCGR2A_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_FCGR2A",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_FCGR2A",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_FCGR2A_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Stable_Current_Treatment_PTEN"
+        }
+      ]
+    },
+    "Set_Trend_FCGR2A_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_FCGR2A",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_PTEN"
+    },
+    "Stable_Current_Treatment_PTEN": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_PTEN",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_PTEN",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "ER_PR_medication",
+                    "operator": "is not nil"
+                  },
+                  {
+                    "condition_type": "And",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_HER2",
+                        "operator": "==",
+                        "value": "HER2-positive"
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "HER2_medication",
+                        "operator": "is not nil"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_PTEN_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_PTEN",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_PTEN",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_HER2",
+                    "operator": "==",
+                    "value": "HER2-positive"
+                  },
+                  {
+                    "condition_type": "And",
+                    "conditions": [
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_ER",
+                        "operator": "==",
+                        "value": "ER-positive"
+                      },
+                      {
+                        "condition_type": "Attribute",
+                        "attribute": "breast_cancer_PR",
+                        "operator": "==",
+                        "value": "PR-positive"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_PTEN_Current_Treatment_Stable"
+        },
+        {
+          "transition": "Stable_Current_Treatment_RB1"
+        }
+      ]
+    },
+    "Set_Trend_PTEN_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PTEN",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_RB1"
+    },
+    "Stable_Current_Treatment_RB1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_RB1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_RB1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_PR_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_RB1_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_RB1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_RB1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_RB1_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_RB1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_RB1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_RB1_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Stable_Current_Treatment_FAT1"
+        }
+      ]
+    },
+    "Set_Trend_RB1_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_RB1",
+      "value": "stable",
+      "direct_transition": "Stable_Current_Treatment_FAT1"
+    },
+    "Stable_Current_Treatment_FAT1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_FAT1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_FAT1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "ER_PR_medication",
+                "operator": "is not nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_FAT1_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_FAT1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_FAT1",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "And",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Set_Trend_FAT1_Current_Treatment_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_FAT1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_FAT1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_FAT1_Current_Treatment_Unknown"
+        },
+        {
+          "transition": "Stable_ARID1A"
+        }
+      ]
+    },
+    "Set_Trend_FAT1_Current_Treatment_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_FAT1",
+      "value": "stable",
       "direct_transition": "Stable_ARID1A"
     },
     "Stable_ARID1A": {
@@ -2705,15 +4630,25 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "has_gene_ARID1A",
-            "operator": "==",
-            "value": true
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ARID1A",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_ARID1A",
+                "operator": "is nil"
+              }
+            ]
           },
           "transition": "Set_Trend_ARID1A_Stable"
         },
         {
-          "transition": "Stable_BRCA2"
+          "transition": "Stable_PIK3CA"
         }
       ]
     },
@@ -2721,7 +4656,40 @@
       "type": "SetAttribute",
       "attribute": "clone_trend_ARID1A",
       "value": "unknown",
-      "direct_transition": "Stable_BRCA2"
+      "direct_transition": "Stable_PIK3CA"
+    },
+    "Stable_PIK3CA": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_PIK3CA",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_PIK3CA",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_PIK3CA_General_Unknown"
+        },
+        {
+          "transition": "Stable_STK11"
+        }
+      ]
+    },
+    "Set_Trend_PIK3CA_General_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PIK3CA",
+      "value": "unknown",
+      "direct_transition": "Stable_STK11"
     },
     "Stable_BRCA2": {
       "type": "Simple",
@@ -2759,13 +4727,79 @@
           "transition": "Set_Trend_CBFB_Stable"
         },
         {
-          "transition": "Stable_CDH1"
+          "transition": "Stable_CDKN2A"
         }
       ]
     },
     "Set_Trend_CBFB_Stable": {
       "type": "SetAttribute",
       "attribute": "clone_trend_CBFB",
+      "value": "unknown",
+      "direct_transition": "Stable_CDKN2A"
+    },
+    "Stable_CDKN2A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CDKN2A",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CDKN2A",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CDKN2A_General_Unknown"
+        },
+        {
+          "transition": "Stable_CCND1"
+        }
+      ]
+    },
+    "Set_Trend_CDKN2A_General_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CDKN2A",
+      "value": "unknown",
+      "direct_transition": "Stable_CCND1"
+    },
+    "Stable_CCND1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CCND1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CCND1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CCND1_General_Unknown"
+        },
+        {
+          "transition": "Stable_CDH1"
+        }
+      ]
+    },
+    "Set_Trend_CCND1_General_Unknown": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CCND1",
       "value": "unknown",
       "direct_transition": "Stable_CDH1"
     },
@@ -2843,10 +4877,20 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "has_gene_GATA3",
-            "operator": "==",
-            "value": true
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_GATA3",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_GATA3",
+                "operator": "is nil"
+              }
+            ]
           },
           "transition": "Set_Trend_GATA3_Stable"
         },
@@ -2912,10 +4956,20 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "has_gene_MAP2K4",
-            "operator": "==",
-            "value": true
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_MAP2K4",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_MAP2K4",
+                "operator": "is nil"
+              }
+            ]
           },
           "transition": "Set_Trend_MAP2K4_Stable"
         },
@@ -2935,15 +4989,25 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "has_gene_MAP3K1",
-            "operator": "==",
-            "value": true
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_MAP3K1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_MAP3K1",
+                "operator": "is nil"
+              }
+            ]
           },
           "transition": "Set_Trend_MAP3K1_Stable"
         },
         {
-          "transition": "Stable_MCL1"
+          "transition": "Stable_RUNX1"
         }
       ]
     },
@@ -2951,7 +5015,7 @@
       "type": "SetAttribute",
       "attribute": "clone_trend_MAP3K1",
       "value": "unknown",
-      "direct_transition": "Stable_MCL1"
+      "direct_transition": "Stable_RUNX1"
     },
     "Stable_MCL1": {
       "type": "Simple",
@@ -3152,15 +5216,25 @@
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "has_gene_PTEN",
-            "operator": "==",
-            "value": true
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_PTEN",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_PTEN",
+                "operator": "is nil"
+              }
+            ]
           },
           "transition": "Set_Trend_PTEN_Stable"
         },
         {
-          "transition": "Stable_TP53"
+          "transition": "Stable_AKT1"
         }
       ]
     },
@@ -3168,17 +5242,27 @@
       "type": "SetAttribute",
       "attribute": "clone_trend_PTEN",
       "value": "unknown",
-      "direct_transition": "Stable_TP53"
+      "direct_transition": "Stable_AKT1"
     },
     "Stable_TP53": {
       "type": "Simple",
       "conditional_transition": [
         {
           "condition": {
-            "condition_type": "Attribute",
-            "attribute": "has_gene_TP53",
-            "operator": "==",
-            "value": true
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_TP53",
+                "operator": "is nil"
+              }
+            ]
           },
           "transition": "Set_Trend_TP53_Stable"
         },
@@ -3735,7 +5819,7 @@
           "transition": "Record_Trend_ERBB3"
         },
         {
-          "transition": "Export_MET"
+          "transition": "Export_FCGR2A"
         }
       ]
     },
@@ -3751,7 +5835,7 @@
         }
       ],
       "attribute": "clone_trend_ERBB3",
-      "direct_transition": "Export_MET"
+      "direct_transition": "Export_FCGR2A"
     },
     "Export_MET": {
       "type": "Simple",
@@ -3915,7 +5999,7 @@
           "transition": "Record_Trend_RB1"
         },
         {
-          "transition": "Export_CCND3"
+          "transition": "Export_FAT1"
         }
       ]
     },
@@ -3931,6 +6015,36 @@
         }
       ],
       "attribute": "clone_trend_RB1",
+      "direct_transition": "Export_FAT1"
+    },
+    "Export_FAT1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "clone_trend_FAT1",
+            "operator": "is not nil"
+          },
+          "transition": "Record_Trend_FAT1"
+        },
+        {
+          "transition": "Export_CCND3"
+        }
+      ]
+    },
+    "Record_Trend_FAT1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Post-treatment clone trend FAT1"
+        }
+      ],
+      "attribute": "clone_trend_FAT1",
       "direct_transition": "Export_CCND3"
     },
     "Export_CCND3": {
@@ -4035,7 +6149,7 @@
           "transition": "Record_Trend_ARID1A"
         },
         {
-          "transition": "Export_BRCA2"
+          "transition": "Export_STK11"
         }
       ]
     },
@@ -4051,7 +6165,7 @@
         }
       ],
       "attribute": "clone_trend_ARID1A",
-      "direct_transition": "Export_BRCA2"
+      "direct_transition": "Export_STK11"
     },
     "Export_BRCA2": {
       "type": "Simple",
@@ -4335,7 +6449,7 @@
           "transition": "Record_Trend_MAP3K1"
         },
         {
-          "transition": "Export_MCL1"
+          "transition": "Export_RUNX1"
         }
       ]
     },
@@ -4351,7 +6465,7 @@
         }
       ],
       "attribute": "clone_trend_MAP3K1",
-      "direct_transition": "Export_MCL1"
+      "direct_transition": "Export_RUNX1"
     },
     "Export_MCL1": {
       "type": "Simple",
@@ -4605,7 +6719,7 @@
           "transition": "Record_Trend_PTEN"
         },
         {
-          "transition": "Export_TP53"
+          "transition": "Export_AKT1"
         }
       ]
     },
@@ -4621,7 +6735,7 @@
         }
       ],
       "attribute": "clone_trend_PTEN",
-      "direct_transition": "Export_TP53"
+      "direct_transition": "Export_AKT1"
     },
     "Export_TP53": {
       "type": "Simple",
@@ -4635,7 +6749,7 @@
           "transition": "Record_Trend_TP53"
         },
         {
-          "transition": "Export_YWHAZ"
+          "transition": "Export_CHEK2"
         }
       ]
     },
@@ -4651,7 +6765,7 @@
         }
       ],
       "attribute": "clone_trend_TP53",
-      "direct_transition": "Export_YWHAZ"
+      "direct_transition": "Export_CHEK2"
     },
     "Export_YWHAZ": {
       "type": "Simple",
@@ -4715,6 +6829,1375 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Chemo_TP53": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              }
+            ]
+          },
+          "transition": "Set_Trend_TP53_Decreasing_Chemo"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              }
+            ]
+          },
+          "transition": "Set_Trend_TP53_Increasing_Chemo"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "chemo_tp53_role",
+                "operator": "==",
+                "value": "sensitive"
+              }
+            ]
+          },
+          "transition": "Set_Trend_TP53_Decreasing_Chemo"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "chemo_tp53_role",
+                "operator": "==",
+                "value": "resistant"
+              }
+            ]
+          },
+          "transition": "Set_Trend_TP53_Increasing_Chemo"
+        },
+        {
+          "transition": "Chemo_CHEK2"
+        }
+      ]
+    },
+    "Set_Trend_TP53_Decreasing_Chemo": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_TP53",
+      "value": "decreasing",
+      "direct_transition": "Chemo_CHEK2"
+    },
+    "Set_Trend_TP53_Increasing_Chemo": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_TP53",
+      "value": "increasing",
+      "direct_transition": "Chemo_CHEK2"
+    },
+    "Chemo_CHEK2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CHEK2",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CHEK2_Decreasing_Chemo"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CHEK2",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CHEK2_Increasing_Chemo"
+        },
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CHEK2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_CHEK2_Increasing_Chemo"
+        },
+        {
+          "transition": "Endocrine_Response_Gate"
+        }
+      ]
+    },
+    "Set_Trend_CHEK2_Increasing_Chemo": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CHEK2",
+      "value": "increasing",
+      "direct_transition": "Endocrine_Response_Gate"
+    },
+    "Set_Trend_CHEK2_Decreasing_Chemo": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CHEK2",
+      "value": "decreasing",
+      "direct_transition": "Endocrine_Response_Gate"
+    },
+    "Stable_Treatment_TP53_CHEMO": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_TP53",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              }
+            ]
+          },
+          "transition": "Set_Trend_TP53_Decreasing_Chemo_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_TP53",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              }
+            ]
+          },
+          "transition": "Set_Trend_TP53_Increasing_Chemo_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_TP53",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "chemo_tp53_role",
+                "operator": "==",
+                "value": "sensitive"
+              }
+            ]
+          },
+          "transition": "Set_Trend_TP53_Decreasing_Chemo_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_TP53",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "chemo_tp53_role",
+                "operator": "==",
+                "value": "resistant"
+              }
+            ]
+          },
+          "transition": "Set_Trend_TP53_Increasing_Chemo_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_CHEK2_CHEMO"
+        }
+      ]
+    },
+    "Set_Trend_TP53_Decreasing_Chemo_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_TP53",
+      "value": "decreasing",
+      "direct_transition": "Stable_Treatment_CHEK2_CHEMO"
+    },
+    "Set_Trend_TP53_Increasing_Chemo_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_TP53",
+      "value": "increasing",
+      "direct_transition": "Stable_Treatment_CHEK2_CHEMO"
+    },
+    "Stable_Treatment_CHEK2_CHEMO": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CHEK2",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CHEK2",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CHEK2_Decreasing_Chemo_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CHEK2",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CHEK2",
+                "operator": "is nil"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "tumor_response_sequencing_phase",
+                "operator": "==",
+                "value": "post_chemo"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CHEK2_Increasing_Chemo_Stable"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CHEK2",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CHEK2",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CHEK2_Increasing_Chemo_Stable"
+        },
+        {
+          "transition": "Stable_Gene_Gate"
+        }
+      ]
+    },
+    "Set_Trend_CHEK2_Increasing_Chemo_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CHEK2",
+      "value": "increasing",
+      "direct_transition": "Stable_Gene_Gate"
+    },
+    "Set_Trend_CHEK2_Decreasing_Chemo_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CHEK2",
+      "value": "decreasing",
+      "direct_transition": "Stable_Gene_Gate"
+    },
+    "Export_CHEK2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "clone_trend_CHEK2",
+            "operator": "is not nil"
+          },
+          "transition": "Record_Trend_CHEK2"
+        },
+        {
+          "transition": "Export_YWHAZ"
+        }
+      ]
+    },
+    "Record_Trend_CHEK2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Post-treatment clone trend CHEK2"
+        }
+      ],
+      "attribute": "clone_trend_CHEK2",
+      "direct_transition": "Export_YWHAZ"
+    },
+    "Endocrine_ESR1_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ESR1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "endocrine_esr1_role",
+                "operator": "==",
+                "value": "resistant"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ESR1_Increasing_Endocrine_V2"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ESR1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "endocrine_esr1_role",
+                "operator": "==",
+                "value": "sensitive"
+              }
+            ]
+          },
+          "transition": "Set_Trend_ESR1_Decreasing_Endocrine_V2"
+        },
+        {
+          "transition": "Endocrine_GATA3_V2"
+        }
+      ]
+    },
+    "Set_Trend_ESR1_Decreasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ESR1",
+      "value": "decreasing",
+      "direct_transition": "Endocrine_GATA3_V2"
+    },
+    "Set_Trend_ESR1_Increasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ESR1",
+      "value": "increasing",
+      "direct_transition": "Endocrine_GATA3_V2"
+    },
+    "Endocrine_GATA3_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GATA3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_GATA3_Decreasing_Endocrine_V2"
+        },
+        {
+          "transition": "Endocrine_MAP3K1_V2"
+        }
+      ]
+    },
+    "Set_Trend_GATA3_Decreasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_GATA3",
+      "value": "decreasing",
+      "direct_transition": "Endocrine_MAP3K1_V2"
+    },
+    "Endocrine_MAP3K1_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MAP3K1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_MAP3K1_Decreasing_Endocrine_V2"
+        },
+        {
+          "transition": "Endocrine_MAP2K4_V2"
+        }
+      ]
+    },
+    "Set_Trend_MAP3K1_Decreasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_MAP3K1",
+      "value": "decreasing",
+      "direct_transition": "Endocrine_MAP2K4_V2"
+    },
+    "Endocrine_MAP2K4_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MAP2K4",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_MAP2K4_Decreasing_Endocrine_V2"
+        },
+        {
+          "transition": "Endocrine_PIK3CA_V2"
+        }
+      ]
+    },
+    "Set_Trend_MAP2K4_Decreasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_MAP2K4",
+      "value": "decreasing",
+      "direct_transition": "Endocrine_PIK3CA_V2"
+    },
+    "Endocrine_PIK3CA_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_PIK3CA_Decreasing_Endocrine_V2"
+        },
+        {
+          "transition": "Endocrine_STK11_V2"
+        }
+      ]
+    },
+    "Set_Trend_PIK3CA_Decreasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PIK3CA",
+      "value": "decreasing",
+      "direct_transition": "Endocrine_STK11_V2"
+    },
+    "Endocrine_STK11_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_STK11",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_STK11_Decreasing_Endocrine_V2"
+        },
+        {
+          "transition": "Endocrine_AKT1_V2"
+        }
+      ]
+    },
+    "Set_Trend_STK11_Decreasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_STK11",
+      "value": "decreasing",
+      "direct_transition": "Endocrine_AKT1_V2"
+    },
+    "Endocrine_AKT1_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_AKT1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_AKT1_Decreasing_Endocrine_V2"
+        },
+        {
+          "transition": "Endocrine_ARID1A_V2"
+        }
+      ]
+    },
+    "Set_Trend_AKT1_Decreasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_AKT1",
+      "value": "decreasing",
+      "direct_transition": "Endocrine_ARID1A_V2"
+    },
+    "Endocrine_ARID1A_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ARID1A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_ARID1A_Increasing_Endocrine_V2"
+        },
+        {
+          "transition": "Endocrine_RUNX1_V2"
+        }
+      ]
+    },
+    "Set_Trend_ARID1A_Increasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ARID1A",
+      "value": "increasing",
+      "direct_transition": "Endocrine_RUNX1_V2"
+    },
+    "Endocrine_RUNX1_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_RUNX1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_RUNX1_Increasing_Endocrine_V2"
+        },
+        {
+          "transition": "Endocrine_CTCF_V2"
+        }
+      ]
+    },
+    "Set_Trend_RUNX1_Increasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_RUNX1",
+      "value": "increasing",
+      "direct_transition": "Endocrine_CTCF_V2"
+    },
+    "Endocrine_CTCF_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CTCF",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_CTCF_Increasing_Endocrine_V2"
+        },
+        {
+          "transition": "Endocrine_TP53_V2"
+        }
+      ]
+    },
+    "Set_Trend_CTCF_Increasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CTCF",
+      "value": "increasing",
+      "direct_transition": "Endocrine_TP53_V2"
+    },
+    "Endocrine_TP53_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              }
+            ]
+          },
+          "transition": "Set_Trend_TP53_Increasing_Endocrine_V2"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_TP53",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              }
+            ]
+          },
+          "transition": "Set_Trend_TP53_Decreasing_Endocrine_V2"
+        },
+        {
+          "transition": "Endocrine_NF1"
+        }
+      ]
+    },
+    "Set_Trend_TP53_Decreasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_TP53",
+      "value": "decreasing",
+      "direct_transition": "Endocrine_NF1"
+    },
+    "Set_Trend_TP53_Increasing_Endocrine_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_TP53",
+      "value": "increasing",
+      "direct_transition": "Endocrine_NF1"
+    },
+    "Stable_STK11": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_STK11",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_STK11",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_STK11_Stable"
+        },
+        {
+          "transition": "Stable_BRCA2"
+        }
+      ]
+    },
+    "Set_Trend_STK11_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_STK11",
+      "value": "unknown",
+      "direct_transition": "Stable_BRCA2"
+    },
+    "Stable_RUNX1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_RUNX1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_RUNX1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_RUNX1_Stable"
+        },
+        {
+          "transition": "Stable_CTCF"
+        }
+      ]
+    },
+    "Set_Trend_RUNX1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_RUNX1",
+      "value": "unknown",
+      "direct_transition": "Stable_CTCF"
+    },
+    "Stable_CTCF": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_CTCF",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_CTCF",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_CTCF_Stable"
+        },
+        {
+          "transition": "Stable_MCL1"
+        }
+      ]
+    },
+    "Set_Trend_CTCF_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_CTCF",
+      "value": "unknown",
+      "direct_transition": "Stable_MCL1"
+    },
+    "Stable_AKT1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_AKT1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_AKT1",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_AKT1_Stable"
+        },
+        {
+          "transition": "Stable_TP53"
+        }
+      ]
+    },
+    "Set_Trend_AKT1_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_AKT1",
+      "value": "unknown",
+      "direct_transition": "Stable_TP53"
+    },
+    "Export_STK11": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "clone_trend_STK11",
+            "operator": "is not nil"
+          },
+          "transition": "Record_Trend_STK11"
+        },
+        {
+          "transition": "Export_BRCA2"
+        }
+      ]
+    },
+    "Record_Trend_STK11": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Post-treatment clone trend STK11"
+        }
+      ],
+      "attribute": "clone_trend_STK11",
+      "direct_transition": "Export_BRCA2"
+    },
+    "Export_RUNX1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "clone_trend_RUNX1",
+            "operator": "is not nil"
+          },
+          "transition": "Record_Trend_RUNX1"
+        },
+        {
+          "transition": "Export_CTCF"
+        }
+      ]
+    },
+    "Record_Trend_RUNX1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Post-treatment clone trend RUNX1"
+        }
+      ],
+      "attribute": "clone_trend_RUNX1",
+      "direct_transition": "Export_CTCF"
+    },
+    "Export_CTCF": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "clone_trend_CTCF",
+            "operator": "is not nil"
+          },
+          "transition": "Record_Trend_CTCF"
+        },
+        {
+          "transition": "Export_MCL1"
+        }
+      ]
+    },
+    "Record_Trend_CTCF": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Post-treatment clone trend CTCF"
+        }
+      ],
+      "attribute": "clone_trend_CTCF",
+      "direct_transition": "Export_MCL1"
+    },
+    "Export_AKT1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "clone_trend_AKT1",
+            "operator": "is not nil"
+          },
+          "transition": "Record_Trend_AKT1"
+        },
+        {
+          "transition": "Export_TP53"
+        }
+      ]
+    },
+    "Record_Trend_AKT1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Post-treatment clone trend AKT1"
+        }
+      ],
+      "attribute": "clone_trend_AKT1",
+      "direct_transition": "Export_TP53"
+    },
+    "Set_Trend_HER2_Decreasing_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_HER2",
+      "value": "decreasing",
+      "direct_transition": "HER2_ERBB3_Improving_V2"
+    },
+    "Set_Trend_HER2_Increasing_With_Treatment_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_HER2",
+      "value": "increasing",
+      "direct_transition": "HER2_PTEN_Worsening_V2"
+    },
+    "Set_Trend_HER2_Increasing_Final_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_HER2",
+      "value": "increasing",
+      "direct_transition": "CDK46_Response_Gate"
+    },
+    "HER2_ERBB3_Improving_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ERBB3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_ERBB3_Decreasing_HER2_V2"
+        },
+        {
+          "transition": "HER2_PIK3CA_Improving_V2"
+        }
+      ]
+    },
+    "Set_Trend_ERBB3_Decreasing_HER2_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ERBB3",
+      "value": "decreasing",
+      "direct_transition": "HER2_PIK3CA_Improving_V2"
+    },
+    "HER2_PIK3CA_Improving_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_PIK3CA_Decreasing_HER2_V2"
+        },
+        {
+          "transition": "HER2_FCGR2A_Improving_V2"
+        }
+      ]
+    },
+    "Set_Trend_PIK3CA_Decreasing_HER2_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PIK3CA",
+      "value": "decreasing",
+      "direct_transition": "HER2_FCGR2A_Improving_V2"
+    },
+    "HER2_FCGR2A_Improving_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_FCGR2A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_FCGR2A_Decreasing_HER2_V2"
+        },
+        {
+          "transition": "CDK46_Response_Gate"
+        }
+      ]
+    },
+    "Set_Trend_FCGR2A_Decreasing_HER2_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_FCGR2A",
+      "value": "decreasing",
+      "direct_transition": "CDK46_Response_Gate"
+    },
+    "HER2_PTEN_Worsening_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_PTEN_Increasing_HER2_V2"
+        },
+        {
+          "transition": "HER2_PIK3CA_Worsening_V2"
+        }
+      ]
+    },
+    "Set_Trend_PTEN_Increasing_HER2_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PTEN",
+      "value": "increasing",
+      "direct_transition": "HER2_PIK3CA_Worsening_V2"
+    },
+    "HER2_PIK3CA_Worsening_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_PIK3CA_Increasing_HER2_V2"
+        },
+        {
+          "transition": "CDK46_Response_Gate"
+        }
+      ]
+    },
+    "Set_Trend_PIK3CA_Increasing_HER2_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PIK3CA",
+      "value": "increasing",
+      "direct_transition": "CDK46_Response_Gate"
+    },
+    "Stable_Treatment_FCGR2A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_FCGR2A",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "clone_trend_FCGR2A",
+                "operator": "is nil"
+              }
+            ]
+          },
+          "transition": "Set_Trend_FCGR2A_Stable"
+        },
+        {
+          "transition": "Stable_Treatment_MET"
+        }
+      ]
+    },
+    "Set_Trend_FCGR2A_Stable": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_FCGR2A",
+      "value": "stable",
+      "direct_transition": "Stable_Treatment_MET"
+    },
+    "Export_FCGR2A": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "clone_trend_FCGR2A",
+            "operator": "is not nil"
+          },
+          "transition": "Record_Trend_FCGR2A"
+        },
+        {
+          "transition": "Export_MET"
+        }
+      ]
+    },
+    "Record_Trend_FCGR2A": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Post-treatment clone trend FCGR2A"
+        }
+      ],
+      "attribute": "clone_trend_FCGR2A",
+      "direct_transition": "Export_MET"
+    },
+    "CDK46_ESR1_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ESR1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_ESR1_Decreasing_CDK46_V2"
+        },
+        {
+          "transition": "CDK46_PIK3CA_V2"
+        }
+      ]
+    },
+    "Set_Trend_ESR1_Decreasing_CDK46_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_ESR1",
+      "value": "decreasing",
+      "direct_transition": "CDK46_PIK3CA_V2"
+    },
+    "CDK46_PIK3CA_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_PIK3CA_Decreasing_CDK46_V2"
+        },
+        {
+          "transition": "Stable_Treatment_TP53_CHEMO"
+        }
+      ]
+    },
+    "Set_Trend_PIK3CA_Decreasing_CDK46_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PIK3CA",
+      "value": "decreasing",
+      "direct_transition": "Stable_Treatment_TP53_CHEMO"
+    },
+    "CDK46_RB1_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_RB1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_RB1_Increasing_CDK46_V2"
+        },
+        {
+          "transition": "CDK46_FAT1_V2"
+        }
+      ]
+    },
+    "Set_Trend_RB1_Increasing_CDK46_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_RB1",
+      "value": "increasing",
+      "direct_transition": "CDK46_FAT1_V2"
+    },
+    "CDK46_FAT1_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_FAT1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_FAT1_Increasing_CDK46_V2"
+        },
+        {
+          "transition": "CDK46_PTEN_V2"
+        }
+      ]
+    },
+    "Set_Trend_FAT1_Increasing_CDK46_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_FAT1",
+      "value": "increasing",
+      "direct_transition": "CDK46_PTEN_V2"
+    },
+    "CDK46_PTEN_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_PTEN_Increasing_CDK46_V2"
+        },
+        {
+          "transition": "CDK46_NF1_V2"
+        }
+      ]
+    },
+    "Set_Trend_PTEN_Increasing_CDK46_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_PTEN",
+      "value": "increasing",
+      "direct_transition": "CDK46_NF1_V2"
+    },
+    "CDK46_NF1_V2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_NF1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Set_Trend_NF1_Increasing_CDK46_V2"
+        },
+        {
+          "transition": "Stable_Treatment_TP53_CHEMO"
+        }
+      ]
+    },
+    "Set_Trend_NF1_Increasing_CDK46_V2": {
+      "type": "SetAttribute",
+      "attribute": "clone_trend_NF1",
+      "value": "increasing",
+      "direct_transition": "Stable_Treatment_TP53_CHEMO"
     }
   },
   "gmf_version": 1

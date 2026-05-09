@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import math
 import random
 import sys
 from collections import defaultdict
@@ -64,24 +65,27 @@ TREATMENT_BUDGET_BY_TARGET = {
 GROUP_ORDER = ["chemo", "endocrine", "her2", "cdk46"]
 SENSITIVE_POOLS = {
     "chemo": [
-        ["CYP19A1", "BIRC5", "ABCB1", "CYP1B1", "SLCO1B1"],
-        ["CYP19A1", "BIRC5", "ABCB1", "CYP1B1", "SLCO1B1"],
+        ["TP53"],
+        ["TP53"],
     ],
-    "endocrine": [["PGR"], []],
+    "endocrine": [
+        ["ESR1", "GATA3", "MAP3K1", "MAP2K4"],
+        ["PIK3CA", "STK11", "AKT1", "ESR1", "GATA3", "MAP3K1", "MAP2K4"],
+    ],
     "her2": [
-        ["BRAF", "PIK3CA", "ESR1", "PGR", "ESR2", "ERBB3"],
-        ["BRAF", "PIK3CA", "ESR1", "PGR", "ESR2", "ERBB3"],
+        ["ERBB3", "PIK3CA", "HER2"],
+        ["ERBB3", "PIK3CA", "FCGR2A", "HER2"],
     ],
     "cdk46": [
-        ["ESR1", "CDKN2A", "CCND1", "PGR", "ESR2", "NRAS"],
-        ["ESR1", "CDKN2A", "CCND1", "PGR", "ESR2", "NRAS"],
+        ["PIK3CA", "ESR1"],
+        ["PIK3CA", "ESR1"],
     ],
 }
 RESISTANCE_POOLS = {
-    "chemo": ["NCOR2"],
-    "endocrine": ["NF1"],
-    "her2": ["MET"],
-    "cdk46": ["RB1"],
+    "chemo": ["TP53", "CHEK2"],
+    "endocrine": ["ARID1A", "RUNX1", "CTCF", "TP53", "NF1", "ESR1"],
+    "her2": ["PTEN", "PIK3CA", "HER2"],
+    "cdk46": ["RB1", "FAT1", "PTEN", "NF1"],
 }
 NONINFORMATIVE_STATES = {"unknown", "missing"}
 FOUNDER_TIER_GENES = ["TP53", "PIK3CA", "GATA3", "CDH1", "PTEN"]
@@ -163,12 +167,62 @@ def mixed_signature_key(signatures: list[tuple[str, ...]]) -> str:
     return "mixed:multiple-signatures"
 
 
+def collapse_signatures(signatures: list[tuple[str, ...]]) -> tuple[str, ...]:
+    if not signatures:
+        return tuple()
+    if len(signatures) == 1:
+        return signatures[0]
+
+    length = max(len(signature) for signature in signatures)
+    collapsed: list[str] = []
+    for index in range(length):
+        states = [
+            signature[index]
+            for signature in signatures
+            if index < len(signature)
+        ]
+        if not states:
+            collapsed.append("unknown")
+            continue
+        if index == 0:
+            collapsed.append("present")
+            continue
+        if "increasing" in states:
+            collapsed.append("increasing")
+        elif "decreasing" in states:
+            collapsed.append("decreasing")
+        elif "stable" in states:
+            collapsed.append("stable")
+        elif "unknown" in states:
+            collapsed.append("unknown")
+        elif "missing" in states:
+            collapsed.append("missing")
+        else:
+            collapsed.append(states[0])
+
+    return tuple(collapsed)
+
+
 def trend_priority(later_states: list[str]) -> int:
     if any(state in {"increasing", "decreasing"} for state in later_states):
         return 0
     if any(state == "stable" for state in later_states):
         return 1
     return 2
+
+
+def all_signatures_strictly_decreasing(
+    gene_signatures: dict[str, tuple[str, ...]]
+) -> bool:
+    if not gene_signatures:
+        return False
+    for signature in gene_signatures.values():
+        later_states = signature[1:]
+        if not later_states:
+            return False
+        if any(state != "decreasing" for state in later_states):
+            return False
+    return True
 
 
 def treatment_budget(total_driver_genes: int) -> int:
@@ -389,16 +443,48 @@ def deterministic_shuffle(patient_id: str, genes: list[str], salt: str = "") -> 
     return ordered
 
 
+def choose_all_decreasing_origin_gene(
+    patient_id: str,
+    patient_data: dict,
+    candidate_genes: set[str],
+) -> list[str]:
+    if not candidate_genes:
+        return []
+
+    flags = subtype_flags(patient_data)
+    usable_genes = set(candidate_genes)
+    ranked = sorted(usable_genes, key=lambda gene: founder_rank(gene, flags, usable_genes))
+    best_rank = founder_rank(ranked[0], flags, usable_genes)
+    best_genes = [
+        gene for gene in ranked if founder_rank(gene, flags, usable_genes) == best_rank
+    ]
+    chosen = deterministic_shuffle(patient_id, best_genes, "all-decreasing-origin")[0]
+    return [chosen]
+
+
 def split_six_gene_clone(
     patient_id: str, clone_type: str, signature: tuple[str, ...], genes: list[str]
 ) -> list[list[str]]:
-    if len(genes) != 6:
+    if len(genes) <= 5:
         return [sorted(genes)]
 
     shuffled = deterministic_shuffle(
         patient_id, genes, f"split-six:{clone_type}:{signature_key(signature)}"
     )
-    return [sorted(shuffled[:3]), sorted(shuffled[3:])]
+
+    group_count = math.ceil(len(shuffled) / 5)
+    base_size = len(shuffled) // group_count
+    remainder = len(shuffled) % group_count
+    sizes = [
+        base_size + (1 if index < remainder else 0) for index in range(group_count)
+    ]
+
+    grouped: list[list[str]] = []
+    cursor = 0
+    for size in sizes:
+        grouped.append(sorted(shuffled[cursor : cursor + size]))
+        cursor += size
+    return grouped
 
 
 def allocate_noninformative_buckets(
@@ -544,6 +630,16 @@ def patient_order_from_observations(observations_path: Path) -> list[str]:
     return baseline_seen + fallback_seen
 
 
+def clone_signature_for_genes(
+    genes: list[str], gene_signatures: dict[str, tuple[str, ...]]
+) -> tuple[str, ...]:
+    return collapse_signatures([gene_signatures[gene] for gene in genes if gene in gene_signatures])
+
+
+def signature_state_for_date(patient_data: dict, gene: str, date: str) -> str:
+    return patient_data["gene_trends"].get(gene, {}).get(date, "unknown")
+
+
 def baseline_date(patient_data: dict) -> str | None:
     if patient_data["genomic_dates"]:
         return min(patient_data["genomic_dates"])
@@ -585,7 +681,7 @@ def build_clone_rows(
 
         gene_signatures = {
             gene: tuple(
-                ["present", *[patient["gene_trends"].get(gene, {}).get(date, "missing") for date in trend_dates]]
+                ["present", *[signature_state_for_date(patient, gene, date) for date in trend_dates]]
             )
             for gene in genes
         }
@@ -606,10 +702,17 @@ def build_clone_rows(
             )
             continue
 
-        random_driver_genes = infer_random_driver_genes(patient, trend_dates)
-        origin_genes, implicit_origin = select_origin_genes(
-            patient_id, patient, random_driver_genes, gene_signatures, set(genes)
-        )
+        if all_signatures_strictly_decreasing(gene_signatures):
+            random_driver_genes = set(genes)
+            origin_genes = choose_all_decreasing_origin_gene(
+                patient_id, patient, set(genes)
+            )
+            implicit_origin = False
+        else:
+            random_driver_genes = infer_random_driver_genes(patient, trend_dates)
+            origin_genes, implicit_origin = select_origin_genes(
+                patient_id, patient, random_driver_genes, gene_signatures, set(genes)
+            )
         remaining_random_genes = set(random_driver_genes) - set(origin_genes)
         noninformative_random_genes = sorted(
             gene
@@ -673,7 +776,7 @@ def build_clone_rows(
                 founding_capacity = max(0, 3 - len(origin_genes))
                 target_slots.extend([("founding", None)] * founding_capacity)
                 for signature in target_late_signatures:
-                    late_capacity = max(0, 4 - len(late_signature_groups[signature]))
+                    late_capacity = max(0, 5 - len(late_signature_groups[signature]))
                     target_slots.extend([("late", signature)] * late_capacity)
 
                 if target_slots:
@@ -743,12 +846,62 @@ def build_clone_rows(
             donor_gene = pop_unknown_non_treatment_random_gene()
             if donor_gene is None:
                 continue
-            if len(grouped_genes) < 4:
+            if len(grouped_genes) < 5:
                 late_signature_groups[signature] = ["PGR", donor_gene]
 
         clone_rows: list[dict[str, str]] = []
         patient_timepoints = ";".join([d for d in [t0, *trend_dates] if d])
         sorted_late_signatures = sorted(late_signature_groups, key=signature_key)
+        late_groups: list[tuple[tuple[str, ...], list[str]]] = []
+        for signature in sorted_late_signatures:
+            for grouped_genes in split_six_gene_clone(
+                patient_id, "late", signature, late_signature_groups[signature]
+            ):
+                late_groups.append((signature, list(grouped_genes)))
+
+        orphan_unknown_genes: list[str] = []
+        for signature in sorted(branch_signature_groups, key=signature_key):
+            if not is_unknown_signature(signature):
+                continue
+            orphan_unknown_genes.extend(sorted(branch_signature_groups[signature]))
+
+        if late_groups and orphan_unknown_genes:
+            target_slots: list[int] = []
+            for index, (_, grouped_genes) in enumerate(late_groups):
+                capacity = max(0, 5 - len(grouped_genes))
+                target_slots.extend([index] * capacity)
+
+            if target_slots:
+                shuffled_genes = deterministic_shuffle(
+                    patient_id, orphan_unknown_genes, "late-unknown-merge"
+                )
+                slot_rng = random.Random(f"{patient_id}:late-unknown-slots")
+                slot_rng.shuffle(target_slots)
+
+                assigned_genes: set[str] = set()
+                for gene, target_index in zip(shuffled_genes, target_slots):
+                    late_groups[target_index][1].append(gene)
+                    assigned_genes.add(gene)
+
+                if assigned_genes:
+                    for signature in list(branch_signature_groups):
+                        if not is_unknown_signature(signature):
+                            continue
+                        remaining = [
+                            gene
+                            for gene in branch_signature_groups[signature]
+                            if gene not in assigned_genes
+                        ]
+                        if remaining:
+                            branch_signature_groups[signature] = remaining
+                        else:
+                            branch_signature_groups.pop(signature, None)
+
+                late_groups = [
+                    (signature, sorted(grouped_genes))
+                    for signature, grouped_genes in late_groups
+                ]
+
         branch_groups: list[tuple[tuple[str, ...], list[str]]] = []
         for signature in sorted(branch_signature_groups, key=signature_key):
             for gene_chunk in split_six_gene_clone(
@@ -759,6 +912,11 @@ def build_clone_rows(
         clone_counter = 1
         cumulative_ancestry: list[str] = []
 
+        founding_signature = (
+            ("present", *["unknown"] * len(trend_dates))
+            if implicit_origin
+            else clone_signature_for_genes(origin_genes, gene_signatures)
+        )
         clone_rows.append(
             {
                 "patient_id": patient_id,
@@ -766,9 +924,7 @@ def build_clone_rows(
                 "clone_type": "founding",
                 "parent_clone_id": "",
                 "timepoint_dates": patient_timepoints,
-                "signature_key": "implicit:founder"
-                if implicit_origin
-                else signature_key(gene_signatures[origin_genes[0]]),
+                "signature_key": signature_key(founding_signature),
                 "gene_count": str(len(origin_genes)),
                 "genes": ";".join(origin_genes),
                 "cumulative_gene_count": str(len(origin_genes)),
@@ -798,25 +954,22 @@ def build_clone_rows(
             clone_counter += 1
 
         base_ancestry = list(cumulative_ancestry)
-        for signature in sorted_late_signatures:
-            for grouped_genes in split_six_gene_clone(
-                patient_id, "late", signature, late_signature_groups[signature]
-            ):
-                cumulative_genes = sorted(set(base_ancestry) | set(grouped_genes))
-                clone_rows.append(
-                    {
-                        "patient_id": patient_id,
-                        "clone_id": f"clone_{clone_counter}",
-                        "clone_type": "late",
-                        "parent_clone_id": last_early_clone_id,
-                        "timepoint_dates": patient_timepoints,
-                        "signature_key": signature_key(signature),
-                        "gene_count": str(len(grouped_genes)),
-                        "genes": ";".join(grouped_genes),
-                        "cumulative_gene_count": str(len(cumulative_genes)),
-                    }
-                )
-                clone_counter += 1
+        for signature, grouped_genes in late_groups:
+            cumulative_genes = sorted(set(base_ancestry) | set(grouped_genes))
+            clone_rows.append(
+                {
+                    "patient_id": patient_id,
+                    "clone_id": f"clone_{clone_counter}",
+                    "clone_type": "late",
+                    "parent_clone_id": last_early_clone_id,
+                    "timepoint_dates": patient_timepoints,
+                    "signature_key": signature_key(signature),
+                    "gene_count": str(len(grouped_genes)),
+                    "genes": ";".join(grouped_genes),
+                    "cumulative_gene_count": str(len(cumulative_genes)),
+                }
+            )
+            clone_counter += 1
 
         rows.extend(clone_rows)
 

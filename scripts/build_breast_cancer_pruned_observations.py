@@ -10,7 +10,8 @@ Non-genomic observations are kept unchanged.
 
 Genomic sequencing rows are normalized into one group per retained variant using:
 - the selected MAF row for that patient-gene
-- the clone VAF for that patient-gene at that sequencing timepoint
+- the post-threshold renormalized clone prevalence for that patient-gene at that
+  sequencing timepoint
 
 Each group reuses the original DATE, PATIENT, and ENCOUNTER values.
 """
@@ -37,10 +38,22 @@ from build_breast_cancer_clones import (
 
 DEFAULT_PROPORTIONS_NAME = "breast_cancer_clone_proportions.csv"
 DEFAULT_OUTPUT_NAME = "observations_pruned_by_clone_vaf.csv"
+DEFAULT_CIVIC_DRIVER_VARIANTS_NAME = "civic_breast_cancer_driver_variants_from_maf.csv"
 DEFAULT_DRIVER_VARIANTS_NAME = "breast_cancer_driver_variants_from_maf.csv"
 DEFAULT_NON_DISRUPTIVE_VARIANTS_NAME = "breast_cancer_non_disruptive_variants_from_maf.csv"
+DEFAULT_MEDICATIONS_NAME = "medications.csv"
 HER2_FISH_DESCRIPTION = "HER2 [Presence] in Breast cancer specimen by FISH"
 GENE_ALIASES = {"HER2": "ERBB2"}
+CIVIC_TREND_TO_TYPE = {"decreasing": "sensitivity", "increasing": "resistance"}
+CIVIC_DRUG_ALIASES = {
+    "doxorubicin": "Doxorubicin",
+    "fulvestrant": "Fulvestrant",
+    "lapatinib": "Lapatinib",
+    "neratinib": "Neratinib",
+    "palbociclib": "Palbociclib",
+    "tamoxifen": "Tamoxifen",
+    "trastuzumab": "Trastuzumab",
+}
 
 GENE_CODE = "48018-6"
 GENE_DESCRIPTION = "Gene studied [ID]"
@@ -51,7 +64,7 @@ LOCAL_VARIANT_CLASS_DESCRIPTION = "Variant classification"
 VARIANT_TYPE_CODE = "48019-4"
 VARIANT_TYPE_DESCRIPTION = "DNA change type"
 VAF_CODE = "81258-6"
-VAF_DESCRIPTION = "Sample variant allelic frequency [NFr]"
+VAF_DESCRIPTION = "Estimated clonal prevalence [NFr]"
 CLONAL_ROLE_CODE = "CLONAL_ROLE"
 CLONAL_ROLE_DESCRIPTION_SUFFIX = " - clonal role"
 FOUNDING_ROLE_VALUE = "founding"
@@ -96,11 +109,27 @@ def parse_args() -> argparse.Namespace:
         help="Drop genes at any timepoint with clone VAF below this percentage. Default: 5.0",
     )
     parser.add_argument(
+        "--civic-driver-variants",
+        type=Path,
+        help=(
+            "Path to civic_breast_cancer_driver_variants_from_maf.csv. Defaults to "
+            "scripts/civic_breast_cancer_driver_variants_from_maf.csv."
+        ),
+    )
+    parser.add_argument(
         "--driver-variants",
         type=Path,
         help=(
             "Path to breast_cancer_driver_variants_from_maf.csv. Defaults to "
             "scripts/breast_cancer_driver_variants_from_maf.csv."
+        ),
+    )
+    parser.add_argument(
+        "--medications",
+        type=Path,
+        help=(
+            "Path to medications.csv. Defaults to medications.csv in the same "
+            "directory as the input observations.csv."
         ),
     )
     parser.add_argument(
@@ -203,9 +232,13 @@ def load_low_vaf_targets(
 
 
 def load_clone_vaf_map(
-    clone_proportions_path: Path,
-) -> dict[str, dict[str, dict[str, float]]]:
+    clone_proportions_path: Path, threshold: float
+) -> tuple[dict[str, dict[str, dict[str, float]]], Counter]:
     gene_vafs: dict[str, dict[str, dict[str, float]]] = defaultdict(lambda: defaultdict(dict))
+    clone_vafs_by_timepoint: dict[str, dict[str, list[tuple[list[str], float]]]] = defaultdict(
+        lambda: defaultdict(list)
+    )
+    stats = Counter()
 
     with clone_proportions_path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
@@ -225,13 +258,47 @@ def load_clone_vaf_map(
                 except ValueError:
                     continue
 
+                clone_vafs_by_timepoint[patient_id][date].append((genes, vaf))
+
+    for patient_id, patient_timepoints in clone_vafs_by_timepoint.items():
+        for date, clone_records in patient_timepoints.items():
+            visible_records = [
+                (genes, vaf) for genes, vaf in clone_records if vaf >= threshold
+            ]
+            if not visible_records:
+                stats["timepoints_without_visible_clones"] += 1
+                continue
+
+            visible_total = sum(vaf for _, vaf in visible_records)
+            redistribution = (100.0 - visible_total) / len(visible_records)
+            adjusted_values = [vaf + redistribution for _, vaf in visible_records]
+            rounded_values = [round(value, 2) for value in adjusted_values]
+
+            # Match the two-decimal percentage precision used by the clone-proportion
+            # file while keeping retained clone percentages summing to exactly 100.00.
+            residual = round(100.0 - sum(rounded_values), 2)
+            if residual:
+                largest_index = max(
+                    range(len(rounded_values)), key=lambda index: rounded_values[index]
+                )
+                rounded_values[largest_index] = round(
+                    rounded_values[largest_index] + residual, 2
+                )
+
+            if abs(visible_total - 100.0) > 0.005:
+                stats["timepoints_renormalized_after_threshold"] += 1
+                stats["percentage_points_redistributed_x100"] += round(
+                    (100.0 - visible_total) * 100
+                )
+
+            for (genes, _), adjusted_vaf in zip(visible_records, rounded_values):
                 for gene in genes:
-                    gene_vafs[patient_id][date][gene] = vaf
+                    gene_vafs[patient_id][date][gene] = adjusted_vaf
                     canonical_gene = canonical_gene_name(gene)
                     if canonical_gene != gene:
-                        gene_vafs[patient_id][date][canonical_gene] = vaf
+                        gene_vafs[patient_id][date][canonical_gene] = adjusted_vaf
 
-    return gene_vafs
+    return gene_vafs, stats
 
 
 def load_founding_gene_map(clone_proportions_path: Path) -> dict[str, set[str]]:
@@ -273,6 +340,25 @@ def lookup_gene_vaf(
     return None
 
 
+def lookup_gene_vaf_date(
+    row: dict[str, str],
+    gene: str,
+    gene_vafs: dict[str, dict[str, dict[str, float]]],
+) -> str | None:
+    patient_id = row["PATIENT"].strip()
+    date = row["DATE"].strip()
+    patient_vafs = gene_vafs.get(patient_id, {})
+    if gene in patient_vafs.get(date, {}):
+        return date
+
+    description = row["DESCRIPTION"].strip()
+    if description == GENETIC_ASSESSMENT_DESCRIPTION or description == HER2_IHC_DESCRIPTION:
+        for candidate_date in sorted(patient_vafs):
+            if gene in patient_vafs[candidate_date]:
+                return candidate_date
+    return None
+
+
 def row_should_be_removed(
     row: dict[str, str],
     baseline_genes_to_remove: dict[str, set[str]],
@@ -301,12 +387,135 @@ def load_variant_rows(variant_path: Path) -> dict[str, list[dict[str, str]]]:
     return rows_by_gene
 
 
+def normalize_civic_drug_name(name: str) -> str | None:
+    return CIVIC_DRUG_ALIASES.get(name.strip().lower())
+
+
+def medication_to_civic_drugs(description: str) -> set[str]:
+    lower = description.strip().lower()
+    return {canonical for token, canonical in CIVIC_DRUG_ALIASES.items() if token in lower}
+
+
+def load_latest_gene_trends(
+    observations_path: Path,
+) -> dict[tuple[str, str], tuple[str, str]]:
+    latest_trends: dict[tuple[str, str], tuple[str, str, str]] = {}
+
+    with observations_path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            description = row["DESCRIPTION"].strip()
+            if not description.startswith(POST_TREATMENT_PREFIX):
+                continue
+
+            gene = description[len(POST_TREATMENT_PREFIX) :].strip()
+            if not gene:
+                continue
+
+            patient_id = row["PATIENT"].strip()
+            date = row["DATE"].strip()
+            encounter = row["ENCOUNTER"].strip()
+            trend = row["VALUE"].strip().lower()
+            canonical_gene = canonical_gene_name(gene)
+            key = (patient_id, canonical_gene)
+            marker = (date, encounter)
+            existing = latest_trends.get(key)
+            if existing is None or marker >= (existing[0], existing[1]):
+                latest_trends[key] = (date, encounter, trend)
+
+    return {
+        (patient_id, gene): (date, trend)
+        for (patient_id, gene), (date, _, trend) in latest_trends.items()
+    }
+
+
+def load_patient_civic_medications(
+    medications_path: Path,
+) -> dict[str, list[tuple[str, str]]]:
+    patient_medications: dict[str, list[tuple[str, str]]] = defaultdict(list)
+
+    with medications_path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            patient_id = row["PATIENT"].strip()
+            if not patient_id:
+                continue
+
+            start = row["START"].strip()
+            description = row["DESCRIPTION"].strip()
+            for civic_drug in medication_to_civic_drugs(description):
+                patient_medications[patient_id].append((start, civic_drug))
+
+    for patient_id in patient_medications:
+        patient_medications[patient_id].sort()
+    return patient_medications
+
+
+def civic_medications_for_patient(
+    patient_id: str,
+    cutoff_date: str | None,
+    patient_medications: dict[str, list[tuple[str, str]]],
+) -> list[str]:
+    matched = {
+        civic_drug
+        for start, civic_drug in patient_medications.get(patient_id, [])
+        if not cutoff_date or not start or start <= cutoff_date
+    }
+    return sorted(matched)
+
+
+def choose_civic_patient_gene_variant(
+    patient_id: str,
+    gene: str,
+    civic_variants: dict[str, list[dict[str, str]]],
+    latest_gene_trends: dict[tuple[str, str], tuple[str, str]],
+    patient_medications: dict[str, list[tuple[str, str]]],
+) -> tuple[dict[str, str], str]:
+    canonical_gene = canonical_gene_name(gene)
+    latest = latest_gene_trends.get((patient_id, canonical_gene))
+    if latest is None:
+        return {}, "missing_trend"
+
+    trend_date, trend = latest
+    civic_type = CIVIC_TREND_TO_TYPE.get(trend)
+    if civic_type is None:
+        return {}, "non_directional_trend"
+
+    medications = civic_medications_for_patient(patient_id, trend_date, patient_medications)
+    if not medications:
+        return {}, "missing_medication"
+
+    pool = [
+        row
+        for row in civic_variants.get(canonical_gene, [])
+        if row.get("type", "").strip().lower() == civic_type
+        and normalize_civic_drug_name(row.get("drug_name", "")) in medications
+    ]
+    if not pool:
+        return {}, "missing_civic_match"
+
+    return dict(random.choice(pool)), "civic"
+
+
 def choose_patient_gene_variant(
     patient_id: str,
     gene: str,
+    civic_variants: dict[str, list[dict[str, str]]],
+    latest_gene_trends: dict[tuple[str, str], tuple[str, str]],
+    patient_medications: dict[str, list[tuple[str, str]]],
     driver_variants: dict[str, list[dict[str, str]]],
     non_disruptive_variants: dict[str, list[dict[str, str]]],
 ) -> tuple[dict[str, str], str]:
+    civic_variant, _ = choose_civic_patient_gene_variant(
+        patient_id,
+        gene,
+        civic_variants,
+        latest_gene_trends,
+        patient_medications,
+    )
+    if civic_variant:
+        return civic_variant, "civic"
+
     canonical_gene = canonical_gene_name(gene)
     pool = driver_variants.get(canonical_gene)
     source = "driver"
@@ -380,7 +589,7 @@ def build_variant_observation_group(
         build_observation_row(
             base_row,
             VAF_CODE,
-            f"{block_label} - sample variant allelic frequency",
+            f"{block_label} - estimated clonal prevalence",
             format_vaf_value(vaf_pct),
             "numeric",
         ),
@@ -396,12 +605,22 @@ def build_variant_observation_group(
     return rows
 
 
+def is_shadowed_alias_gene(gene: str, genes_for_date: dict[str, float]) -> bool:
+    for alias, canonical in GENE_ALIASES.items():
+        if gene == canonical and alias in genes_for_date:
+            return True
+    return False
+
+
 def transform_observations(
     observations_path: Path,
     baseline_genes_to_remove: dict[str, set[str]],
     dated_genes_to_remove: dict[str, dict[str, set[str]]],
     gene_vafs: dict[str, dict[str, dict[str, float]]],
     founding_genes: dict[str, set[str]],
+    civic_variants: dict[str, list[dict[str, str]]],
+    latest_gene_trends: dict[tuple[str, str], tuple[str, str]],
+    patient_medications: dict[str, list[tuple[str, str]]],
     driver_variants: dict[str, list[dict[str, str]]],
     non_disruptive_variants: dict[str, list[dict[str, str]]],
 ) -> tuple[list[dict[str, str]], list[dict[str, str]], list[str], Counter]:
@@ -409,6 +628,8 @@ def transform_observations(
     removed_rows: list[dict[str, str]] = []
     stats = Counter()
     patient_variant_cache: dict[tuple[str, str], tuple[dict[str, str], str]] = {}
+    post_treatment_templates: dict[tuple[str, str, str], dict[str, str]] = {}
+    post_treatment_seen_genes: dict[tuple[str, str, str], set[str]] = defaultdict(set)
 
     with observations_path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
@@ -440,6 +661,9 @@ def transform_observations(
                     patient_variant_cache[cache_key] = choose_patient_gene_variant(
                         patient_id,
                         gene,
+                        civic_variants,
+                        latest_gene_trends,
+                        patient_medications,
                         driver_variants,
                         non_disruptive_variants,
                     )
@@ -449,8 +673,14 @@ def transform_observations(
                     if gene in founding_genes.get(patient_id, set())
                     else SUBCLONAL_ROLE_VALUE
                 )
+                variant_base_row = row
+                vaf_date = lookup_gene_vaf_date(row, gene, gene_vafs)
+                if vaf_date and vaf_date != row["DATE"].strip():
+                    variant_base_row = dict(row)
+                    variant_base_row["DATE"] = vaf_date
+                    stats["her2_variant_groups_moved_to_clone_timepoint"] += 1
                 group_rows = build_variant_observation_group(
-                    row, gene, variant_row, vaf_pct, clonal_role
+                    variant_base_row, gene, variant_row, vaf_pct, clonal_role
                 )
                 kept_rows.extend(group_rows)
                 stats["variant_groups_emitted"] += 1
@@ -466,6 +696,15 @@ def transform_observations(
                 removed_rows.append(row)
                 stats["genomic_source_rows_suppressed"] += 1
                 continue
+
+            if description.startswith(POST_TREATMENT_PREFIX):
+                encounter_key = (
+                    row["PATIENT"].strip(),
+                    row["DATE"].strip(),
+                    row["ENCOUNTER"].strip(),
+                )
+                post_treatment_templates.setdefault(encounter_key, dict(row))
+                post_treatment_seen_genes[encounter_key].add(gene)
 
             if row_should_be_removed(row, baseline_genes_to_remove, dated_genes_to_remove):
                 removed_rows.append(row)
@@ -489,6 +728,9 @@ def transform_observations(
                 patient_variant_cache[cache_key] = choose_patient_gene_variant(
                     patient_id,
                     gene,
+                    civic_variants,
+                    latest_gene_trends,
+                    patient_medications,
                     driver_variants,
                     non_disruptive_variants,
                 )
@@ -508,6 +750,53 @@ def transform_observations(
             stats[f"variant_groups_emitted_{variant_source}"] += 1
             if vaf_pct is None:
                 stats["variant_groups_missing_vaf"] += 1
+
+        for encounter_key, template_row in sorted(post_treatment_templates.items()):
+            patient_id, date, _ = encounter_key
+            genes_for_date = gene_vafs.get(patient_id, {}).get(date, {})
+            if not genes_for_date:
+                continue
+
+            seen_genes = post_treatment_seen_genes.get(encounter_key, set())
+            for gene in sorted(genes_for_date):
+                if gene in seen_genes:
+                    continue
+                if is_shadowed_alias_gene(gene, genes_for_date):
+                    continue
+                if gene in dated_genes_to_remove.get(patient_id, {}).get(date, set()):
+                    continue
+
+                cache_key = (patient_id, gene)
+                if cache_key not in patient_variant_cache:
+                    patient_variant_cache[cache_key] = choose_patient_gene_variant(
+                        patient_id,
+                        gene,
+                        civic_variants,
+                        latest_gene_trends,
+                        patient_medications,
+                        driver_variants,
+                        non_disruptive_variants,
+                    )
+                variant_row, variant_source = patient_variant_cache[cache_key]
+                vaf_pct = genes_for_date.get(gene)
+                if vaf_pct is None:
+                    continue
+
+                synthetic_row = dict(template_row)
+                synthetic_row["DESCRIPTION"] = f"{POST_TREATMENT_PREFIX}{gene}"
+                clonal_role = (
+                    FOUNDING_ROLE_VALUE
+                    if gene in founding_genes.get(patient_id, set())
+                    else SUBCLONAL_ROLE_VALUE
+                )
+                group_rows = build_variant_observation_group(
+                    synthetic_row, gene, variant_row, vaf_pct, clonal_role
+                )
+                kept_rows.extend(group_rows)
+                stats["variant_groups_emitted"] += 1
+                stats["standardized_variant_rows_added"] += len(group_rows)
+                stats[f"variant_groups_emitted_{variant_source}"] += 1
+                stats["synthetic_post_treatment_variant_groups_added"] += 1
 
         stats["total_rows_removed"] = len(removed_rows)
         stats["total_rows_kept"] = len(kept_rows)
@@ -538,12 +827,20 @@ def main() -> int:
             raise FileNotFoundError(f"Observations file not found: {observations_path}")
 
     output_path = args.output or observations_path.with_name(DEFAULT_OUTPUT_NAME)
+    medications_path = args.medications or observations_path.with_name(DEFAULT_MEDICATIONS_NAME)
+    civic_variants_path = args.civic_driver_variants or (
+        repo_root / "scripts" / DEFAULT_CIVIC_DRIVER_VARIANTS_NAME
+    )
     driver_variants_path = args.driver_variants or (
         repo_root / "scripts" / DEFAULT_DRIVER_VARIANTS_NAME
     )
     non_disruptive_variants_path = args.non_disruptive_variants or (
         repo_root / "scripts" / DEFAULT_NON_DISRUPTIVE_VARIANTS_NAME
     )
+    if not medications_path.exists():
+        raise FileNotFoundError(f"Medications file not found: {medications_path}")
+    if not civic_variants_path.exists():
+        raise FileNotFoundError(f"CIViC driver variant file not found: {civic_variants_path}")
     if not driver_variants_path.exists():
         raise FileNotFoundError(f"Driver variant file not found: {driver_variants_path}")
     if not non_disruptive_variants_path.exists():
@@ -554,8 +851,13 @@ def main() -> int:
     baseline_genes_to_remove, dated_genes_to_remove, target_stats = load_low_vaf_targets(
         clone_proportions_path, args.threshold
     )
-    gene_vafs = load_clone_vaf_map(clone_proportions_path)
+    gene_vafs, renormalization_stats = load_clone_vaf_map(
+        clone_proportions_path, args.threshold
+    )
     founding_genes = load_founding_gene_map(clone_proportions_path)
+    civic_variants = load_variant_rows(civic_variants_path)
+    latest_gene_trends = load_latest_gene_trends(observations_path)
+    patient_medications = load_patient_civic_medications(medications_path)
     driver_variants = load_variant_rows(driver_variants_path)
     non_disruptive_variants = load_variant_rows(non_disruptive_variants_path)
     kept_rows, removed_rows, fieldnames, transform_stats = transform_observations(
@@ -564,6 +866,9 @@ def main() -> int:
         dated_genes_to_remove,
         gene_vafs,
         founding_genes,
+        civic_variants,
+        latest_gene_trends,
+        patient_medications,
         driver_variants,
         non_disruptive_variants,
     )
@@ -571,10 +876,24 @@ def main() -> int:
 
     print(f"Clone proportions: {clone_proportions_path}")
     print(f"Input observations: {observations_path}")
+    print(f"Input medications: {medications_path}")
+    print(f"CIViC driver variants: {civic_variants_path}")
     print(f"Driver variants: {driver_variants_path}")
     print(f"Non-disruptive variants: {non_disruptive_variants_path}")
     print(f"Wrote standardized observations: {output_path}")
     print(f"Threshold: {args.threshold:.2f}%")
+    print(
+        "Sequencing timepoints renormalized after thresholding: "
+        f"{renormalization_stats['timepoints_renormalized_after_threshold']}"
+    )
+    print(
+        "Percentage points redistributed after thresholding: "
+        f"{renormalization_stats['percentage_points_redistributed_x100'] / 100.0:.2f}"
+    )
+    print(
+        "Sequencing timepoints without visible clones: "
+        f"{renormalization_stats['timepoints_without_visible_clones']}"
+    )
     print(f"Patients with baseline removals: {len(baseline_genes_to_remove)}")
     print(f"Patients with dated removals: {len(dated_genes_to_remove)}")
     print(
@@ -586,6 +905,10 @@ def main() -> int:
     print(f"Post-treatment trend rows removed: {transform_stats['post_treatment_rows_removed']}")
     print(f"HER2 rows removed: {transform_stats['her2_rows_removed']}")
     print(f"HER2 baseline rows kept unchanged: {transform_stats['her2_baseline_rows_kept']}")
+    print(
+        "HER2 variant groups moved to clone timepoint: "
+        f"{transform_stats['her2_variant_groups_moved_to_clone_timepoint']}"
+    )
     print(f"Non-positive or FISH genomic rows suppressed: {transform_stats['genomic_source_rows_suppressed']}")
     print(
         "Genomic rows suppressed without clone VAF: "
@@ -596,6 +919,10 @@ def main() -> int:
         f"{transform_stats['her2_variant_groups_skipped_without_vaf']}"
     )
     print(f"Variant groups emitted: {transform_stats['variant_groups_emitted']}")
+    print(
+        "Variant groups emitted from CIViC driver file: "
+        f"{transform_stats['variant_groups_emitted_civic']}"
+    )
     print(
         "Variant groups emitted from driver file: "
         f"{transform_stats['variant_groups_emitted_driver']}"

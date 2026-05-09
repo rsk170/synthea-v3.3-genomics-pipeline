@@ -243,6 +243,125 @@ def adjust_midpoint_stable_clones(
     return adjusted
 
 
+def midpoint_buffer_clone(clones: list[dict], excluded_ids: set[str]) -> dict | None:
+    founding = next(
+        (
+            clone
+            for clone in clones
+            if clone["clone_type"] == "founding" and clone["clone_id"] not in excluded_ids
+        ),
+        None,
+    )
+    if founding is not None:
+        return founding
+
+    fallback_order = {"unknown": 0, "stable": 1, "increasing": 2, "decreasing": 3}
+    candidates = [clone for clone in clones if clone["clone_id"] not in excluded_ids]
+    if not candidates:
+        return None
+
+    return min(
+        candidates,
+        key=lambda clone: (
+            fallback_order.get(midpoint_state(clone), 4),
+            -clone["gene_count"],
+            clone["clone_id"],
+        ),
+    )
+
+
+def adjust_midpoint_decreasing_clones(
+    clones: list[dict],
+    proportions: dict[str, float],
+    start: dict[str, float],
+) -> dict[str, float]:
+    adjusted = dict(proportions)
+    for clone in clones:
+        if midpoint_state(clone) != "decreasing":
+            continue
+
+        clone_id = clone["clone_id"]
+        ceiling = round(start[clone_id], 2)
+        if adjusted[clone_id] <= ceiling:
+            continue
+
+        buffer_clone = midpoint_buffer_clone(clones, {clone_id})
+        if buffer_clone is None:
+            continue
+
+        buffer_id = buffer_clone["clone_id"]
+        excess = round(adjusted[clone_id] - ceiling, 2)
+        adjusted[clone_id] = ceiling
+        adjusted[buffer_id] = round(adjusted[buffer_id] + excess, 2)
+
+    return adjusted
+
+
+def adjust_final_stable_clones(
+    clones: list[dict],
+    final: dict[str, float],
+    start: dict[str, float],
+) -> dict[str, float]:
+    stable_ids = {
+        clone["clone_id"]
+        for clone in clones
+        if clone["states"] and clone["states"][-1] == "stable"
+    }
+    if not stable_ids:
+        return dict(final)
+
+    adjusted = dict(final)
+    clamped_stable: dict[str, float] = {}
+    for clone in clones:
+        clone_id = clone["clone_id"]
+        if clone_id not in stable_ids:
+            continue
+        low, high = stable_band(start[clone_id])
+        clamped_stable[clone_id] = min(max(adjusted[clone_id], low), high)
+
+    fixed_low_ids = {
+        clone["clone_id"]
+        for clone in clones
+        if clone["clone_id"] not in stable_ids
+        and clone["states"]
+        and clone["states"][-1] == "decreasing"
+    }
+    fixed_low = {clone_id: adjusted[clone_id] for clone_id in fixed_low_ids}
+    flexible_clones = [
+        clone
+        for clone in clones
+        if clone["clone_id"] not in stable_ids and clone["clone_id"] not in fixed_low_ids
+    ]
+    remaining = max(0.0, 100.0 - sum(clamped_stable.values()) - sum(fixed_low.values()))
+
+    if not flexible_clones:
+        combined = dict(clamped_stable)
+        combined.update(fixed_low)
+        ordered = [combined[clone["clone_id"]] for clone in clones]
+        rounded = round_percentages(ordered)
+        return {clone["clone_id"]: value for clone, value in zip(clones, rounded)}
+
+    flexible_total = sum(adjusted[clone["clone_id"]] for clone in flexible_clones)
+    if flexible_total <= 0:
+        even_share = remaining / len(flexible_clones)
+        for clone in flexible_clones:
+            adjusted[clone["clone_id"]] = even_share
+    else:
+        scale = remaining / flexible_total
+        for clone in flexible_clones:
+            clone_id = clone["clone_id"]
+            adjusted[clone_id] = adjusted[clone_id] * scale
+
+    for clone_id, value in clamped_stable.items():
+        adjusted[clone_id] = value
+    for clone_id, value in fixed_low.items():
+        adjusted[clone_id] = value
+
+    ordered = [adjusted[clone["clone_id"]] for clone in clones]
+    rounded = round_percentages(ordered)
+    return {clone["clone_id"]: value for clone, value in zip(clones, rounded)}
+
+
 def type_factor(clone_type: str, endpoint: str) -> float:
     if endpoint == "start":
         return {"founding": 1.7, "branch": 1.2, "late": 1.0}.get(clone_type, 1.0)
@@ -298,6 +417,15 @@ def endpoint_anchor_clone(clones: list[dict], endpoint: str) -> dict | None:
     return max(candidates, key=lambda clone: (weight_fn(clone), clone["gene_count"], clone["clone_id"]))
 
 
+def all_clones_strictly_decreasing(clones: list[dict]) -> bool:
+    if not clones:
+        return False
+    return all(
+        clone["states"] and clone["states"][-1] == "decreasing"
+        for clone in clones
+    )
+
+
 def allocate_endpoint_percentages(
     patient_id: str, clones: list[dict], endpoint: str
 ) -> dict[str, float]:
@@ -305,7 +433,29 @@ def allocate_endpoint_percentages(
         low_ids = {clone["clone_id"] for clone in clones if has_future_increase(clone["states"])}
         weight_fn = start_weight
     else:
-        low_ids = {clone["clone_id"] for clone in clones if clone["states"] and clone["states"][-1] == "decreasing"}
+        if all_clones_strictly_decreasing(clones):
+            founding_clone = next(
+                (clone for clone in clones if clone["clone_type"] == "founding"),
+                None,
+            )
+            if founding_clone is not None:
+                low_ids = {
+                    clone["clone_id"]
+                    for clone in clones
+                    if clone["clone_id"] != founding_clone["clone_id"]
+                }
+            else:
+                low_ids = {
+                    clone["clone_id"]
+                    for clone in clones
+                    if clone["states"] and clone["states"][-1] == "decreasing"
+                }
+        else:
+            low_ids = {
+                clone["clone_id"]
+                for clone in clones
+                if clone["states"] and clone["states"][-1] == "decreasing"
+            }
         weight_fn = final_weight
 
     low_clones = [clone for clone in clones if clone["clone_id"] in low_ids]
@@ -384,7 +534,8 @@ def interpolate_midpoint_percentages(
 
     rounded = round_percentages(raw_values)
     midpoint = {clone["clone_id"]: value for clone, value in zip(clones, rounded)}
-    return adjust_midpoint_stable_clones(clones, midpoint, start, final)
+    midpoint = adjust_midpoint_stable_clones(clones, midpoint, start, final)
+    return adjust_midpoint_decreasing_clones(clones, midpoint, start)
 
 
 def proportions_for_patient(patient_id: str, clones: list[dict]) -> dict[str, list[float]]:
@@ -393,7 +544,11 @@ def proportions_for_patient(patient_id: str, clones: list[dict]) -> dict[str, li
         return {}
 
     start = allocate_endpoint_percentages(patient_id, clones, "start")
-    final = allocate_endpoint_percentages(patient_id, clones, "final")
+    final = adjust_final_stable_clones(
+        clones,
+        allocate_endpoint_percentages(patient_id, clones, "final"),
+        start,
+    )
 
     if timepoint_count == 2:
         return {

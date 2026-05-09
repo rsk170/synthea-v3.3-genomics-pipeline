@@ -116,7 +116,7 @@ top of the standard Synthea CSV export. The final outputs of this workflow are:
 
 - `observations_pruned_by_clone_vaf.csv`
 - `breast_cancer_assigned_passenger_mutations.tsv`
-- per-patient, per-sequencing-event MAF files under `maf_files/`
+- per-patient, per-clone MAF files under `maf_files/`
 
 The workflow assumes that CSV export is enabled and that a run folder already
 exists under `output_runs/<run_name>/csv/`.
@@ -145,7 +145,7 @@ trend observations from `observations.csv` and builds patient-specific
 `founding`, `branch`, and `late` clone groups.
 
 ```bash
-python3 scripts/build_breast_cancer_clones_v2.py \
+python3 scripts/build_breast_cancer_clones.py \
   --observations output_runs/output_bc_run1/csv/observations.csv \
   --output output_runs/output_bc_run1/csv/breast_cancer_clone_groups.csv
 ```
@@ -161,7 +161,7 @@ across sequencing timepoints and normalizes them so that clone proportions sum
 to 100% at each timepoint.
 
 ```bash
-python3 scripts/build_breast_cancer_clone_proportions_v2.py \
+python3 scripts/build_breast_cancer_clone_proportions.py \
   --clone-groups output_runs/output_bc_run1/csv/breast_cancer_clone_groups.csv \
   --output output_runs/output_bc_run1/csv/breast_cancer_clone_proportions.csv
 ```
@@ -179,7 +179,7 @@ event, and assigns exact variants from the CIViC, generic driver, or
 non-disruptive variant libraries.
 
 ```bash
-python3 scripts/build_breast_cancer_pruned_observations_v2.py \
+python3 scripts/build_breast_cancer_pruned_observations.py \
   --clone-proportions output_runs/output_bc_run1/csv/breast_cancer_clone_proportions.csv \
   --observations output_runs/output_bc_run1/csv/observations.csv \
   --medications output_runs/output_bc_run1/csv/medications.csv \
@@ -201,7 +201,7 @@ synthetic patient with genomic sequencing to one source breast tumor sample and
  transfers that sample’s passenger mutation set to the patient.
 
 ```bash
-python3 scripts/build_breast_cancer_passenger_mutations_v2.py \
+python3 scripts/build_breast_cancer_passenger_mutations.py \
   --patients output_runs/output_bc_run1/csv/patients.csv \
   --observations output_runs/output_bc_run1/csv/observations.csv \
   --passenger-maf scripts/breast_cancer_passenger_only_from_maf.maf \
@@ -213,32 +213,36 @@ Outputs:
 - `scripts/breast_cancer_passenger_only_from_maf.maf`
 - `output_runs/output_bc_run1/csv/breast_cancer_assigned_passenger_mutations.tsv`
 
-### 6. Create complete per-patient MAF files
+### 6. Create complete per-patient clone MAF files
 
 This step combines:
 
-- the driver variants present in `observations_pruned_by_clone_vaf.csv` at each
-  sequencing event
-- the assigned passenger mutation set for the same patient
+- the driver variants present in `observations_pruned_by_clone_vaf.csv`, grouped
+  by reconstructed clone membership
+- a non-overlapping split of the assigned passenger mutation set for the same
+  patient
 
-It writes one MAF file per patient per sequencing event under a new
-`maf_files/` directory in the run root.
+It writes one MAF file per patient per clone under a new `maf_files/`
+directory in the run root.
 
 ```bash
-python3 scripts/build_breast_cancer_complete_maf_files_v2.py \
+python3 scripts/build_breast_cancer_complete_maf_files.py \
   --pruned-observations output_runs/output_bc_run1/csv/observations_pruned_by_clone_vaf.csv \
-  --assigned-passengers output_runs/output_bc_run1/csv/breast_cancer_assigned_passenger_mutations.tsv
+  --assigned-passengers output_runs/output_bc_run1/csv/breast_cancer_assigned_passenger_mutations.tsv \
+  --clone-groups output_runs/output_bc_run1/csv/breast_cancer_clone_groups.csv \
+  --clone-proportions output_runs/output_bc_run1/csv/breast_cancer_clone_proportions.csv
 ```
 
 Outputs:
 
-- `output_runs/output_bc_run1/maf_files/<patient_uuid>/sequencing_*.maf`
+- `output_runs/output_bc_run1/maf_files/<patient_uuid>/clone_*.maf`
 
-Each event-specific MAF contains:
+Each clone-specific MAF contains:
 
-- only the driver variants that appear in `observations_pruned_by_clone_vaf.csv`
-  for that patient and sequencing event
-- the full assigned passenger mutation set for that patient
+- the driver variants for that clone that are recoverable from
+  `observations_pruned_by_clone_vaf.csv`
+- a randomly split, non-overlapping subset of the patient's passenger mutation
+  rows, so passenger mutations do not repeat across clone files
 
 ### Minimal command sequence
 
@@ -246,15 +250,15 @@ After the Synthea run has been generated, the full genomics post-processing
 sequence is:
 
 ```bash
-python3 scripts/build_breast_cancer_clones_v2.py \
+python3 scripts/build_breast_cancer_clones.py \
   --observations output_runs/output_bc_run1/csv/observations.csv \
   --output output_runs/output_bc_run1/csv/breast_cancer_clone_groups.csv
 
-python3 scripts/build_breast_cancer_clone_proportions_v2.py \
+python3 scripts/build_breast_cancer_clone_proportions.py \
   --clone-groups output_runs/output_bc_run1/csv/breast_cancer_clone_groups.csv \
   --output output_runs/output_bc_run1/csv/breast_cancer_clone_proportions.csv
 
-python3 scripts/build_breast_cancer_pruned_observations_v2.py \
+python3 scripts/build_breast_cancer_pruned_observations.py \
   --clone-proportions output_runs/output_bc_run1/csv/breast_cancer_clone_proportions.csv \
   --observations output_runs/output_bc_run1/csv/observations.csv \
   --medications output_runs/output_bc_run1/csv/medications.csv \
@@ -263,15 +267,17 @@ python3 scripts/build_breast_cancer_pruned_observations_v2.py \
   --non-disruptive-variants scripts/breast_cancer_non_disruptive_variants_from_maf.csv \
   --output output_runs/output_bc_run1/csv/observations_pruned_by_clone_vaf.csv
 
-python3 scripts/build_breast_cancer_passenger_mutations_v2.py \
+python3 scripts/build_breast_cancer_passenger_mutations.py \
   --patients output_runs/output_bc_run1/csv/patients.csv \
   --observations output_runs/output_bc_run1/csv/observations.csv \
   --passenger-maf scripts/breast_cancer_passenger_only_from_maf.maf \
   --output output_runs/output_bc_run1/csv/breast_cancer_assigned_passenger_mutations.tsv
 
-python3 scripts/build_breast_cancer_complete_maf_files_v2.py \
+python3 scripts/build_breast_cancer_complete_maf_files.py \
   --pruned-observations output_runs/output_bc_run1/csv/observations_pruned_by_clone_vaf.csv \
-  --assigned-passengers output_runs/output_bc_run1/csv/breast_cancer_assigned_passenger_mutations.tsv
+  --assigned-passengers output_runs/output_bc_run1/csv/breast_cancer_assigned_passenger_mutations.tsv \
+  --clone-groups output_runs/output_bc_run1/csv/breast_cancer_clone_groups.csv \
+  --clone-proportions output_runs/output_bc_run1/csv/breast_cancer_clone_proportions.csv
 ```
 
 # License

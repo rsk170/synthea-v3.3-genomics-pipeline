@@ -1,7 +1,7 @@
 {
   "name": "Tumor_Driver_Assignment",
   "remarks": [
-    "Assigns 1–16 tumor driver genes after a biopsy/genomic profiling step. Emits LOINC 69548-6 observations.",
+    "Assigns 1\u201316 tumor driver genes after a biopsy/genomic profiling step. Emits LOINC 69548-6 observations.",
     "The final set of drivers is built from a combination of treatment-related genes and randomly drawn weighted driver genes."
   ],
   "states": {
@@ -30,19 +30,19 @@
         },
         {
           "transition": "Assign_2_Drivers",
-          "distribution": 0.0940170940170940
+          "distribution": 0.094017094017094
         },
         {
           "transition": "Assign_3_Drivers",
-          "distribution": 0.1025641025641030
+          "distribution": 0.102564102564103
         },
         {
           "transition": "Assign_4_Drivers",
-          "distribution": 0.0940170940170940
+          "distribution": 0.094017094017094
         },
         {
           "transition": "Assign_5_Drivers",
-          "distribution": 0.1111111111111110
+          "distribution": 0.111111111111111
         },
         {
           "transition": "Assign_6_Drivers",
@@ -50,7 +50,7 @@
         },
         {
           "transition": "Assign_7_Drivers",
-          "distribution": 0.0940170940170940
+          "distribution": 0.094017094017094
         },
         {
           "transition": "Assign_8_Drivers",
@@ -941,7 +941,7 @@
               }
             ]
           },
-          "transition": "Enter_Chemo_Draw_2"
+          "transition": "Endocrine_Group_Gate"
         },
         {
           "condition": {
@@ -1053,6 +1053,117 @@
             ]
           },
           "transition": "Enter_Chemo_Resistance_Draw"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_triple_negative",
+                    "operator": "==",
+                    "value": true
+                  },
+                  {
+                    "condition_type": "Observation",
+                    "codes": [
+                      {
+                        "system": "LOINC",
+                        "code": "21908-9",
+                        "display": "Stage group.clinical Cancer"
+                      }
+                    ],
+                    "operator": "==",
+                    "value_code": {
+                      "system": "SNOMED-CT",
+                      "code": 258224005,
+                      "display": "Stage 3 (qualifier value)"
+                    }
+                  },
+                  {
+                    "condition_type": "Observation",
+                    "codes": [
+                      {
+                        "system": "LOINC",
+                        "code": "21908-9",
+                        "display": "Stage group.clinical Cancer"
+                      }
+                    ],
+                    "operator": "==",
+                    "value_code": {
+                      "system": "SNOMED-CT",
+                      "code": 261638004,
+                      "display": "Stage 3A (qualifier value)"
+                    }
+                  },
+                  {
+                    "condition_type": "Observation",
+                    "codes": [
+                      {
+                        "system": "LOINC",
+                        "code": "21908-9",
+                        "display": "Stage group.clinical Cancer"
+                      }
+                    ],
+                    "operator": "==",
+                    "value_code": {
+                      "system": "SNOMED-CT",
+                      "code": 261639007,
+                      "display": "Stage 3B (qualifier value)"
+                    }
+                  },
+                  {
+                    "condition_type": "Observation",
+                    "codes": [
+                      {
+                        "system": "LOINC",
+                        "code": "21908-9",
+                        "display": "Stage group.clinical Cancer"
+                      }
+                    ],
+                    "operator": "==",
+                    "value_code": {
+                      "system": "SNOMED-CT",
+                      "code": 261640009,
+                      "display": "Stage 3C (qualifier value)"
+                    }
+                  },
+                  {
+                    "condition_type": "Observation",
+                    "codes": [
+                      {
+                        "system": "LOINC",
+                        "code": "21908-9",
+                        "display": "Stage group.clinical Cancer"
+                      }
+                    ],
+                    "operator": "==",
+                    "value_code": {
+                      "system": "SNOMED-CT",
+                      "code": 258228008,
+                      "display": "Stage 4 (qualifier value)"
+                    }
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "chemo_group_count",
+                "operator": "==",
+                "value": 1
+              }
+            ]
+          },
+          "transition": "Enter_Chemo_Resistance_Draw_2"
         },
         {
           "transition": "Endocrine_Group_Gate"
@@ -1186,6 +1297,43 @@
           "transition": "Enter_Endocrine_Resistance_Draw"
         },
         {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "endocrine_group_count",
+                "operator": "==",
+                "value": 1
+              }
+            ]
+          },
+          "transition": "Enter_Endocrine_Resistance_Draw_2"
+        },
+        {
           "transition": "HER2_Group_Gate"
         }
       ]
@@ -1282,6 +1430,32 @@
             ]
           },
           "transition": "Enter_HER2_Resistance_Draw"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "her2_group_count",
+                "operator": "==",
+                "value": 1
+              }
+            ]
+          },
+          "transition": "Enter_HER2_Resistance_Draw_2"
         },
         {
           "transition": "CDK46_Group_Gate"
@@ -1398,6 +1572,38 @@
             ]
           },
           "transition": "Enter_CDK46_Resistance_Draw"
+        },
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_ER",
+                "operator": "==",
+                "value": "ER-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_PR",
+                "operator": "==",
+                "value": "PR-positive"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "no"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "cdk46_group_count",
+                "operator": "==",
+                "value": 1
+              }
+            ]
+          },
+          "transition": "Enter_CDK46_Resistance_Draw_2"
         },
         {
           "transition": "Treatment_Group_Pass_Complete"
@@ -1534,13 +1740,19 @@
       "type": "SetAttribute",
       "attribute": "current_treatment_group",
       "value": "chemo",
-      "direct_transition": "Chemo_Draw_2"
+      "direct_transition": "Endocrine_Group_Gate"
     },
     "Enter_Chemo_Resistance_Draw": {
       "type": "SetAttribute",
       "attribute": "current_treatment_group",
       "value": "chemo",
       "direct_transition": "Chemo_Resistance_Draw"
+    },
+    "Enter_Chemo_Resistance_Draw_2": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "chemo",
+      "direct_transition": "Chemo_Resistance_Draw_2"
     },
     "Enter_Endocrine_Draw_1": {
       "type": "SetAttribute",
@@ -1560,6 +1772,12 @@
       "value": "endocrine",
       "direct_transition": "Endocrine_Resistance_Draw"
     },
+    "Enter_Endocrine_Resistance_Draw_2": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "endocrine",
+      "direct_transition": "Endocrine_Resistance_Draw_2"
+    },
     "Enter_HER2_Draw_1": {
       "type": "SetAttribute",
       "attribute": "current_treatment_group",
@@ -1578,17 +1796,23 @@
       "value": "her2",
       "direct_transition": "HER2_Resistance_Draw"
     },
+    "Enter_HER2_Resistance_Draw_2": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "her2",
+      "direct_transition": "HER2_Resistance_Draw_2"
+    },
     "Enter_CDK46_Draw_1": {
       "type": "SetAttribute",
       "attribute": "current_treatment_group",
       "value": "cdk46",
-      "direct_transition": "CDK46_Draw_1"
+      "direct_transition": "CDK46_Draw_1_Gate"
     },
     "Enter_CDK46_Draw_2": {
       "type": "SetAttribute",
       "attribute": "current_treatment_group",
       "value": "cdk46",
-      "direct_transition": "CDK46_Draw_2"
+      "direct_transition": "CDK46_Draw_2_Gate"
     },
     "Enter_CDK46_Resistance_Draw": {
       "type": "SetAttribute",
@@ -1596,28 +1820,18 @@
       "value": "cdk46",
       "direct_transition": "CDK46_Resistance_Draw"
     },
+    "Enter_CDK46_Resistance_Draw_2": {
+      "type": "SetAttribute",
+      "attribute": "current_treatment_group",
+      "value": "cdk46",
+      "direct_transition": "CDK46_Resistance_Draw_2"
+    },
     "Chemo_Draw_1": {
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Check_CYP19A1_CHEMO1",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Check_BIRC5_CHEMO1",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Check_ABCB1_CHEMO1",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Check_CYP1B1_CHEMO1",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Check_SLCO1B1_CHEMO1",
-          "distribution": 0.2
+          "transition": "Check_TP53_CHEMO1",
+          "distribution": 1.0
         }
       ]
     },
@@ -1625,24 +1839,8 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Check_CYP19A1_CHEMO2",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Check_BIRC5_CHEMO2",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Check_ABCB1_CHEMO2",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Check_CYP1B1_CHEMO2",
-          "distribution": 0.2
-        },
-        {
-          "transition": "Check_SLCO1B1_CHEMO2",
-          "distribution": 0.2
+          "transition": "Check_TP53_CHEMO2",
+          "distribution": 1.0
         }
       ]
     },
@@ -1650,8 +1848,25 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Check_NCOR2_CHEMORES",
-          "distribution": 1.0
+          "transition": "Check_TP53_CHEMORES",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Check_CHEK2_CHEMORES",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Chemo_Resistance_Draw_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_TP53_CHEMORES2",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Check_CHEK2_CHEMORES2",
+          "distribution": 0.5
         }
       ]
     },
@@ -1659,21 +1874,99 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Check_PGR_ENDO1",
-          "distribution": 1.0
+          "transition": "Check_ESR1_ENDO1",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Check_GATA3_ENDO1",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Check_MAP3K1_ENDO1",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Check_MAP2K4_ENDO1",
+          "distribution": 0.25
         }
       ]
     },
     "Endocrine_Draw_2": {
       "type": "Simple",
-      "direct_transition": "HER2_Group_Gate"
+      "distributed_transition": [
+        {
+          "transition": "Check_PIK3CA_ENDO2",
+          "distribution": 0.1428572
+        },
+        {
+          "transition": "Check_STK11_ENDO2",
+          "distribution": 0.1428571
+        },
+        {
+          "transition": "Check_AKT1_ENDO2",
+          "distribution": 0.1428571
+        },
+        {
+          "transition": "Check_ESR1_ENDO2",
+          "distribution": 0.1428571
+        },
+        {
+          "transition": "Check_GATA3_ENDO2",
+          "distribution": 0.1428571
+        },
+        {
+          "transition": "Check_MAP3K1_ENDO2",
+          "distribution": 0.1428571
+        },
+        {
+          "transition": "Check_MAP2K4_ENDO2",
+          "distribution": 0.1428571
+        }
+      ]
     },
     "Endocrine_Resistance_Draw": {
       "type": "Simple",
       "distributed_transition": [
         {
+          "transition": "Check_ARID1A_ENDORES1",
+          "distribution": 0.6
+        },
+        {
+          "transition": "Check_RUNX1_ENDORES1",
+          "distribution": 0.2
+        },
+        {
+          "transition": "Check_CTCF_ENDORES1",
+          "distribution": 0.2
+        }
+      ]
+    },
+    "Endocrine_Resistance_Draw_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_ARID1A_ENDORES2",
+          "distribution": 0.1666667
+        },
+        {
+          "transition": "Check_RUNX1_ENDORES2",
+          "distribution": 0.1666667
+        },
+        {
+          "transition": "Check_CTCF_ENDORES2",
+          "distribution": 0.1666667
+        },
+        {
+          "transition": "Check_TP53_ENDORES2",
+          "distribution": 0.1666667
+        },
+        {
           "transition": "Check_NF1_ENDORES",
-          "distribution": 1.0
+          "distribution": 0.1666666
+        },
+        {
+          "transition": "Check_ESR1_ENDORES2",
+          "distribution": 0.1666666
         }
       ]
     },
@@ -1681,28 +1974,12 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Check_BRAF_HER2_1",
-          "distribution": 0.1666667
-        },
-        {
           "transition": "Check_PIK3CA_HER2_1",
-          "distribution": 0.1666667
-        },
-        {
-          "transition": "Check_ESR1_HER2_1",
-          "distribution": 0.1666667
-        },
-        {
-          "transition": "Check_PGR_HER2_1",
-          "distribution": 0.1666667
-        },
-        {
-          "transition": "Check_ESR2_HER2_1",
-          "distribution": 0.1666666
+          "distribution": 0.5
         },
         {
           "transition": "Check_ERBB3_HER2_1",
-          "distribution": 0.1666666
+          "distribution": 0.5
         }
       ]
     },
@@ -1710,28 +1987,16 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Check_BRAF_HER2_1",
-          "distribution": 0.1666667
+          "transition": "Check_PIK3CA_HER2_2",
+          "distribution": 0.3333334
         },
         {
-          "transition": "Check_PIK3CA_HER2_1",
-          "distribution": 0.1666667
+          "transition": "Check_ERBB3_HER2_2",
+          "distribution": 0.3333333
         },
         {
-          "transition": "Check_ESR1_HER2_1",
-          "distribution": 0.1666667
-        },
-        {
-          "transition": "Check_PGR_HER2_1",
-          "distribution": 0.1666667
-        },
-        {
-          "transition": "Check_ESR2_HER2_1",
-          "distribution": 0.1666666
-        },
-        {
-          "transition": "Check_ERBB3_HER2_1",
-          "distribution": 0.1666666
+          "transition": "Check_FCGR2A_HER2_2",
+          "distribution": 0.3333333
         }
       ]
     },
@@ -1739,8 +2004,40 @@
       "type": "Simple",
       "distributed_transition": [
         {
-          "transition": "Check_MET_HER2_RES",
-          "distribution": 1.0
+          "transition": "Check_PTEN_HER2_RES1",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Check_PIK3CA_HER2_RES1",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "CDK46_Draw_1_Gate": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ESR1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_PIK3CA",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "transition": "Treatment_Group_Pass_Complete"
+        },
+        {
+          "transition": "CDK46_Draw_1"
         }
       ]
     },
@@ -1749,27 +2046,39 @@
       "distributed_transition": [
         {
           "transition": "Check_ESR1_CDK1",
-          "distribution": 0.1666667
+          "distribution": 0.5
         },
         {
-          "transition": "Check_CDKN2A_CDK1",
-          "distribution": 0.1666667
+          "transition": "Check_PIK3CA_CDK1",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "CDK46_Draw_2_Gate": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_ESR1",
+                "operator": "==",
+                "value": true
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "has_gene_PIK3CA",
+                "operator": "==",
+                "value": true
+              }
+            ]
+          },
+          "transition": "Treatment_Group_Pass_Complete"
         },
         {
-          "transition": "Check_CCND1_CDK1",
-          "distribution": 0.1666667
-        },
-        {
-          "transition": "Check_PGR_CDK1",
-          "distribution": 0.1666667
-        },
-        {
-          "transition": "Check_ESR2_CDK1",
-          "distribution": 0.1666666
-        },
-        {
-          "transition": "Check_NRAS_CDK1",
-          "distribution": 0.1666666
+          "transition": "CDK46_Draw_2"
         }
       ]
     },
@@ -1778,27 +2087,11 @@
       "distributed_transition": [
         {
           "transition": "Check_ESR1_CDK2",
-          "distribution": 0.1666667
+          "distribution": 0.5
         },
         {
-          "transition": "Check_CDKN2A_CDK2",
-          "distribution": 0.1666667
-        },
-        {
-          "transition": "Check_CCND1_CDK2",
-          "distribution": 0.1666667
-        },
-        {
-          "transition": "Check_PGR_CDK2",
-          "distribution": 0.1666667
-        },
-        {
-          "transition": "Check_ESR2_CDK2",
-          "distribution": 0.1666666
-        },
-        {
-          "transition": "Check_NRAS_CDK2",
-          "distribution": 0.1666666
+          "transition": "Check_PIK3CA_CDK2",
+          "distribution": 0.5
         }
       ]
     },
@@ -1807,7 +2100,40 @@
       "distributed_transition": [
         {
           "transition": "Check_RB1_CDKRES",
-          "distribution": 1.0
+          "distribution": 0.25
+        },
+        {
+          "transition": "Check_FAT1_CDKRES1",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Check_PTEN_CDKRES1",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Check_NF1_CDKRES1",
+          "distribution": 0.25
+        }
+      ]
+    },
+    "CDK46_Resistance_Draw_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_RB1_CDKRES2",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Check_FAT1_CDKRES2",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Check_PTEN_CDKRES2",
+          "distribution": 0.25
+        },
+        {
+          "transition": "Check_NF1_CDKRES2",
+          "distribution": 0.25
         }
       ]
     },
@@ -2480,7 +2806,7 @@
             "operator": "==",
             "value": true
           },
-          "transition": "Endocrine_Group_Gate"
+          "transition": "Endocrine_Resistance_Draw_2"
         },
         {
           "transition": "Set_NF1_ENDO"
@@ -2853,6 +3179,64 @@
         "system": "SNOMED-CT",
         "code": "10828004",
         "display": "ESR1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_PIK3CA_CDK1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "CDK46_Draw_1"
+        },
+        {
+          "transition": "Set_PIK3CA_CDK"
+        }
+      ]
+    },
+    "Check_PIK3CA_CDK2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "CDK46_Draw_2"
+        },
+        {
+          "transition": "Set_PIK3CA_CDK"
+        }
+      ]
+    },
+    "Set_PIK3CA_CDK": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PIK3CA",
+      "value": true,
+      "direct_transition": "Record_PIK3CA_CDK"
+    },
+    "Record_PIK3CA_CDK": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PIK3CA mutation positive"
       },
       "direct_transition": "Increment_Treatment_Driver_Count"
     },
@@ -3361,12 +3745,203 @@
             "operator": "==",
             "value": true
           },
-          "transition": "CDK46_Group_Gate"
+          "transition": "CDK46_Resistance_Draw"
         },
         {
           "transition": "Set_RB1_CDK"
         }
       ]
+    },
+    "Check_RB1_CDKRES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_RB1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "CDK46_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_RB1_CDK"
+        }
+      ]
+    },
+    "Check_FAT1_CDKRES1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_FAT1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "CDK46_Resistance_Draw"
+        },
+        {
+          "transition": "Set_FAT1_CDK"
+        }
+      ]
+    },
+    "Check_FAT1_CDKRES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_FAT1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "CDK46_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_FAT1_CDK"
+        }
+      ]
+    },
+    "Set_FAT1_CDK": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_FAT1",
+      "value": true,
+      "direct_transition": "Record_FAT1_CDK"
+    },
+    "Record_FAT1_CDK": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "FAT1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_PTEN_CDKRES1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "CDK46_Resistance_Draw"
+        },
+        {
+          "transition": "Set_PTEN_CDK"
+        }
+      ]
+    },
+    "Check_PTEN_CDKRES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "CDK46_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_PTEN_CDK"
+        }
+      ]
+    },
+    "Set_PTEN_CDK": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PTEN",
+      "value": true,
+      "direct_transition": "Record_PTEN_CDK"
+    },
+    "Record_PTEN_CDK": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PTEN mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_NF1_CDKRES1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_NF1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "CDK46_Resistance_Draw"
+        },
+        {
+          "transition": "Set_NF1_CDK"
+        }
+      ]
+    },
+    "Check_NF1_CDKRES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_NF1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "CDK46_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_NF1_CDK"
+        }
+      ]
+    },
+    "Set_NF1_CDK": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_NF1",
+      "value": true,
+      "direct_transition": "Record_NF1_CDK"
+    },
+    "Record_NF1_CDK": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "NF1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
     },
     "Set_CCNE1": {
       "type": "SetAttribute",
@@ -3725,7 +4300,7 @@
       "distributed_transition": [
         {
           "transition": "Check_TP53",
-          "distribution": 0.1383285302593660
+          "distribution": 0.138328530259366
         },
         {
           "transition": "Check_PIK3CA",
@@ -3761,15 +4336,15 @@
         },
         {
           "transition": "Check_MAP2K4",
-          "distribution": 0.0374639769452450
+          "distribution": 0.037463976945245
         },
         {
           "transition": "Check_RB1",
-          "distribution": 0.0374639769452450
+          "distribution": 0.037463976945245
         },
         {
           "transition": "Check_MAP3K1",
-          "distribution": 0.0374639769452450
+          "distribution": 0.037463976945245
         },
         {
           "transition": "Check_PARK2",
@@ -3847,89 +4422,15 @@
                 "conditions": [
                   {
                     "condition_type": "Attribute",
-                    "attribute": "breast_cancer_triple_negative",
+                    "attribute": "breast_cancer_ER",
                     "operator": "==",
-                    "value": true
+                    "value": "ER-positive"
                   },
                   {
-                    "condition_type": "Observation",
-                    "codes": [
-                      {
-                        "system": "LOINC",
-                        "code": "21908-9",
-                        "display": "Stage group.clinical Cancer"
-                      }
-                    ],
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
                     "operator": "==",
-                    "value_code": {
-                      "system": "SNOMED-CT",
-                      "code": 258224005,
-                      "display": "Stage 3 (qualifier value)"
-                    }
-                  },
-                  {
-                    "condition_type": "Observation",
-                    "codes": [
-                      {
-                        "system": "LOINC",
-                        "code": "21908-9",
-                        "display": "Stage group.clinical Cancer"
-                      }
-                    ],
-                    "operator": "==",
-                    "value_code": {
-                      "system": "SNOMED-CT",
-                      "code": 261638004,
-                      "display": "Stage 3A (qualifier value)"
-                    }
-                  },
-                  {
-                    "condition_type": "Observation",
-                    "codes": [
-                      {
-                        "system": "LOINC",
-                        "code": "21908-9",
-                        "display": "Stage group.clinical Cancer"
-                      }
-                    ],
-                    "operator": "==",
-                    "value_code": {
-                      "system": "SNOMED-CT",
-                      "code": 261639007,
-                      "display": "Stage 3B (qualifier value)"
-                    }
-                  },
-                  {
-                    "condition_type": "Observation",
-                    "codes": [
-                      {
-                        "system": "LOINC",
-                        "code": "21908-9",
-                        "display": "Stage group.clinical Cancer"
-                      }
-                    ],
-                    "operator": "==",
-                    "value_code": {
-                      "system": "SNOMED-CT",
-                      "code": 261640009,
-                      "display": "Stage 3C (qualifier value)"
-                    }
-                  },
-                  {
-                    "condition_type": "Observation",
-                    "codes": [
-                      {
-                        "system": "LOINC",
-                        "code": "21908-9",
-                        "display": "Stage group.clinical Cancer"
-                      }
-                    ],
-                    "operator": "==",
-                    "value_code": {
-                      "system": "SNOMED-CT",
-                      "code": 258228008,
-                      "display": "Stage 4 (qualifier value)"
-                    }
+                    "value": "PR-positive"
                   }
                 ]
               }
@@ -3980,6 +4481,26 @@
       "conditional_transition": [
         {
           "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
+        {
+          "condition": {
             "condition_type": "Attribute",
             "attribute": "has_gene_PIK3CA",
             "operator": "==",
@@ -4019,6 +4540,37 @@
     "Check_ARID1A": {
       "type": "Simple",
       "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              },
+              {
+                "condition_type": "Or",
+                "conditions": [
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_ER",
+                    "operator": "==",
+                    "value": "ER-positive"
+                  },
+                  {
+                    "condition_type": "Attribute",
+                    "attribute": "breast_cancer_PR",
+                    "operator": "==",
+                    "value": "PR-positive"
+                  }
+                ]
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
         {
           "condition": {
             "condition_type": "Attribute",
@@ -4101,6 +4653,26 @@
     "Check_PTEN": {
       "type": "Simple",
       "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "And",
+            "conditions": [
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_survival",
+                "operator": "==",
+                "value": "yes"
+              },
+              {
+                "condition_type": "Attribute",
+                "attribute": "breast_cancer_HER2",
+                "operator": "==",
+                "value": "HER2-positive"
+              }
+            ]
+          },
+          "transition": "Select_Driver_Gene"
+        },
         {
           "condition": {
             "condition_type": "Attribute",
@@ -5071,6 +5643,882 @@
     },
     "Terminal": {
       "type": "Terminal"
+    },
+    "Check_TP53_CHEMO1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Group_Gate"
+        },
+        {
+          "transition": "Set_TP53_CHEMO_SENSITIVE_ROLE"
+        }
+      ]
+    },
+    "Check_TP53_CHEMO2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Group_Gate"
+        },
+        {
+          "transition": "Set_TP53_CHEMO_SENSITIVE_ROLE"
+        }
+      ]
+    },
+    "Set_TP53_CHEMO_SENSITIVE_ROLE": {
+      "type": "SetAttribute",
+      "attribute": "chemo_tp53_role",
+      "value": "sensitive",
+      "direct_transition": "Set_TP53_CHEMO"
+    },
+    "Check_TP53_CHEMORES": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Group_Gate"
+        },
+        {
+          "transition": "Set_TP53_CHEMO_RESISTANT_ROLE"
+        }
+      ]
+    },
+    "Set_TP53_CHEMO_RESISTANT_ROLE": {
+      "type": "SetAttribute",
+      "attribute": "chemo_tp53_role",
+      "value": "resistant",
+      "direct_transition": "Set_TP53_CHEMO"
+    },
+    "Check_CHEK2_CHEMORES": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CHEK2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Group_Gate"
+        },
+        {
+          "transition": "Set_CHEK2"
+        }
+      ]
+    },
+    "Check_TP53_CHEMORES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Chemo_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_TP53_CHEMO_RESISTANT_ROLE"
+        }
+      ]
+    },
+    "Check_CHEK2_CHEMORES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CHEK2",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Chemo_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_CHEK2"
+        }
+      ]
+    },
+    "Set_CHEK2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CHEK2",
+      "value": true,
+      "direct_transition": "Record_CHEK2"
+    },
+    "Record_CHEK2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CHEK2 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Set_TP53_CHEMO": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_TP53",
+      "value": true,
+      "direct_transition": "Record_TP53_CHEMO"
+    },
+    "Record_TP53_CHEMO": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "TP53 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ESR1_ENDO1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ESR1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Draw_1"
+        },
+        {
+          "transition": "Set_ESR1_ENDO_SENSITIVE_ROLE"
+        }
+      ]
+    },
+    "Set_ESR1_ENDO_SENSITIVE_ROLE": {
+      "type": "SetAttribute",
+      "attribute": "endocrine_esr1_role",
+      "value": "sensitive",
+      "direct_transition": "Set_ESR1_ENDO"
+    },
+    "Check_GATA3_ENDO1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GATA3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Draw_1"
+        },
+        {
+          "transition": "Set_GATA3_ENDO"
+        }
+      ]
+    },
+    "Set_GATA3_ENDO": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_GATA3",
+      "value": true,
+      "direct_transition": "Record_GATA3_ENDO"
+    },
+    "Record_GATA3_ENDO": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "GATA3 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_MAP3K1_ENDO1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MAP3K1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Draw_1"
+        },
+        {
+          "transition": "Set_MAP3K1_ENDO"
+        }
+      ]
+    },
+    "Set_MAP3K1_ENDO": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MAP3K1",
+      "value": true,
+      "direct_transition": "Record_MAP3K1_ENDO"
+    },
+    "Record_MAP3K1_ENDO": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MAP3K1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_MAP2K4_ENDO1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MAP2K4",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Draw_1"
+        },
+        {
+          "transition": "Set_MAP2K4_ENDO"
+        }
+      ]
+    },
+    "Check_ESR1_ENDO2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ESR1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Draw_2"
+        },
+        {
+          "transition": "Set_ESR1_ENDO_SENSITIVE_ROLE"
+        }
+      ]
+    },
+    "Check_GATA3_ENDO2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_GATA3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Draw_2"
+        },
+        {
+          "transition": "Set_GATA3_ENDO"
+        }
+      ]
+    },
+    "Check_MAP3K1_ENDO2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MAP3K1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Draw_2"
+        },
+        {
+          "transition": "Set_MAP3K1_ENDO"
+        }
+      ]
+    },
+    "Check_MAP2K4_ENDO2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_MAP2K4",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Draw_2"
+        },
+        {
+          "transition": "Set_MAP2K4_ENDO"
+        }
+      ]
+    },
+    "Set_MAP2K4_ENDO": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_MAP2K4",
+      "value": true,
+      "direct_transition": "Record_MAP2K4_ENDO"
+    },
+    "Record_MAP2K4_ENDO": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "MAP2K4 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_STK11_ENDO2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_STK11",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Draw_2"
+        },
+        {
+          "transition": "Set_STK11_ENDO"
+        }
+      ]
+    },
+    "Set_STK11_ENDO": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_STK11",
+      "value": true,
+      "direct_transition": "Record_STK11_ENDO"
+    },
+    "Record_STK11_ENDO": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "STK11 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_AKT1_ENDO2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_AKT1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Draw_2"
+        },
+        {
+          "transition": "Set_AKT1_ENDO"
+        }
+      ]
+    },
+    "Set_AKT1_ENDO": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_AKT1",
+      "value": true,
+      "direct_transition": "Record_AKT1_ENDO"
+    },
+    "Record_AKT1_ENDO": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "AKT1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ARID1A_ENDORES1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ARID1A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Resistance_Draw"
+        },
+        {
+          "transition": "Set_ARID1A_ENDO"
+        }
+      ]
+    },
+    "Set_ARID1A_ENDO": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_ARID1A",
+      "value": true,
+      "direct_transition": "Record_ARID1A_ENDO"
+    },
+    "Record_ARID1A_ENDO": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "ARID1A mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_RUNX1_ENDORES1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_RUNX1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Resistance_Draw"
+        },
+        {
+          "transition": "Set_RUNX1_ENDO"
+        }
+      ]
+    },
+    "Set_RUNX1_ENDO": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_RUNX1",
+      "value": true,
+      "direct_transition": "Record_RUNX1_ENDO"
+    },
+    "Record_RUNX1_ENDO": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "RUNX1 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_CTCF_ENDORES1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CTCF",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Resistance_Draw"
+        },
+        {
+          "transition": "Set_CTCF_ENDO"
+        }
+      ]
+    },
+    "Set_CTCF_ENDO": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_CTCF",
+      "value": true,
+      "direct_transition": "Record_CTCF_ENDO"
+    },
+    "Record_CTCF_ENDO": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "CTCF mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ARID1A_ENDORES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ARID1A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_ARID1A_ENDO"
+        }
+      ]
+    },
+    "Check_RUNX1_ENDORES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_RUNX1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_RUNX1_ENDO"
+        }
+      ]
+    },
+    "Check_CTCF_ENDORES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_CTCF",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_CTCF_ENDO"
+        }
+      ]
+    },
+    "Check_TP53_ENDORES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_TP53",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_TP53_ENDO"
+        }
+      ]
+    },
+    "Set_TP53_ENDO": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_TP53",
+      "value": true,
+      "direct_transition": "Record_TP53_ENDO"
+    },
+    "Record_TP53_ENDO": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "TP53 mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "Check_ESR1_ENDORES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ESR1",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "Endocrine_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_ESR1_ENDO_RESISTANT_ROLE"
+        }
+      ]
+    },
+    "Set_ESR1_ENDO_RESISTANT_ROLE": {
+      "type": "SetAttribute",
+      "attribute": "endocrine_esr1_role",
+      "value": "resistant",
+      "direct_transition": "Set_ESR1_ENDO"
+    },
+    "Check_PIK3CA_HER2_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "HER2_Draw_2"
+        },
+        {
+          "transition": "Set_PIK3CA_HER2"
+        }
+      ]
+    },
+    "Check_ERBB3_HER2_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_ERBB3",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "HER2_Draw_2"
+        },
+        {
+          "transition": "Set_ERBB3"
+        }
+      ]
+    },
+    "Check_FCGR2A_HER2_2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_FCGR2A",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "HER2_Draw_2"
+        },
+        {
+          "transition": "Set_FCGR2A_HER2"
+        }
+      ]
+    },
+    "Set_FCGR2A_HER2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_FCGR2A",
+      "value": true,
+      "direct_transition": "Record_FCGR2A_HER2"
+    },
+    "Record_FCGR2A_HER2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "FCGR2A mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
+    },
+    "HER2_Resistance_Draw_2": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "transition": "Check_PTEN_HER2_RES2",
+          "distribution": 0.5
+        },
+        {
+          "transition": "Check_PIK3CA_HER2_RES2",
+          "distribution": 0.5
+        }
+      ]
+    },
+    "Check_PTEN_HER2_RES1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "HER2_Resistance_Draw"
+        },
+        {
+          "transition": "Set_PTEN_HER2"
+        }
+      ]
+    },
+    "Check_PIK3CA_HER2_RES1": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "HER2_Resistance_Draw"
+        },
+        {
+          "transition": "Set_PIK3CA_HER2"
+        }
+      ]
+    },
+    "Check_PTEN_HER2_RES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PTEN",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "HER2_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_PTEN_HER2"
+        }
+      ]
+    },
+    "Check_PIK3CA_HER2_RES2": {
+      "type": "Simple",
+      "conditional_transition": [
+        {
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "has_gene_PIK3CA",
+            "operator": "==",
+            "value": true
+          },
+          "transition": "HER2_Resistance_Draw_2"
+        },
+        {
+          "transition": "Set_PIK3CA_HER2"
+        }
+      ]
+    },
+    "Set_PTEN_HER2": {
+      "type": "SetAttribute",
+      "attribute": "has_gene_PTEN",
+      "value": true,
+      "direct_transition": "Record_PTEN_HER2"
+    },
+    "Record_PTEN_HER2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "unit": "",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "69548-6",
+          "display": "Genetic variant assessment"
+        }
+      ],
+      "value_code": {
+        "system": "SNOMED-CT",
+        "code": "10828004",
+        "display": "PTEN mutation positive"
+      },
+      "direct_transition": "Increment_Treatment_Driver_Count"
     }
   },
   "gmf_version": 1

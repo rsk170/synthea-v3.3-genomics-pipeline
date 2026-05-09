@@ -18,7 +18,8 @@ lib/custom/*.jar
 **/*.log
 
 output_runs/
-*.maf
+breast_cancer_passenger_only_from_maf.maf
+final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf
 *.maf.gz
 TableS3_panorama_driver_mutations_ICGC_samples.controlled.tsv
 

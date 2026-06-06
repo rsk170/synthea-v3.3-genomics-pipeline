@@ -1,8 +1,39 @@
-# Synthea<sup>TM</sup> Patient Generator ![Build Status](https://github.com/synthetichealth/synthea/workflows/.github/workflows/ci-build-test.yml/badge.svg?branch=master) [![codecov](https://codecov.io/gh/synthetichealth/synthea/branch/master/graph/badge.svg)](https://codecov.io/gh/synthetichealth/synthea)
+# Synthea<sup>TM</sup> Breast Cancer Genomics Fork
 
 Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.
 
-Read our [wiki](https://github.com/synthetichealth/synthea/wiki) and [Frequently Asked Questions](https://github.com/synthetichealth/synthea/wiki/Frequently-Asked-Questions) for more information.
+## Repository Status
+
+This repository is a fork of the original
+[Synthea repository](https://github.com/synthetichealth/synthea), modified for
+the paper associated with this code release. It preserves the upstream Synthea
+patient-generation framework while adding paper-specific breast cancer and
+genomics extensions.
+
+For upstream Synthea documentation, see the
+[Synthea wiki](https://github.com/synthetichealth/synthea/wiki) and
+[Frequently Asked Questions](https://github.com/synthetichealth/synthea/wiki/Frequently-Asked-Questions).
+
+Custom extensions in this fork include:
+
+- two custom breast cancer module extensions under
+  `src/main/resources/modules/breast_cancer/`:
+  `tumor_driver_assignment.json` and `tumor_response_sequencing.json`;
+  these files are integrated into the breast cancer workflow through
+  modifications to `src/main/resources/modules/breast_cancer.json`. The other
+  breast cancer modules in that directory were already present in the original
+  Synthea codebase
+- post-processing scripts under `scripts/` to reconstruct breast cancer clone
+  groups, assign clone proportions over sequencing timepoints, prune genomic
+  observations by clone-level VAF, assign passenger mutations, and generate
+  complete per-patient, per-clone MAF files
+- curated breast cancer variant resources, including CIViC-linked driver
+  variants, generic driver variants, non-disruptive variants, ICGC-derived
+  passenger mutation resources, and Table S3 driver-gene filtering inputs
+- custom CSV/MAF outputs for the paper workflow, including
+  `breast_cancer_clone_groups.csv`, `breast_cancer_clone_proportions.csv`,
+  `observations_pruned_by_clone_vaf.csv`,
+  `breast_cancer_assigned_passenger_mutations.tsv`, and `maf_files/`
 
 Currently, Synthea<sup>TM</sup> features include:
 - Birth to Death Lifecycle
@@ -29,9 +60,8 @@ These instructions are intended for those wishing to examine the Synthea source 
 **System Requirements:**
 Synthea<sup>TM</sup> requires Java JDK 11 or newer. We strongly recommend using a Long-Term Support (LTS) release of Java, 11 or 17, as issues may occur with more recent non-LTS versions.
 
-To clone the Synthea<sup>TM</sup> repo, then build and run the test suite:
+From this fork's checkout, build and run the test suite:
 ```
-git clone https://github.com/synthetichealth/synthea.git
 cd synthea
 ./gradlew build check test
 ```

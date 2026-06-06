@@ -1,12 +1,11 @@
-# Synthea<sup>TM</sup> Breast Cancer Genomics Fork
+# 🧬 Synthea<sup>TM</sup> Breast Cancer Genomics Fork
 
 Synthea<sup>TM</sup> is a Synthetic Patient Population Simulator. The goal is to output synthetic, realistic (but not real), patient data and associated health records in a variety of formats.
 
-## Repository Status
+## 📌 Repository Status
 
 This repository is a fork of the original
-[Synthea repository](https://github.com/synthetichealth/synthea), modified for
-the paper associated with this code release. It preserves the upstream Synthea
+[Synthea repository](https://github.com/synthetichealth/synthea). It preserves the upstream Synthea
 patient-generation framework while adding paper-specific breast cancer and
 genomics extensions.
 
@@ -14,26 +13,17 @@ For upstream Synthea documentation, see the
 [Synthea wiki](https://github.com/synthetichealth/synthea/wiki) and
 [Frequently Asked Questions](https://github.com/synthetichealth/synthea/wiki/Frequently-Asked-Questions).
 
-Custom extensions in this fork include:
+## ✨ Custom Extensions
 
-- two custom breast cancer module extensions under
-  `src/main/resources/modules/breast_cancer/`:
-  `tumor_driver_assignment.json` and `tumor_response_sequencing.json`;
-  these files are integrated into the breast cancer workflow through
-  modifications to `src/main/resources/modules/breast_cancer.json`. The other
-  breast cancer modules in that directory were already present in the original
-  Synthea codebase
-- post-processing scripts under `scripts/` to reconstruct breast cancer clone
-  groups, assign clone proportions over sequencing timepoints, prune genomic
-  observations by clone-level VAF, assign passenger mutations, and generate
-  complete per-patient, per-clone MAF files
-- curated breast cancer variant resources, including CIViC-linked driver
-  variants, generic driver variants, non-disruptive variants, ICGC-derived
-  passenger mutation resources, and Table S3 driver-gene filtering inputs
-- custom CSV/MAF outputs for the paper workflow, including
-  `breast_cancer_clone_groups.csv`, `breast_cancer_clone_proportions.csv`,
-  `observations_pruned_by_clone_vaf.csv`,
-  `breast_cancer_assigned_passenger_mutations.tsv`, and `maf_files/`
+| Area | What was added or changed |
+| --- | --- |
+| Breast cancer workflow integration | `src/main/resources/modules/breast_cancer.json` was modified to integrate the custom genomics submodules into the existing breast cancer workflow. |
+| Custom module extensions | `src/main/resources/modules/breast_cancer/tumor_driver_assignment.json` and `src/main/resources/modules/breast_cancer/tumor_response_sequencing.json` were added. The other breast cancer modules in that directory were already present in the original Synthea codebase. |
+| Genomics post-processing | Scripts under `scripts/` reconstruct breast cancer clone groups, assign clone proportions across sequencing timepoints, prune genomic observations by clone-level VAF, assign passenger mutations, and generate complete per-patient, per-clone MAF files. |
+| Curated variant resources | CIViC-linked driver variants, generic driver variants, non-disruptive variants, ICGC-derived passenger mutation resources, and Table S3 driver-gene filtering inputs are included for the paper workflow. |
+| Custom outputs | The workflow produces files such as `breast_cancer_clone_groups.csv`, `breast_cancer_clone_proportions.csv`, `observations_pruned_by_clone_vaf.csv`, `breast_cancer_assigned_passenger_mutations.tsv`, and per-clone MAF files under `maf_files/`. |
+
+## 🧰 Upstream Synthea Features
 
 Currently, Synthea<sup>TM</sup> features include:
 - Birth to Death Lifecycle
@@ -51,7 +41,7 @@ Currently, Synthea<sup>TM</sup> features include:
   - CPCDS (set `exporter.cpcds.export = true` to activate)
 - Rendering Rules and Disease Modules with Graphviz
 
-## Developer Quick Start
+## 🚀 Developer Quick Start
 
 These instructions are intended for those wishing to examine the Synthea source code, extend it or build the code locally. Those just wishing to run Synthea should follow the [Basic Setup and Running](https://github.com/synthetichealth/synthea/wiki/Basic-Setup-and-Running) instructions instead.
 
@@ -68,13 +58,10 @@ cd synthea
 
 ### Changing the default properties
 
-
 The default properties file values can be found at `src/main/resources/synthea.properties`.
 By default, synthea does not generate CCDA, CPCDA, CSV, or Bulk FHIR (ndjson). You'll need to
 adjust this file to activate these features.  See the [wiki](https://github.com/synthetichealth/synthea/wiki)
 for more details, or use our [guided customizer tool](https://synthetichealth.github.io/spt/#/customizer).
-
-
 
 ### Generate Synthetic Patients
 Generating the population one at a time...
@@ -139,7 +126,7 @@ Generate a list of concepts (used in the records) or attributes (variables on ea
 ./gradlew attributes
 ```
 
-## Breast Cancer Genomics Workflow
+## 🧪 Breast Cancer Genomics Workflow
 
 This repository also contains a custom breast cancer genomics pipeline built on
 top of the standard Synthea CSV export. The final outputs of this workflow are:
@@ -228,7 +215,7 @@ Output:
 This step creates a breast-cancer passenger-only mutation pool from the ICGC
 MAF by removing Table S3 driver genes, then deterministically assigns each
 synthetic patient with genomic sequencing to one source breast tumor sample and
- transfers that sample’s passenger mutation set to the patient.
+transfers that sample’s passenger mutation set to the patient.
 
 ```bash
 python3 scripts/build_breast_cancer_passenger_mutations.py \
@@ -310,7 +297,7 @@ python3 scripts/build_breast_cancer_complete_maf_files.py \
   --clone-proportions output_runs/output_bc_run1/csv/breast_cancer_clone_proportions.csv
 ```
 
-# License
+## 📄 License
 
 Copyright 2017-2023 The MITRE Corporation
 

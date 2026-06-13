@@ -99,7 +99,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help=(
             "Path to breast_cancer_driver_variants_from_maf.csv. Defaults to "
-            "scripts/breast_cancer_driver_variants_from_maf.csv."
+            "scripts/post_processing/resources/breast_cancer_driver_variants_from_maf.csv."
         ),
     )
     parser.add_argument(
@@ -107,7 +107,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help=(
             "Path to civic_breast_cancer_driver_variants_from_maf.csv. Defaults "
-            "to scripts/civic_breast_cancer_driver_variants_from_maf.csv."
+            "to scripts/post_processing/resources/civic_breast_cancer_driver_variants_from_maf.csv."
         ),
     )
     parser.add_argument(
@@ -115,7 +115,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help=(
             "Path to breast_cancer_non_disruptive_variants_from_maf.csv. Defaults "
-            "to scripts/breast_cancer_non_disruptive_variants_from_maf.csv."
+            "to scripts/post_processing/resources/breast_cancer_non_disruptive_variants_from_maf.csv."
         ),
     )
     parser.add_argument(
@@ -132,7 +132,7 @@ def parse_args() -> argparse.Namespace:
         help=(
             "Path to the full ICGC MAF for exact fallback recovery when a driver "
             "variant is not present in the curated variant tables. Defaults to "
-            "scripts/final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf."
+            "scripts/post_processing/resources/final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf."
         ),
     )
     return parser.parse_args()
@@ -499,7 +499,8 @@ def write_complete_maf(
 
 def main() -> None:
     args = parse_args()
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parents[2]
+    resource_dir = Path(__file__).resolve().parent / "resources"
 
     pruned_path = args.pruned_observations or newest_pruned_observations_csv(repo_root)
     assigned_passengers_path = args.assigned_passengers or pruned_path.with_name(
@@ -510,15 +511,15 @@ def main() -> None:
         DEFAULT_CLONE_PROPORTIONS_NAME
     )
     driver_variants_path = args.driver_variants or (
-        repo_root / "scripts" / DEFAULT_DRIVER_VARIANTS_NAME
+        resource_dir / DEFAULT_DRIVER_VARIANTS_NAME
     )
     civic_variants_path = args.civic_driver_variants or (
-        repo_root / "scripts" / DEFAULT_CIVIC_DRIVER_VARIANTS_NAME
+        resource_dir / DEFAULT_CIVIC_DRIVER_VARIANTS_NAME
     )
     non_disruptive_variants_path = args.non_disruptive_variants or (
-        repo_root / "scripts" / DEFAULT_NON_DISRUPTIVE_VARIANTS_NAME
+        resource_dir / DEFAULT_NON_DISRUPTIVE_VARIANTS_NAME
     )
-    maf_path = args.maf or (repo_root / "scripts" / DEFAULT_MAF_NAME)
+    maf_path = args.maf or (resource_dir / DEFAULT_MAF_NAME)
     output_dir = args.output_dir or pruned_path.parent.parent / "maf_files"
 
     for required_path in [

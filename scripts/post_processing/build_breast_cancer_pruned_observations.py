@@ -113,7 +113,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help=(
             "Path to civic_breast_cancer_driver_variants_from_maf.csv. Defaults to "
-            "scripts/civic_breast_cancer_driver_variants_from_maf.csv."
+            "scripts/post_processing/resources/civic_breast_cancer_driver_variants_from_maf.csv."
         ),
     )
     parser.add_argument(
@@ -121,7 +121,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help=(
             "Path to breast_cancer_driver_variants_from_maf.csv. Defaults to "
-            "scripts/breast_cancer_driver_variants_from_maf.csv."
+            "scripts/post_processing/resources/breast_cancer_driver_variants_from_maf.csv."
         ),
     )
     parser.add_argument(
@@ -137,7 +137,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help=(
             "Path to breast_cancer_non_disruptive_variants_from_maf.csv. Defaults to "
-            "scripts/breast_cancer_non_disruptive_variants_from_maf.csv."
+            "scripts/post_processing/resources/breast_cancer_non_disruptive_variants_from_maf.csv."
         ),
     )
     return parser.parse_args()
@@ -813,7 +813,8 @@ def write_rows(output_path: Path, fieldnames: list[str], rows: list[dict[str, st
 
 def main() -> int:
     args = parse_args()
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parents[2]
+    resource_dir = Path(__file__).resolve().parent / "resources"
 
     clone_proportions_path = args.clone_proportions or newest_clone_proportions_csv(repo_root)
     if not clone_proportions_path.exists():
@@ -829,13 +830,13 @@ def main() -> int:
     output_path = args.output or observations_path.with_name(DEFAULT_OUTPUT_NAME)
     medications_path = args.medications or observations_path.with_name(DEFAULT_MEDICATIONS_NAME)
     civic_variants_path = args.civic_driver_variants or (
-        repo_root / "scripts" / DEFAULT_CIVIC_DRIVER_VARIANTS_NAME
+        resource_dir / DEFAULT_CIVIC_DRIVER_VARIANTS_NAME
     )
     driver_variants_path = args.driver_variants or (
-        repo_root / "scripts" / DEFAULT_DRIVER_VARIANTS_NAME
+        resource_dir / DEFAULT_DRIVER_VARIANTS_NAME
     )
     non_disruptive_variants_path = args.non_disruptive_variants or (
-        repo_root / "scripts" / DEFAULT_NON_DISRUPTIVE_VARIANTS_NAME
+        resource_dir / DEFAULT_NON_DISRUPTIVE_VARIANTS_NAME
     )
     if not medications_path.exists():
         raise FileNotFoundError(f"Medications file not found: {medications_path}")

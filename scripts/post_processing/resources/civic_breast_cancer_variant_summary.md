@@ -1,7 +1,7 @@
 # CIViC Breast Cancer Variant Summary
 
 Source:
-- `scripts/civic_breast_cancer_driver_variants_from_maf.csv`
+- `scripts/post_processing/resources/civic_breast_cancer_driver_variants_from_maf.csv`
 
 Variants are listed using the `helper_variant_key` format, for example:
 - `TP53|17|7578406|7578406|C|T|Missense_Mutation`

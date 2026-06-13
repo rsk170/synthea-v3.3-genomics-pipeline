@@ -11,7 +11,9 @@ fi
 SOURCE_RUN="$1"
 RUN_LABEL="${2:-$(basename "$SOURCE_RUN")}"
 
-cd /home/rkisleva/SDG_tools/synthea_developer3.3.0/synthea || exit 1
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+cd "$REPO_ROOT" || exit 1
 
 BENCH_ROOT="${BENCH_ROOT:-output_runs/benchmark_bc_postprocessing}"
 WORK_RUN="$BENCH_ROOT/$RUN_LABEL"
@@ -102,44 +104,44 @@ run_step() {
 write_storage_snapshot "initial"
 
 run_step "01_clone_groups" \
-  python3 scripts/build_breast_cancer_clones.py \
+  python3 scripts/post_processing/build_breast_cancer_clones.py \
     --observations "$CSV_DIR/observations.csv" \
     --output "$CSV_DIR/breast_cancer_clone_groups.csv"
 
 run_step "02_clone_proportions" \
-  python3 scripts/build_breast_cancer_clone_proportions.py \
+  python3 scripts/post_processing/build_breast_cancer_clone_proportions.py \
     --clone-groups "$CSV_DIR/breast_cancer_clone_groups.csv" \
     --output "$CSV_DIR/breast_cancer_clone_proportions.csv"
 
 run_step "03_pruned_observations" \
-  python3 scripts/build_breast_cancer_pruned_observations.py \
+  python3 scripts/post_processing/build_breast_cancer_pruned_observations.py \
     --clone-proportions "$CSV_DIR/breast_cancer_clone_proportions.csv" \
     --observations "$CSV_DIR/observations.csv" \
     --medications "$CSV_DIR/medications.csv" \
-    --civic-driver-variants scripts/civic_breast_cancer_driver_variants_from_maf.csv \
-    --driver-variants scripts/breast_cancer_driver_variants_from_maf.csv \
-    --non-disruptive-variants scripts/breast_cancer_non_disruptive_variants_from_maf.csv \
+    --civic-driver-variants scripts/post_processing/resources/civic_breast_cancer_driver_variants_from_maf.csv \
+    --driver-variants scripts/post_processing/resources/breast_cancer_driver_variants_from_maf.csv \
+    --non-disruptive-variants scripts/post_processing/resources/breast_cancer_non_disruptive_variants_from_maf.csv \
     --output "$CSV_DIR/observations_pruned_by_clone_vaf.csv"
 
 run_step "04_passenger_mutations" \
-  python3 scripts/build_breast_cancer_passenger_mutations.py \
-    --maf scripts/final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf \
-    --driver-tsv scripts/TableS3_panorama_driver_mutations_ICGC_samples.controlled.tsv \
+  python3 scripts/post_processing/build_breast_cancer_passenger_mutations.py \
+    --maf scripts/post_processing/resources/final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf \
+    --driver-tsv scripts/post_processing/resources/TableS3_panorama_driver_mutations_ICGC_samples.controlled.tsv \
     --patients "$CSV_DIR/patients.csv" \
     --observations "$CSV_DIR/observations.csv" \
     --passenger-maf "$PASSENGER_POOL" \
     --output "$CSV_DIR/breast_cancer_assigned_passenger_mutations.tsv"
 
 run_step "05_complete_maf_files" \
-  python3 scripts/build_breast_cancer_complete_maf_files.py \
+  python3 scripts/post_processing/build_breast_cancer_complete_maf_files.py \
     --pruned-observations "$CSV_DIR/observations_pruned_by_clone_vaf.csv" \
     --assigned-passengers "$CSV_DIR/breast_cancer_assigned_passenger_mutations.tsv" \
     --clone-groups "$CSV_DIR/breast_cancer_clone_groups.csv" \
     --clone-proportions "$CSV_DIR/breast_cancer_clone_proportions.csv" \
-    --driver-variants scripts/breast_cancer_driver_variants_from_maf.csv \
-    --civic-driver-variants scripts/civic_breast_cancer_driver_variants_from_maf.csv \
-    --non-disruptive-variants scripts/breast_cancer_non_disruptive_variants_from_maf.csv \
-    --maf scripts/final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf \
+    --driver-variants scripts/post_processing/resources/breast_cancer_driver_variants_from_maf.csv \
+    --civic-driver-variants scripts/post_processing/resources/civic_breast_cancer_driver_variants_from_maf.csv \
+    --non-disruptive-variants scripts/post_processing/resources/breast_cancer_non_disruptive_variants_from_maf.csv \
+    --maf scripts/post_processing/resources/final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf \
     --output-dir "$WORK_RUN/maf_files"
 
 count_rows() {

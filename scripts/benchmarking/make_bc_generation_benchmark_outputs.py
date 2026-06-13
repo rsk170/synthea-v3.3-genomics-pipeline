@@ -240,7 +240,7 @@ def main() -> int:
     summary_path = args.bench_root / "benchmark_summary.csv"
     if not summary_path.exists():
         raise FileNotFoundError(
-            f"Missing {summary_path}. Run scripts/summarize_bc_generation_benchmarks.py first."
+            f"Missing {summary_path}. Run scripts/benchmarking/summarize_bc_generation_benchmarks.py first."
         )
 
     output_dir = args.output_dir or args.bench_root / "analytics"

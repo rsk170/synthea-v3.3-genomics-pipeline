@@ -663,7 +663,7 @@ def validate_rows(rows: list[dict[str, str]]) -> None:
 
 def main() -> int:
     args = parse_args()
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parents[2]
 
     built_from_observations = args.observations is not None or args.clone_groups is None
     clone_groups_path: Path

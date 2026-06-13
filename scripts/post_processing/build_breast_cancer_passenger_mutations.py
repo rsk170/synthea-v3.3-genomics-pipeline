@@ -47,7 +47,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help=(
             "Path to the tab-delimited ICGC MAF. Defaults to "
-            "scripts/final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf."
+            "scripts/post_processing/resources/final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf."
         ),
     )
     parser.add_argument(
@@ -55,7 +55,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help=(
             "Path to the driver TSV whose gene column defines driver genes. "
-            "Defaults to scripts/TableS3_panorama_driver_mutations_ICGC_samples.controlled.tsv."
+            "Defaults to scripts/post_processing/resources/TableS3_panorama_driver_mutations_ICGC_samples.controlled.tsv."
         ),
     )
     parser.add_argument(
@@ -80,7 +80,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help=(
             "Output path for the passenger-only MAF. Defaults to "
-            "scripts/breast_cancer_passenger_only_from_maf.maf."
+            "scripts/post_processing/resources/breast_cancer_passenger_only_from_maf.maf."
         ),
     )
     parser.add_argument(
@@ -292,13 +292,14 @@ def write_assigned_passenger_rows(
 
 def main() -> None:
     args = parse_args()
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parents[2]
+    resource_dir = Path(__file__).resolve().parent / "resources"
 
-    maf_path = args.maf or repo_root / "scripts" / DEFAULT_MAF_NAME
-    driver_tsv_path = args.driver_tsv or repo_root / "scripts" / DEFAULT_DRIVER_TSV_NAME
+    maf_path = args.maf or resource_dir / DEFAULT_MAF_NAME
+    driver_tsv_path = args.driver_tsv or resource_dir / DEFAULT_DRIVER_TSV_NAME
     patients_path = args.patients or newest_patients_csv(repo_root)
     observations_path = args.observations or newest_observations_csv(repo_root)
-    passenger_maf_path = args.passenger_maf or repo_root / "scripts" / DEFAULT_PASSENGER_POOL_NAME
+    passenger_maf_path = args.passenger_maf or resource_dir / DEFAULT_PASSENGER_POOL_NAME
     assigned_output_path = args.output or patients_path.with_name(DEFAULT_ASSIGNED_NAME)
 
     driver_genes = load_driver_genes(driver_tsv_path)

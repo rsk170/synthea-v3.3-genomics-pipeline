@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
-cd /home/rkisleva/SDG_tools/synthea_developer3.3.0/synthea
 
-BENCH_ROOT="output_runs/benchmark_bc_generation"
-AGE_RANGE="45-90"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+cd "$REPO_ROOT" || exit 1
+
+BENCH_ROOT="${BENCH_ROOT:-output_runs/benchmark_bc_generation}"
+AGE_RANGE="${AGE_RANGE:-45-90}"
+KEEP_FILE="${KEEP_FILE:-src/main/resources/keep_modules/keep_breast_cancer.json}"
+MAX_ATTEMPTS="${MAX_ATTEMPTS:-1000}"
 mkdir -p "$BENCH_ROOT/logs"
 
 lscpu > "$BENCH_ROOT/machine_lscpu.txt"
@@ -23,10 +28,10 @@ for SIZE in 10 50 100 500 1000; do
       -s "$SEED" \
       -p "$SIZE" \
       -a "$AGE_RANGE" \
-      -k keep_breast_cancer.json \
+      -k "$KEEP_FILE" \
       --exporter.csv.export=true \
       --exporter.baseDirectory="./$OUTDIR/" \
-      --generate.max_attempts_to_keep_patient=10000 \
+      --generate.max_attempts_to_keep_patient="$MAX_ATTEMPTS" \
       > "$LOGDIR/synthea.stdout.log" \
       2> "$LOGDIR/synthea.stderr.log"
 

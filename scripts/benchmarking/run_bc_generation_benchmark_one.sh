@@ -12,7 +12,9 @@ COHORT_SIZE="$1"
 SEED="$2"
 TIME_LIMIT="${3:-4h}"
 
-cd /home/rkisleva/SDG_tools/synthea_developer3.3.0/synthea || exit 1
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+cd "$REPO_ROOT" || exit 1
 
 BENCH_ROOT="${BENCH_ROOT:-output_runs/benchmark_bc_generation_single}"
 AGE_RANGE="${AGE_RANGE:-45-90}"

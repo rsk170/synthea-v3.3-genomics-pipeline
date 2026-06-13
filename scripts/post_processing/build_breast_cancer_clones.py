@@ -999,7 +999,7 @@ def write_rows(output_path: Path, rows: list[dict[str, str]]) -> None:
 
 def main() -> int:
     args = parse_args()
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parents[2]
 
     observations_path = args.observations or newest_observations_csv(repo_root)
     if not observations_path.exists():

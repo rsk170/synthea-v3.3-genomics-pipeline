@@ -166,23 +166,23 @@ def parse_args() -> argparse.Namespace:
             "civic_breast_cancer_driver_variants_from_maf.csv."
         )
     )
-    repo_root = Path(__file__).resolve().parents[1]
+    resource_dir = Path(__file__).resolve().parent / "resources"
     parser.add_argument(
         "--maf",
         type=Path,
-        default=repo_root / "scripts" / "final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf",
+        default=resource_dir / "final_consensus_passonly.snv_mnv_indel.icgc.controlled.maf",
         help="Path to the tab-delimited ICGC public MAF.",
     )
     parser.add_argument(
         "--output",
         type=Path,
-        default=repo_root / "scripts" / "civic_breast_cancer_driver_variants_from_maf.csv",
+        default=resource_dir / "civic_breast_cancer_driver_variants_from_maf.csv",
         help="Path to the output CSV to update in place.",
     )
     parser.add_argument(
         "--not-found-log",
         type=Path,
-        default=repo_root / "scripts" / "civic_breast_cancer_driver_variants_from_maf.not_found.txt",
+        default=resource_dir / "civic_breast_cancer_driver_variants_from_maf.not_found.txt",
         help="Path to the text note listing profiles without exact MAF matches.",
     )
     return parser.parse_args()
